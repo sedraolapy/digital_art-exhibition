@@ -6,20 +6,26 @@ namespace App\Models;
 
 use App\Enums\Role;
 use Database\Factories\UserFactory;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
+
+    protected $guard_name = 'admin';
+
     protected $fillable = [
         'first_name',
         'last_name',
@@ -27,7 +33,7 @@ class User extends Authenticatable
         'phone',
         'password',
         'role',
-        'qr_code',
+        'qr_token',
     ];
     /**
      * The attributes that should be hidden for serialization.
@@ -68,8 +74,14 @@ class User extends Authenticatable
     }
 
     public function getNameAttribute(): string
-{
-    return $this->getFilamentName();
-}
+    {
+        return $this->getFilamentName();
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->role === Role::ADMIN->value && $this->guard === 'admin';
+    }
+
 
 }
