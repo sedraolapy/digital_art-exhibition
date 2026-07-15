@@ -25,22 +25,40 @@ class ResetPasswordRequest extends FormRequest
         return [
             'token' => ['required'],
             'email' => ['required', 'email'],
-            'password' => ['required', 'confirmed', 'min:8'],
+            'password' => [
+                'required',
+                'confirmed',
+                'min:8',
+                'regex:/[A-Z]/',
+                'regex:/[a-z]/',
+                'regex:/[0-9]/',
+                'regex:/[@$!%*#?&]/',
+            ],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'token.required'    => 'Token is required.',
+            'token.required'       => 'رمز إعادة تعيين كلمة المرور مطلوب.',
 
-            'email.required'    => 'Email is required.',
-            'email.email'       => 'Email must be a valid email address.',
+            'email.required'       => 'البريد الإلكتروني مطلوب.',
+            'email.email'          => 'يرجى إدخال بريد إلكتروني صالح.',
 
-            'password.required' => 'Password is required.',
-            'password.confirmed'=> 'Password confirmation does not match.',
-            'password.min'      => 'Password must be at least 8 characters.',
+            'password.required'    => 'كلمة المرور مطلوبة.',
+            'password.confirmed'   => 'تأكيد كلمة المرور غير متطابق.',
+            'password.min'         => 'يجب ألا تقل كلمة المرور عن 8 أحرف.',
+            'password.regex'       => 'يجب أن تحتوي كلمة المرور على حرف كبير، وحرف صغير، ورقم، ورمز خاص.',
         ];
     }
 
+    public function attributes(): array
+    {
+        return [
+            'token'    => 'رمز إعادة تعيين كلمة المرور',
+            'email'    => 'البريد الإلكتروني',
+            'password' => 'كلمة المرور',
+        ];
+    }
+    
 }

@@ -23,8 +23,8 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => 'required|string|max:255',
-            'last_name'  => 'required|string|max:255',
+            'first_name' => 'required|string|max:255|regex:/^[\p{Arabic}\s]+$/u',
+            'last_name'  => 'required|string|max:255|regex:/^[\p{Arabic}\s]+$/u',
             'email'      => 'required|string|email|unique:users',
             'phone'      => [
                 'required',
@@ -32,7 +32,15 @@ class RegisterRequest extends FormRequest
                 'size:9',
                 'regex:/^9[0-9]{8}$/',
             ],
-            'password'   => 'required|string|min:8|confirmed',
+            'password' => [
+                'required',
+                'confirmed',
+                'min:8',
+                'regex:/[A-Z]/',
+                'regex:/[a-z]/',
+                'regex:/[0-9]/',
+                'regex:/[@$!%*#?&]/',
+            ],
             'terms'      => 'required|accepted',
         ];
     }
@@ -40,17 +48,37 @@ class RegisterRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'first_name.required' => 'First name is required.',
-            'last_name.required'  => 'Last name is required.',
-            'email.required'      => 'Email is required.',
-            'email.unique'        => 'This email is already taken.',
-            'phone.required'      => 'Phone number is required.',
-            'phone.size'          => 'Phone number must be exactly 9 digits.',
-            'phone.regex'         => 'Phone number must start with 9 and be 9 digits long (Syrian format).',
-            'password.required'   => 'Password is required.',
-            'password.confirmed'  => 'Password confirmation does not match.',
-            'terms.required'      => 'You must agree to the terms and conditions.',
-            'terms.accepted'      => 'You must accept the terms and conditions to proceed.',
+            'first_name.required' => 'الاسم الأول مطلوب.',
+            'last_name.required'  => 'اسم العائلة مطلوب.',
+            'first_name.regex' => 'يجب أن يحتوي الاسم الأول على أحرف عربية فقط.',
+            'last_name.regex'  => 'يجب أن يحتوي اسم العائلة على أحرف عربية فقط.',
+
+            'email.required'      => 'البريد الإلكتروني مطلوب.',
+            'email.unique'        => 'هذا البريد الإلكتروني مستخدم بالفعل.',
+
+            'phone.required'      => 'رقم الهاتف مطلوب.',
+            'phone.size'          => 'يجب أن يتكون رقم الهاتف من 9 أرقام.',
+            'phone.regex'         => 'يجب أن يبدأ رقم الهاتف بالرقم 9 وأن يتكون من 9 أرقام (وفقًا للصيغة السورية).',
+
+            'password.required'   => 'كلمة المرور مطلوبة.',
+            'password.confirmed'  => 'تأكيد كلمة المرور غير متطابق.',
+            'password.min'        => 'يجب ألا تقل كلمة المرور عن 8 أحرف.',
+            'password.regex'      => 'يجب أن تحتوي كلمة المرور على حرف كبير، وحرف صغير، ورقم، ورمز خاص.',
+
+            'terms.required'      => 'يجب الموافقة على الشروط والأحكام.',
+            'terms.accepted'      => 'يجب قبول الشروط والأحكام للمتابعة.',
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'first_name' => 'الاسم الأول',
+            'last_name'  => 'اسم العائلة',
+            'email'      => 'البريد الإلكتروني',
+            'phone'      => 'رقم الهاتف',
+            'password'   => 'كلمة المرور',
+            'terms'      => 'الشروط والأحكام',
         ];
     }
 }

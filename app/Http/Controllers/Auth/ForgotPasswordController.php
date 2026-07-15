@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ForgotPassword\ForgotPasswordRequest;
 use App\Http\Requests\ForgotPassword\ResetPasswordRequest;
-use App\Services\ForgotPasswordService;
+use App\Services\Auth\ForgotPasswordService;
 
 class ForgotPasswordController extends Controller
 {

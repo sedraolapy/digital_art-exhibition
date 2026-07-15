@@ -38,6 +38,27 @@ namespace App\Models{
 /**
  * @property int $id
  * @property string $name
+ * @property int $is_active
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ExhibitorProfile> $exhibitorProfiles
+ * @property-read int|null $exhibitor_profiles_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereUpdatedAt($value)
+ */
+	class Category extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $name
  * @property string|null $start_date
  * @property string|null $end_date
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -158,9 +179,19 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication query()
+ */
+	class ExhibitorApplication extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * @property int $id
  * @property int $user_id
  * @property int $events_occurrences_id
+ * @property int $category_id
  * @property \App\Enums\ExhibitorStatus $status
  * @property int|null $experience_years
  * @property string|null $cv_url
@@ -169,6 +200,7 @@ namespace App\Models{
  * @property string|null $image_url
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Category $category
  * @property-read \App\Models\EventOccurrence|null $occurrence
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SocialLink> $socialLinks
  * @property-read int|null $social_links_count
@@ -179,6 +211,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereBio($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereCvUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereEventsOccurrencesId($value)
@@ -368,11 +401,11 @@ namespace App\Models{
  * @property string $first_name
  * @property string $last_name
  * @property string $email
- * @property string|null $phone
+ * @property string $phone
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property string $password
  * @property \App\Enums\Role $role
- * @property string|null $qr_code
+ * @property string|null $qr_token
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -381,12 +414,21 @@ namespace App\Models{
  * @property-read int|null $lecture_attendance_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
+ * @property-read int|null $permissions_count
+ * @property-read \App\Models\UserProfile|null $profile
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
+ * @property-read int|null $roles_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
+ * @property-read int|null $tokens_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Vote> $votes
  * @property-read int|null $votes_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User permission($permissions, $without = false)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User role($roles, $guard = null, $without = false)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmailVerifiedAt($value)
@@ -395,12 +437,34 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereLastName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePhone($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereQrCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereQrToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutPermission($permissions)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutRole($roles, $guard = null)
  */
 	class User extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property string|null $profile_image_url
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile whereProfileImageUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile whereUserId($value)
+ */
+	class UserProfile extends \Eloquent {}
 }
 
 namespace App\Models{

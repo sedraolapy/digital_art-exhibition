@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('occurrence_sponsors', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('events_occurrences_id')->constrained();
+            $table->foreignId('event_occurrences_id')->constrained();
             $table->foreignId('sponsor_id')->constrained();
             $table->timestamps();
         });

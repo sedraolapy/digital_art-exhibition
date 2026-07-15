@@ -11,18 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('exhibitor_profiles', function (Blueprint $table) {
+        Schema::create('exhibitor_applications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')
                 ->constrained('users')
                 ->onDelete('cascade');
-            $table->foreignId('events_occurrences_id')->constrained();
+            $table->foreignId('event_occurrences_id')->constrained();
+            $table->foreignId('category_id')
+                ->constrained('categories')
+                ->restrictOnDelete();
             $table->string('status')->default('pending');
-            $table->integer('experience_years')->nullable();
-            $table->string('cv_url')->nullable();
-            $table->string('portfolio_url')->nullable();
-            $table->text('bio')->nullable();
-            $table->string('image_url')->nullable();
+            $table->integer('experience_years');
+            $table->string('cv_file');
+            $table->string('portfolio_url');
+            $table->text('bio');
+            $table->string('image_url');
             $table->timestamps();
         });
     }
@@ -32,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('exhibitor_profiles');
+        Schema::dropIfExists('exhibitor_applications');
     }
 };

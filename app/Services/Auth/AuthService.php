@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Auth;
 
 use App\Enums\Role;
+use App\Events\UserRegistered;
 use App\Models\User;
 use DB;
 use Illuminate\Support\Facades\Hash;
@@ -25,6 +26,7 @@ class AuthService
             ]);
 
             $this->generateQrCode($user);
+            event(new UserRegistered($user));
 
             $token = $user->createToken('auth_token')->plainTextToken;
 

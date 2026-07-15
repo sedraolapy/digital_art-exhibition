@@ -68,6 +68,16 @@ class User extends Authenticatable
         return $this->hasMany(LectureAttendance::class);
     }
 
+    public function profile()
+    {
+        return $this->hasOne(UserProfile::class);
+    }
+
+    public function exhibitorProfile()
+    {
+        return $this->hasOne(ExhibitorProfile::class);
+    }
+
     public function getFilamentName(): string
     {
         return trim(($this->first_name ?? '') . ' ' . ($this->last_name ?? ''));

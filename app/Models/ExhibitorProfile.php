@@ -9,27 +9,19 @@ class ExhibitorProfile extends Model
 {
     protected $fillable = [
         'user_id',
-        'status',
         'experience_years',
-        'cv_url',
+        'cv_file',
         'portfolio_url',
         'bio',
         'image_url',
-        'event_occurrence_id',
+        'event_occurrences_id',
+        'category_id',
     ];
 
-    protected $casts = [
-        'status' => ExhibitorStatus::class,
-    ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function votes()
-    {
-        return $this->hasMany(Vote::class, 'exhibitor_id');
     }
 
     public function socialLinks()
@@ -37,14 +29,19 @@ class ExhibitorProfile extends Model
         return $this->morphMany(SocialLink::class, 'linkable');
     }
 
-    public function userHasVoted()
+    public function votes()
     {
-        return $this->votes()->where('user_id', auth()->id())->exists();
+        return $this->hasMany(Vote::class, 'exhibitor_id');
     }
 
-    public function occurrence()
+    public function eventOccurrence()
     {
-        return $this->belongsTo(EventOccurrence::class);
+        return $this->belongsTo(EventOccurrence::class, 'event_occurrences_id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 
 }

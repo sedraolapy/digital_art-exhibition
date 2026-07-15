@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class EventOccurrence extends Model
 {
-    protected $table = 'events_occurrences';
 
     protected $fillable = [
         'start_date',
