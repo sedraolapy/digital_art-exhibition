@@ -5,6 +5,7 @@ namespace App\Services\Auth;
 use App\Enums\Role;
 use App\Events\UserRegistered;
 use App\Models\User;
+use App\Services\Exhibitor\SocialLinkService;
 use DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
@@ -13,6 +14,13 @@ use Illuminate\Support\Str;
 
 class AuthService
 {
+    private SocialLinkService $socialLinkService;
+
+    public function __construct(SocialLinkService $socialLinkService)
+    {
+        $this->socialLinkService = $socialLinkService;
+    }
+
     public function register(array $data): array
     {
         return DB::transaction(function () use ($data) {
@@ -25,6 +33,7 @@ class AuthService
                 'role'       => Role::USER->value,
             ]);
 
+            $this->socialLinkService->attachLinks($user, $data);
             $this->generateQrCode($user);
             event(new UserRegistered($user));
 

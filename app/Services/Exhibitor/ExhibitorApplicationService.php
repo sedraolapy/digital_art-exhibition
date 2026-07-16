@@ -32,20 +32,19 @@ class ExhibitorApplicationService
                 throw new \Exception('You already submitted an application for this event.');
             }
 
-            $cvPath    = $this->storeCvFile($data['cv_file']);
-            $imagePath = $this->resolveImagePath($user, $data);
 
             $application = ExhibitorApplication::create([
                 'user_id'              => $user->id,
                 'event_occurrences_id' => $currentEvent->id,
                 'category_id'          => $data['category_id'],
                 'experience_years'     => $data['experience_years'],
-                'cv_file'              => $cvPath,
                 'portfolio_url'        => $data['portfolio_url'],
                 'bio'                  => $data['bio'],
-                'image_url'            => $imagePath,
                 'status'               => ExhibitorStatus::PENDING->value,
             ]);
+
+            $this->StoreImage($application ,$data['image']);
+            $this->storeCvFile($application ,$data['cv_file']);
 
             $this->socialLinkService->attachLinks($application, $data);
 
@@ -53,31 +52,22 @@ class ExhibitorApplicationService
         });
     }
 
-    private function storeCvFile($cvFile): string
+    private function storeCvFile(ExhibitorApplication $application, $cvFile): void
     {
-        $filename = uniqid('app_cv_') . '.' . $cvFile->getClientOriginalExtension();
-        return $cvFile->storeAs('exhibitors/applications/cv', $filename, 'public');
+        $application->clearMediaCollection('application_cv');
+
+        $application->addMedia($cvFile)
+            ->usingFileName(uniqid('app_cv_') . '.' . $cvFile->getClientOriginalExtension())
+            ->toMediaCollection('application_cv');
     }
 
-    private function resolveImagePath(User $user, array $data): ?string
+    private function storeImage(ExhibitorApplication $application, $image): void
     {
-        if (isset($data['image_url'])) {
-            $filename = uniqid('app_img_') . '.' . $data['image_url']->getClientOriginalExtension();
-            return $data['image_url']->storeAs('exhibitors/applications/images', $filename, 'public');
-        }
+        $application->clearMediaCollection('application_image');
 
-        if ($user->profile?->profile_image_url) {
-            $originalPath = $user->profile->profile_image_url;
-            $fileName     = basename($originalPath);
-            $newPath      = 'exhibitors/applications/images/' . $fileName;
-
-            if (Storage::disk('public')->exists($originalPath)) {
-                Storage::disk('public')->copy($originalPath, $newPath);
-            }
-
-            return $newPath;
-        }
-        return null;
+        $application->addMedia($image)
+            ->usingFileName(uniqid('app_img_') . '.' . $image->getClientOriginalExtension())
+            ->toMediaCollection('application_image');
     }
 
 }

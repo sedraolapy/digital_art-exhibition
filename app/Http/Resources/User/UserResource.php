@@ -21,6 +21,12 @@ class UserResource extends JsonResource
             'last_name'  => $this->last_name,
             'email'      => $this->email,
             'phone'      => $this->phone,
+            'social_links'     => $this->socialLinks->map(function ($link) {
+                return [
+                    'platform' => $link->platform,
+                    'url'      => $link->url,
+                ];
+            }),
             'role'       => $this->role,
             'qr_code'    => $this->qr_token,
             'created_at' => $this->created_at->toDateTimeString(),

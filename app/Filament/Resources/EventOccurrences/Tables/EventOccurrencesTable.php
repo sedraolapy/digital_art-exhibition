@@ -14,6 +14,8 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Notifications\Notification;
+use Filament\Forms\Components\Placeholder;
+use Filament\Schemas\Components\Utilities\Get;
 
 class EventOccurrencesTable
 {
@@ -52,11 +54,18 @@ class EventOccurrencesTable
 
                 Action::make('change_status')
                     ->label('Change Status')
+                    ->disabled(fn (EventOccurrence $record) => $record->status === EventOccurrenceStatus::FINISHED)
                     ->form([
                         Select::make('status')
                             ->label('Status')
                             ->options(EventOccurrenceStatus::class)
+                            ->live()
                             ->required(),
+                        Placeholder::make('warning')
+                            ->hidden(fn (Get $get) => $get('status') !== EventOccurrenceStatus::FINISHED)
+                            ->content(
+                                '⚠️ Warning: If you change the event status to FINISHED, voting will be disabled (if enabled) and you will not be able to change the event status again.'
+                            ),
                     ])
                     ->action(function ($record, array $data) {
                         if ($data['status'] === EventOccurrenceStatus::ACTIVE) {
@@ -70,7 +79,7 @@ class EventOccurrencesTable
                                     ->title('Error')
                                     ->body('There is already another ACTIVE event. You must change its status before activating this one.')
                                     ->danger()
-                                    ->persistent() 
+                                    ->persistent()
                                     ->send();
 
                                 return;

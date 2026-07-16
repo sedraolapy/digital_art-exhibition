@@ -36,7 +36,7 @@ class UpdateExhibitorProfileRequest extends FormRequest
             'cv_file'          => 'nullable|file|mimes:pdf,doc,docx|max:5120',
             'portfolio_url'    => 'required|url',
             'bio'              => 'required|string|max:300|min:20|regex:/^[\p{Arabic}\s.,،!?؟()\-]+$/u',
-            'image_url'        => 'nullable|image|max:2048',
+            'image'        => 'nullable|image|max:2048',
             'instagram'        => 'required|url',
             'facebook'         => 'required|url',
             'linkedin'         => 'nullable|url',
@@ -81,9 +81,9 @@ class UpdateExhibitorProfileRequest extends FormRequest
             'bio.min'                   => 'يجب ألا تقل النبذة التعريفية عن 20 حرفًا.',
             'bio.max'                   => 'يجب ألا تتجاوز النبذة التعريفية 300 حرف.',
             'bio.regex'                 => 'يجب أن تحتوي النبذة التعريفية على أحرف عربية فقط.',
-            
-            'image_url.image'           => 'يجب أن يكون الملف المرفق صورة.',
-            'image_url.max'             => 'يجب ألا يتجاوز حجم الصورة 2 ميغابايت.',
+
+            'image.image'           => 'يجب أن يكون الملف المرفق صورة.',
+            'image.max'             => 'يجب ألا يتجاوز حجم الصورة 2 ميغابايت.',
 
             'instagram.required'        => 'رابط حساب إنستغرام مطلوب.',
             'instagram.url'             => 'يرجى إدخال رابط صالح لحساب إنستغرام.',

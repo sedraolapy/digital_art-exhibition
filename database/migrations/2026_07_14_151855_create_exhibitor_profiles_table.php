@@ -21,10 +21,8 @@ return new class extends Migration
                 ->constrained('categories')
                 ->restrictOnDelete();
             $table->integer('experience_years');
-            $table->string('cv_file');
             $table->string('portfolio_url');
             $table->text('bio');
-            $table->string('image_url');
             $table->timestamps();
         });
     }

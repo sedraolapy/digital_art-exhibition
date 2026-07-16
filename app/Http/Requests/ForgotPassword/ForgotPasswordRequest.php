@@ -20,6 +20,14 @@ class ForgotPasswordRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
+
+    public function rules(): array
+    {
+        return [
+            'email' => ['required', 'email'],
+        ];
+    }
+
     public function messages(): array
     {
         return [

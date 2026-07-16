@@ -18,12 +18,15 @@ class MembersTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                ImageColumn::make('image_url')
+                ImageColumn::make('image')
                     ->label('Member Image')
                     ->circular()
                     ->height(60)
                     ->width(60)
-                    ->getStateUsing(fn ($record) => $record->image_url ? asset('storage/'.$record->image_url) : null),
+                    ->getStateUsing(fn ($record) =>
+                        $record->getMedia('members')
+                            ->map(fn ($media) => $media->getUrl('webp'))
+                        ),
                 TextColumn::make('role')
                     ->searchable(),
                 TextColumn::make('created_at')

@@ -31,7 +31,9 @@ class UpdateUserProfileRequest extends FormRequest
                 'size:9',
                 'regex:/^9[0-9]{8}$/',
             ],
-            'profile_image_url' => 'nullable|image|max:2048',
+            'instagram' => ['nullable', 'url', 'required_without:facebook'],
+            'facebook'  => ['nullable', 'url', 'required_without:instagram'],
+            'image' => 'nullable|image|max:2048',
             'remove_image' => 'nullable|boolean',
         ];
     }
@@ -54,8 +56,14 @@ class UpdateUserProfileRequest extends FormRequest
             'phone.size'               => 'يجب أن يتكون رقم الهاتف من 9 أرقام.',
             'phone.regex'              => 'يجب أن يبدأ رقم الهاتف بالرقم 9 وأن يتكون من 9 أرقام (وفقًا للصيغة السورية).',
 
-            'profile_image_url.image'  => 'يجب أن يكون الملف المرفق صورة.',
-            'profile_image_url.max'    => 'يجب ألا يتجاوز حجم الصورة 2 ميغابايت.',
+            'instagram.required_without' => 'يجب إدخال رابط إنستغرام إذا لم يتم إدخال رابط فيسبوك.',
+            'instagram.url'              => 'رابط إنستغرام يجب أن يكون رابط صحيح.',
+
+            'facebook.required_without'  => 'يجب إدخال رابط فيسبوك إذا لم يتم إدخال رابط إنستغرام.',
+            'facebook.url'               => 'رابط فيسبوك يجب أن يكون رابط صحيح.',
+
+            'image.image'  => 'يجب أن يكون الملف المرفق صورة.',
+            'image.max'    => 'يجب ألا يتجاوز حجم الصورة 2 ميغابايت.',
 
             'remove_image.boolean'     => 'قيمة إزالة الصورة غير صحيحة.',
         ];
@@ -67,7 +75,9 @@ class UpdateUserProfileRequest extends FormRequest
             'first_name'       => 'الاسم الأول',
             'last_name'        => 'اسم العائلة',
             'phone'            => 'رقم الهاتف',
-            'profile_image_url'=> 'الصورة الشخصية',
+            'instagram'        => 'حساب إنستغرام',
+            'facebook'         => 'حساب فيسبوك',
+            'image'            => 'الصورة الشخصية',
             'remove_image'     => 'إزالة الصورة',
         ];
     }

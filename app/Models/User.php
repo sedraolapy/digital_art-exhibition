@@ -78,6 +78,11 @@ class User extends Authenticatable
         return $this->hasOne(ExhibitorProfile::class);
     }
 
+    public function socialLinks()
+    {
+        return $this->morphMany(SocialLink::class, 'linkable');
+    }
+
     public function getFilamentName(): string
     {
         return trim(($this->first_name ?? '') . ' ' . ($this->last_name ?? ''));

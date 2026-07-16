@@ -27,18 +27,25 @@ class ExhibitorProfileInfolist
                     ->numeric(),
                 TextEntry::make('cv_file')
                     ->label('CV File')
-                    ->formatStateUsing(fn ($state) => '📄 Download CV')
-                    ->url(fn ($state) => asset('storage/' . $state)),
+                    ->getStateUsing(fn ($record) =>
+                        $record->getMedia('exhibitor_cv')
+                            ->map(fn($media) => '<a href="'.$media->getUrl().'" target="_blank" download>📄 Download CV</a>')
+                            ->implode('<br>')
+                    )
+                    ->html(),
                 TextEntry::make('portfolio_url')
                     ->label('Portfolio')
                     ->url(fn ($state) => $state)
                     ->openUrlInNewTab()
                     ->formatStateUsing(fn ($state) => 'Visit'),
-                ImageEntry::make('image_url')
-                    ->label('Profile Image')
-                    ->getStateUsing(fn ($record) => $record->image_url ? asset('storage/'.$record->image_url) : null)
-                    ->height(100)
-                    ->width(100),
+                ImageEntry::make('image')
+                    ->label('Image')
+                    ->getStateUsing(fn ($record) =>
+                        $record->getMedia('exhibitor_profile')
+                            ->map(fn($media) => $media->getUrl('webp'))
+                    )
+                    ->height(200)
+                    ->width(200),
                 TextEntry::make('created_at')
                     ->dateTime()
                     ->placeholder('-'),

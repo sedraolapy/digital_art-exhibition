@@ -1,13 +1,11 @@
 <?php
-
 namespace App\Services\Exhibitor;
 
 use App\Enums\Role;
 use App\Models\ExhibitorApplication;
 use App\Models\ExhibitorProfile;
 use App\Models\User;
-use Storage;
-
+use Illuminate\Support\Facades\DB;
 class ExhibitorProfileService
 {
     private function assignExhibitorRole(int $userId): void
@@ -31,65 +29,56 @@ class ExhibitorProfileService
 
     public function createFromApplication(ExhibitorApplication $application): ExhibitorProfile
     {
-        $profile = ExhibitorProfile::create([
-            'user_id'              => $application->user_id,
-            'event_occurrences_id' => $application->event_occurrences_id,
-            'category_id'          => $application->category_id,
-            'experience_years'     => $application->experience_years,
-            'cv_file'              => $this->copyApplicationFile($application->cv_file, 'exhibitors/profiles/cv'),
-            'portfolio_url'        => $application->portfolio_url,
-            'bio'                  => $application->bio,
-            'image_url'            => $this->copyApplicationFile($application->image_url, 'exhibitors/profiles/images'),
-        ]);
+        return DB::transaction(function () use ($application) {
 
-        $this->assignExhibitorRole($application->user_id);
+            $profile = ExhibitorProfile::create([
+                'user_id'               => $application->user_id,
+                'event_occurrences_id'  => $application->event_occurrences_id,
+                'category_id'           => $application->category_id,
+                'experience_years'      => $application->experience_years,
+                'portfolio_url'         => $application->portfolio_url,
+                'bio'                   => $application->bio,
+            ]);
 
-        $this->transferSocialLinks($application, $profile);
+            if ($application->hasMedia('application_cv')) {
+                $media = $application->getFirstMedia('application_cv');
 
-        return $profile;
+                if ($media) {
+                    $profile->addMedia($media->getPath())
+                        ->preservingOriginal()
+                        ->toMediaCollection('exhibitor_cv');
+                }
+            }
+
+            if ($application->hasMedia('application_image')) {
+                $media = $application->getFirstMedia('application_image');
+
+                if ($media) {
+                    $profile->addMedia($media->getPath())
+                        ->preservingOriginal()
+                        ->toMediaCollection('exhibitor_profile');
+                }
+            }
+
+            $this->assignExhibitorRole($application->user_id);
+            $this->transferSocialLinks($application, $profile);
+
+            return $profile;
+        });
     }
-
-    private function copyApplicationFile(?string $originalPath, string $targetFolder): ?string
-    {
-        if (! $originalPath || ! Storage::disk('public')->exists($originalPath)) {
-            return null;
-        }
-
-        $newPath = $targetFolder . '/' . basename($originalPath);
-        Storage::disk('public')->copy($originalPath, $newPath);
-
-        return $newPath;
-    }
-
-    private function storeCvFile(ExhibitorProfile $profile, $cvFile): string
-    {
-        if ($profile->cv_file) {
-            Storage::disk('public')->delete($profile->cv_file);
-        }
-
-        $filename = uniqid('cv_') . '.' . $cvFile->getClientOriginalExtension();
-        return $cvFile->storeAs('exhibitors/profiles/cv', $filename, 'public');
-    }
-
-    private function storeProfileImage(ExhibitorProfile $profile, $imageFile): string
-    {
-        if ($profile->image_url) {
-            Storage::disk('public')->delete($profile->image_url);
-        }
-
-        $filename = uniqid('img_') . '.' . $imageFile->getClientOriginalExtension();
-        return $imageFile->storeAs('exhibitors/profiles/images', $filename, 'public');
-    }
-
 
     public function update(ExhibitorProfile $profile, array $data): ExhibitorProfile
     {
-        if (isset($data['image_url'])) {
-            $data['image_url'] = $this->storeProfileImage($profile, $data['image_url']);
+        if (isset($data['cv_file'])) {
+            $profile->clearMediaCollection('exhibitor_cv');
+            $profile->addMedia($data['cv_file'])
+                ->toMediaCollection('exhibitor_cv');
         }
 
-        if (isset($data['cv_file'])) {
-            $data['cv_file'] = $this->storeCvFile($profile, $data['cv_file']);
+        if (isset($data['image'])) {
+            $profile->clearMediaCollection('exhibitor_profile');
+            $profile->addMedia($data['image'])
+                ->toMediaCollection('exhibitor_profile');
         }
 
         $profile->update([
@@ -97,8 +86,6 @@ class ExhibitorProfileService
             'experience_years' => $data['experience_years'],
             'portfolio_url'    => $data['portfolio_url'],
             'bio'              => $data['bio'],
-            'cv_file'          => $data['cv_file'] ?? $profile->cv_file,
-            'image_url'        => $data['image_url'] ?? $profile->image_url,
         ]);
 
         $profile->user->update([
@@ -109,7 +96,4 @@ class ExhibitorProfileService
 
         return $profile;
     }
-
-
 }
-

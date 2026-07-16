@@ -27,12 +27,15 @@ class ExhibitorApplicationsTable
                 TextColumn::make('user.name')
                     ->numeric()
                     ->sortable(),
-                ImageColumn::make('image_url')
-                    ->label('Profile Image')
+                ImageColumn::make('image')
+                    ->label('Exhibitor Image')
                     ->circular()
                     ->height(60)
                     ->width(60)
-                    ->getStateUsing(fn ($record) => $record->image_url ? asset('storage/'.$record->image_url) : null),
+                    ->getStateUsing(fn ($record) =>
+                        $record->getMedia('application_image')
+                            ->map(fn ($media) => $media->getUrl('webp'))
+                        ),
                 TextColumn::make('category.name')
                     ->numeric()
                     ->sortable(),

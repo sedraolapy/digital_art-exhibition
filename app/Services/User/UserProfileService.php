@@ -3,10 +3,18 @@
 namespace App\Services\User;
 
 use App\Models\User;
+use App\Services\Exhibitor\SocialLinkService;
 use Illuminate\Support\Facades\Storage;
 
 class UserProfileService
 {
+    private SocialLinkService $socialLinkService;
+
+    public function __construct(SocialLinkService $socialLinkService)
+    {
+        $this->socialLinkService = $socialLinkService;
+    }
+
     public function update(User $user, array $data): User
     {
         $this->handleProfileImage($user, $data);
@@ -17,13 +25,15 @@ class UserProfileService
             'phone'      => $data['phone'],
         ]);
 
+        $this->socialLinkService->updateLinks($user, $data);
+
         return $user->fresh(['profile']);
     }
 
     private function handleProfileImage(User $user, array $data): void
     {
-        if (isset($data['profile_image_url'])) {
-            $this->uploadProfileImage($user, $data['profile_image_url']);
+        if (isset($data['image'])) {
+            $this->uploadProfileImage($user, $data['image']);
         }
 
         if (!empty($data['remove_image'])) {
@@ -34,20 +44,17 @@ class UserProfileService
     // رفع صورة جديدة
     private function uploadProfileImage(User $user, $image): void
     {
-        if ($user->profile?->profile_image_url) {
-            Storage::disk('public')->delete($user->profile->profile_image_url);
-        }
+        $user->profile?->clearMediaCollection('user_profie');
 
-        $path = $image->store('profiles', 'public');
-        $user->profile()->updateOrCreate([], ['profile_image_url' => $path]);
+        $user->profile?->addMedia($image)
+            ->toMediaCollection('user_profie');
     }
 
     //  حذف الصورة الحالية
     private function removeProfileImage(User $user): void
     {
-        if ($user->profile?->profile_image_url) {
-            Storage::disk('public')->delete($user->profile->profile_image_url);
-            $user->profile()->update(['profile_image_url' => null]);
+        if ($user->profile) {
+            $user->profile->clearMediaCollection('user_profie');
         }
     }
 

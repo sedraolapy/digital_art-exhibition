@@ -30,9 +30,7 @@ class StoreExhibitorApplicationRequest extends FormRequest
             'cv_file'          => 'required|file|mimes:pdf,doc,docx|max:5120',
             'portfolio_url'    => 'required|url',
             'bio'              => 'required|string|max:300|min:20|regex:/^[\p{Arabic}\s.,،!?؟()\-]+$/u',
-            'image_url'        => ($user->profile?->profile_image_url)
-                                    ? 'nullable|image|max:2048'
-                                    : 'required|image|max:2048',
+            'image'        => 'required|image|max:2048',
             'instagram'        => 'required|url',
             'facebook'         => 'required|url',
             'linkedin'         => 'nullable|url',
@@ -64,9 +62,9 @@ class StoreExhibitorApplicationRequest extends FormRequest
             'bio.min'                   => 'يجب ألا تقل النبذة التعريفية عن 20 حرفًا.',
             'bio.regex' => 'يجب أن تحتوي النبذة التعريفية على أحرف عربية فقط.',
 
-            'image_url.required'        => 'يرجى رفع صورة شخصية.',
-            'image_url.image'           => 'يجب أن يكون الملف المرفق صورة.',
-            'image_url.max'             => 'يجب ألا يتجاوز حجم الصورة 2 ميغابايت.',
+            'image.required'        => 'يرجى رفع صورة شخصية.',
+            'image.image'           => 'يجب أن يكون الملف المرفق صورة.',
+            'image.max'             => 'يجب ألا يتجاوز حجم الصورة 2 ميغابايت.',
 
             'instagram.required'        => 'رابط حساب إنستغرام مطلوب.',
             'instagram.url'             => 'يرجى إدخال رابط صالح لحساب إنستغرام.',
@@ -88,7 +86,7 @@ class StoreExhibitorApplicationRequest extends FormRequest
             'cv_file'          => 'السيرة الذاتية',
             'portfolio_url'    => 'رابط معرض الأعمال',
             'bio'              => 'النبذة التعريفية',
-            'image_url'        => 'الصورة الشخصية',
+            'image'        => 'الصورة الشخصية',
             'instagram'        => 'حساب إنستغرام',
             'facebook'         => 'حساب فيسبوك',
             'linkedin'         => 'حساب لينكدإن',

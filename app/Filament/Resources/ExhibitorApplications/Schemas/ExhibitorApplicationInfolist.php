@@ -7,7 +7,6 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Infolists\Components\RepeatableEntry;
-
 class ExhibitorApplicationInfolist
 {
     public static function configure(Schema $schema): Schema
@@ -30,18 +29,25 @@ class ExhibitorApplicationInfolist
                     ->numeric(),
                 TextEntry::make('cv_file')
                     ->label('CV File')
-                    ->formatStateUsing(fn ($state) => '📄 Download CV')
-                    ->url(fn ($state) => asset('storage/' . $state)),
+                    ->getStateUsing(fn ($record) =>
+                        $record->getMedia('application_cv')
+                            ->map(fn($media) => '<a href="'.$media->getUrl().'" target="_blank" download>📄 Download CV</a>')
+                            ->implode('<br>')
+                    )
+                    ->html(),
                 TextEntry::make('portfolio_url')
                     ->label('Portfolio')
                     ->url(fn ($state) => $state)
                     ->openUrlInNewTab()
                     ->formatStateUsing(fn ($state) => 'Visit'),
-                ImageEntry::make('image_url')
-                    ->label('Profile Image')
-                    ->getStateUsing(fn ($record) => $record->image_url ? asset('storage/'.$record->image_url) : null)
-                    ->height(100)
-                    ->width(100),
+                ImageEntry::make('image')
+                    ->label('Image')
+                    ->getStateUsing(fn ($record) =>
+                        $record->getMedia('application_image')
+                            ->map(fn($media) => $media->getUrl('webp'))
+                    )
+                    ->height(200)
+                    ->width(200),
                 TextEntry::make('created_at')
                     ->dateTime()
                     ->placeholder('-'),
@@ -60,7 +66,7 @@ class ExhibitorApplicationInfolist
                             ->formatStateUsing(fn ($state) => 'Visit'),
                     ])
                     ->label('Social Links')
-                    ->columns(2) 
+                    ->columns(2)
                     ->columnSpanFull(),
             ]);
     }

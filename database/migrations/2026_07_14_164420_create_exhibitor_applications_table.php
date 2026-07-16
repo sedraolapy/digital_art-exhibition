@@ -22,10 +22,8 @@ return new class extends Migration
                 ->restrictOnDelete();
             $table->string('status')->default('pending');
             $table->integer('experience_years');
-            $table->string('cv_file');
             $table->string('portfolio_url');
             $table->text('bio');
-            $table->string('image_url');
             $table->timestamps();
         });
     }

@@ -9,10 +9,19 @@ class SocialLinkService
 {
     public function attachLinks(Model $model, array $data): void
     {
-        $model->socialLinks()->createMany([
-            ['platform' => 'instagram', 'url' => $data['instagram']],
-            ['platform' => 'facebook',  'url' => $data['facebook']],
-        ]);
+        if (!empty($data['instagram'])) {
+            $model->socialLinks()->create([
+                'platform' => 'instagram',
+                'url'      => $data['instagram'],
+            ]);
+        }
+
+        if (!empty($data['facebook'])) {
+            $model->socialLinks()->create([
+                'platform' => 'facebook',
+                'url'      => $data['facebook'],
+            ]);
+        }
 
         if (!empty($data['linkedin'])) {
             $model->socialLinks()->create([
@@ -27,5 +36,12 @@ class SocialLinkService
                 'url'      => $data['behance'],
             ]);
         }
+    }
+
+    public function updateLinks(Model $model, array $data): void
+    {
+        $model->socialLinks()->delete();
+
+        $this->attachLinks($model, $data);
     }
 }

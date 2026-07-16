@@ -7,6 +7,7 @@ use App\Models\EventOccurrence;
 use App\Models\User;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
@@ -57,11 +58,10 @@ class ExhibitorApplicationForm
                     ->numeric()
                     ->required(),
 
-                FileUpload::make('cv_file')
-                    ->directory('exhibitors/application/cv')
-                    ->disk('public')
-                    ->downloadable()
-                    ->openable()
+                SpatieMediaLibraryFileUpload::make('cv_file')
+                    ->collection('application_cv')
+                    ->label('CV File')
+                    ->openable()              
                     ->required(),
 
                 TextInput::make('portfolio_url')
@@ -72,11 +72,15 @@ class ExhibitorApplicationForm
                     ->columnSpanFull()
                     ->required(),
 
-                FileUpload::make('image_url')
+                SpatieMediaLibraryFileUpload::make('image')
+                    ->required()
+                    ->collection('application_image')
                     ->image()
-                    ->directory('exhibitors/application/profiles')
-                    ->disk('public')
-                    ->required(),
+                    ->maxSize(1024)
+                    ->validationMessages([
+                        'max' => 'The image size must not exceed 1 MB.',
+                    ])
+                    ->preserveFilenames(),
             ]);
     }
 }

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('role');
             $table->text('bio');
             $table->string('portfolio_url')->nullable();
-            $table->string('image_url');
             $table->timestamps();
         });
     }

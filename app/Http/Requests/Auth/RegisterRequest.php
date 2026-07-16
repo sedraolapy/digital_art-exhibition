@@ -42,6 +42,8 @@ class RegisterRequest extends FormRequest
                 'regex:/[@$!%*#?&]/',
             ],
             'terms'      => 'required|accepted',
+            'instagram' => ['nullable', 'url', 'required_without:facebook'],
+            'facebook'  => ['nullable', 'url', 'required_without:instagram'],
         ];
     }
 
@@ -65,6 +67,12 @@ class RegisterRequest extends FormRequest
             'password.min'        => 'يجب ألا تقل كلمة المرور عن 8 أحرف.',
             'password.regex'      => 'يجب أن تحتوي كلمة المرور على حرف كبير، وحرف صغير، ورقم، ورمز خاص.',
 
+            'instagram.required_without' => 'يجب إدخال رابط إنستغرام إذا لم يتم إدخال رابط فيسبوك.',
+            'instagram.url'              => 'رابط إنستغرام يجب أن يكون رابط صحيح.',
+
+            'facebook.required_without'  => 'يجب إدخال رابط فيسبوك إذا لم يتم إدخال رابط إنستغرام.',
+            'facebook.url'               => 'رابط فيسبوك يجب أن يكون رابط صحيح.',
+
             'terms.required'      => 'يجب الموافقة على الشروط والأحكام.',
             'terms.accepted'      => 'يجب قبول الشروط والأحكام للمتابعة.',
         ];
@@ -78,6 +86,8 @@ class RegisterRequest extends FormRequest
             'email'      => 'البريد الإلكتروني',
             'phone'      => 'رقم الهاتف',
             'password'   => 'كلمة المرور',
+            'instagram'        => 'حساب إنستغرام',
+            'facebook'         => 'حساب فيسبوك',
             'terms'      => 'الشروط والأحكام',
         ];
     }

@@ -24,13 +24,14 @@ class MemberInfolist
                     ->url(fn ($state) => $state)
                     ->openUrlInNewTab()
                     ->formatStateUsing(fn ($state) => 'Visit'),
-                ImageEntry::make('image_url')
-                    ->placeholder('-')
-                    ->label('Member Image')
-                    ->circular()
-                    ->height(150)
-                    ->width(150)
-                    ->getStateUsing(fn ($record) => $record->image_url ? asset('storage/'.$record->image_url) : null),
+                ImageEntry::make('image')
+                    ->label('Image')
+                    ->getStateUsing(fn ($record) =>
+                        $record->getMedia('members')
+                            ->map(fn($media) => $media->getUrl('webp'))
+                    )
+                    ->height(200)
+                    ->width(200),
                 TextEntry::make('created_at')
                     ->dateTime()
                     ->placeholder('-'),

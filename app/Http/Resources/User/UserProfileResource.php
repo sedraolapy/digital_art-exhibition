@@ -16,9 +16,7 @@ class UserProfileResource extends JsonResource
     {
         return [
             'id'                => $this->id,
-            'profile_image_url' => $this->profile_image_url
-                ? asset('storage/' . $this->profile_image_url)
-                : null,
+            'image'     => $this->getMedia('user_profie')->map(fn($media) => $media->getFullUrl('webp')),
             'user' => new UserResource($this->user),
         ];
     }

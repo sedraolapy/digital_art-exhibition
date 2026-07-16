@@ -4,16 +4,18 @@ namespace App\Models;
 
 use App\Enums\ExhibitorStatus;
 use Illuminate\Database\Eloquent\Model;
-
-class ExhibitorProfile extends Model
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+class ExhibitorProfile extends Model implements HasMedia
 {
+    use InteractsWithMedia;
+
     protected $fillable = [
         'user_id',
         'experience_years',
-        'cv_file',
         'portfolio_url',
         'bio',
-        'image_url',
         'event_occurrences_id',
         'category_id',
     ];
@@ -42,6 +44,14 @@ class ExhibitorProfile extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion('webp')
+            ->format('webp')
+            ->quality(70)
+            ->nonQueued();
     }
 
 }

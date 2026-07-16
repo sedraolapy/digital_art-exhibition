@@ -24,12 +24,15 @@ class ExhibitorProfilesTable
                 TextColumn::make('user.phone')
                     ->label('Phone')
                     ->searchable(),
-                ImageColumn::make('image_url')
-                    ->label('Profile Image')
+                ImageColumn::make('image')
+                    ->label('Exhibitor Image')
                     ->circular()
                     ->height(60)
                     ->width(60)
-                    ->getStateUsing(fn ($record) => $record->image_url ? asset('storage/'.$record->image_url) : null),
+                    ->getStateUsing(fn ($record) =>
+                        $record->getMedia('exhibitor_profile')
+                            ->map(fn ($media) => $media->getUrl('webp'))
+                        ),
                 TextColumn::make('category.name')
                     ->numeric()
                     ->sortable(),
