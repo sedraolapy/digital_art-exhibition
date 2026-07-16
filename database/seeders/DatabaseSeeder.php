@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             LocationsSeeder::class,
             CyclesSeeder::class,
             EventsOccurrencesSeeder::class,
+            ExperienceSeeder::class,
         ]);
     }
 }

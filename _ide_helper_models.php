@@ -87,6 +87,8 @@ namespace App\Models{
  * @property int $sponsor_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Cycle $cycle
+ * @property-read \App\Models\Sponsor $sponsor
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CycleSponsor newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CycleSponsor newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CycleSponsor query()
@@ -123,7 +125,7 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property int $events_occurrence_id
+ * @property int $event_occurrences_id
  * @property string $date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -135,7 +137,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay whereDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay whereEventsOccurrenceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay whereEventOccurrencesId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay whereUpdatedAt($value)
  */
@@ -179,9 +181,38 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property int $user_id
+ * @property int $event_occurrences_id
+ * @property int $category_id
+ * @property \App\Enums\ExhibitorStatus $status
+ * @property int $experience_years
+ * @property string $cv_file
+ * @property string $portfolio_url
+ * @property string $bio
+ * @property string $image_url
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Category $category
+ * @property-read \App\Models\EventOccurrence $eventOccurrence
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SocialLink> $socialLinks
+ * @property-read int|null $social_links_count
+ * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereBio($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereCvFile($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereEventOccurrencesId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereExperienceYears($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereImageUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication wherePortfolioUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereUserId($value)
  */
 	class ExhibitorApplication extends \Eloquent {}
 }
@@ -190,18 +221,17 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $user_id
- * @property int $events_occurrences_id
+ * @property int $event_occurrences_id
  * @property int $category_id
- * @property \App\Enums\ExhibitorStatus $status
- * @property int|null $experience_years
- * @property string|null $cv_url
- * @property string|null $portfolio_url
- * @property string|null $bio
- * @property string|null $image_url
+ * @property int $experience_years
+ * @property string $cv_file
+ * @property string $portfolio_url
+ * @property string $bio
+ * @property string $image_url
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Category $category
- * @property-read \App\Models\EventOccurrence|null $occurrence
+ * @property-read \App\Models\EventOccurrence $eventOccurrence
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SocialLink> $socialLinks
  * @property-read int|null $social_links_count
  * @property-read \App\Models\User $user
@@ -213,17 +243,26 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereBio($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereCvUrl($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereEventsOccurrencesId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereCvFile($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereEventOccurrencesId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereExperienceYears($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereImageUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile wherePortfolioUrl($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereUserId($value)
  */
 	class ExhibitorProfile extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property \App\Enums\ExperienceStatus $status
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Experience newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Experience newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Experience query()
+ */
+	class Experience extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -307,8 +346,8 @@ namespace App\Models{
  * @property int $id
  * @property string $name
  * @property string $role
+ * @property string $bio
  * @property string|null $image_url
- * @property bool $is_featured
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SocialLink> $socialLinks
@@ -316,10 +355,10 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Member newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Member newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Member query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Member whereBio($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Member whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Member whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Member whereImageUrl($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Member whereIsFeatured($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Member whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Member whereRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Member whereUpdatedAt($value)
@@ -330,15 +369,17 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property int $events_occurrences_id
+ * @property int $event_occurrence_id
  * @property int $sponsor_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\EventOccurrence $occurrence
+ * @property-read \App\Models\Sponsor $sponsor
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OccurrenceSponsor newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OccurrenceSponsor newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OccurrenceSponsor query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OccurrenceSponsor whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|OccurrenceSponsor whereEventsOccurrencesId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OccurrenceSponsor whereEventOccurrenceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OccurrenceSponsor whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OccurrenceSponsor whereSponsorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OccurrenceSponsor whereUpdatedAt($value)
@@ -409,6 +450,7 @@ namespace App\Models{
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\ExhibitorProfile|null $exhibitorProfile
  * @property-read string $name
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LectureAttendance> $lectureAttendance
  * @property-read int|null $lecture_attendance_count

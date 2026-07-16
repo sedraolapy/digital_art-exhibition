@@ -10,13 +10,11 @@ class Member extends Model
     protected $fillable = [
         'name',
         'role',
+        'bio',
+        'portfolio_url',
         'image_url',
-        'is_featured',
     ];
 
-    protected $casts = [
-        'is_featured' => 'boolean',
-    ];
 
     public function socialLinks()
     {

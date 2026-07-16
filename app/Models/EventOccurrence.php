@@ -9,8 +9,7 @@ class EventOccurrence extends Model
 {
 
     protected $fillable = [
-        'start_date',
-        'end_date',
+        'title',
         'cycle_id',
         'location_id',
         'start_date',

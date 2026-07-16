@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('occurrence_sponsors', function (Blueprint $table) {
+        Schema::create('experiences', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('event_occurrences_id')->constrained();
-            $table->foreignId('sponsor_id')->constrained();
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->date('start_date');
+            $table->date('end_date')->nullable();
+            $table->string('status')->default('draft');
             $table->timestamps();
         });
     }
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('occurrence_sponsers');
+        Schema::dropIfExists('experiences');
     }
 };

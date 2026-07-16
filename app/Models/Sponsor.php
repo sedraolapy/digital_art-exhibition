@@ -17,20 +17,13 @@ class Sponsor extends Model
         'type' => SponsorType::class,
     ];
 
-//  رعاة ألماسيين مرتبطين بالدورة
     public function cycles()
     {
-        return $this->belongsToMany(Cycle::class, 'cycle_sponsor')
-            ->where('type', SponsorType::DIAMOND);
+        return $this->belongsToMany(Cycle::class, 'cycle_sponsors', 'sponsor_id', 'cycle_id');
     }
 
-//  رعاة دهبي + فضي مرتبطين بالـ occurrence (المحافظة ضمن الدورة)
     public function occurrences()
     {
-        return $this->belongsToMany(EventOccurrence::class, 'occurrence_sponsor')
-            ->whereIn('type', [
-                SponsorType::GOLD,
-                SponsorType::SILVER,
-            ]);
+        return $this->belongsToMany(EventOccurrence::class, 'occurrence_sponsors', 'sponsor_id', 'event_occurrence_id');
     }
 }

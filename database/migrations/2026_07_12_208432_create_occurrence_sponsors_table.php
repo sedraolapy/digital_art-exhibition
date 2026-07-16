@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('members', function (Blueprint $table) {
+        Schema::create('occurrence_sponsors', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('role');
-            $table->text('bio');
-            $table->string('portfolio_url')->nullable();
-            $table->string('image_url');
+            $table->foreignId('event_occurrence_id')->constrained();
+            $table->foreignId('sponsor_id')->constrained();
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('members');
+        Schema::dropIfExists('occurrence_sponsers');
     }
 };

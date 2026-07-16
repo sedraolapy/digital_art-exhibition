@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('event_occurrences', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
             $table->foreignId('cycle_id')->constrained();
             $table->foreignId('location_id')->constrained();
             $table->date('start_date');

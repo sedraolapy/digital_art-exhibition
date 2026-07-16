@@ -18,6 +18,7 @@ class EventsOccurrencesSeeder extends Seeder
         $summerCycle = Cycle::where('name', 'Summer Cycle 2026')->first();
 
         EventOccurrence::firstOrCreate([
+            'title'   => 'ملتقى دمشق الاول',
             'cycle_id' => $summerCycle->id,
             'location_id' => 1,
             'start_date' => '2026-08-20',
@@ -27,6 +28,7 @@ class EventsOccurrencesSeeder extends Seeder
         ]);
 
         EventOccurrence::firstOrCreate([
+            'title'   => 'الملتقى الثاني',
             'cycle_id' => $summerCycle->id,
             'location_id' => 2,
             'start_date' => '2026-08-31',
