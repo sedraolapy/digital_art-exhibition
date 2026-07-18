@@ -16,6 +16,10 @@ class ExperienceController extends Controller
             ->with('media')
             ->get();
 
-        return ExperienceResource::collection($experiences);
+        return response()->json([
+            'message' => 'تم جلب التجارب المنشورة بنجاح',
+            'data'    => ExperienceResource::collection($experiences),
+        ]);
+
     }
 }

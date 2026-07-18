@@ -13,29 +13,27 @@ class SponsorController extends Controller
 {
     public function activeSponsors()
     {
-       // جلب الـ Occurrence الوحيدة الـ Active
-    $activeOccurrence = EventOccurrence::where('status', EventOccurrenceStatus::ACTIVE->value)
-    ->with('cycle')
-    ->firstOrFail();
+        $activeOccurrence = EventOccurrence::where('status', EventOccurrenceStatus::ACTIVE->value)
+            ->with('cycle')
+            ->firstOrFail();
 
-    // جلب الرعاة المرتبطين بالـ Occurrence الـ Active
-    $occurrenceSponsors = Sponsor::whereHas('occurrences', function ($query) use ($activeOccurrence) {
-            $query->where('event_occurrence_id', $activeOccurrence->id);
-        })
-        ->with(['cycles', 'occurrences.location', 'occurrences.cycle'])
-        ->get();
+        $occurrenceSponsors = Sponsor::whereHas('occurrences', function ($query) use ($activeOccurrence) {
+                $query->where('event_occurrence_id', $activeOccurrence->id);
+            })
+                ->with(['cycles', 'occurrences.location', 'occurrences.cycle'])
+                ->get();
 
-    // جلب الرعاة المرتبطين بالـ Cycle تبع الـ Occurrence الـ Active
-    $cycleSponsors = Sponsor::whereHas('cycles', function ($query) use ($activeOccurrence) {
-            $query->where('cycle_id', $activeOccurrence->cycle_id);
-        })
-        ->with(['cycles', 'occurrences.location', 'occurrences.cycle'])
-        ->get();
+        $cycleSponsors = Sponsor::whereHas('cycles', function ($query) use ($activeOccurrence) {
+                $query->where('cycle_id', $activeOccurrence->cycle_id);
+            })
+                ->with(['cycles', 'occurrences.location', 'occurrences.cycle'])
+                ->get();
 
         $allSponsors = $occurrenceSponsors->merge($cycleSponsors);
 
         return response()->json([
-            'sponsors' => SponsorResource::collection($allSponsors),
+            'message' => 'تم جلب بيانات الرعاة بنجاح',
+            'data' => SponsorResource::collection($allSponsors),
         ]);
     }
 }

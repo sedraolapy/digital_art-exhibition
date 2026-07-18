@@ -21,7 +21,10 @@ class UserProfileController extends Controller
     public function show()
     {
         $profile = auth()->user()->profile()->first();
-        return new UserProfileResource($profile);
+        return response()->json([
+            'message' => 'تم عرض ملف المستخدم بنجاح',
+            'data'    => new UserProfileResource($profile),
+        ]);
     }
 
 
@@ -29,7 +32,10 @@ class UserProfileController extends Controller
     {
         $data = $request->validated();
         $user = $this->profileService->update($request->user(), $data);
-        return (new UserProfileResource($user->profile))
-            ->additional(['message' => 'User profile updated successfully']);
+
+        return response()->json([
+            'message' => 'تم تحديث ملف المستخدم بنجاح',
+            'data'    => new UserProfileResource($user->profile),
+        ]);
     }
 }

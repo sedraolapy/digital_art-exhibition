@@ -22,7 +22,8 @@ class ForgotPasswordController extends Controller
         $this->service->sendResetLink($data['email']);
 
         return response()->json([
-            'message' => 'Password reset link sent successfully, check your email.',
+            'message' => 'تم إرسال رابط إعادة تعيين كلمة المرور بنجاح، يرجى التحقق من بريدك الإلكتروني',
+            'data'    => null,
         ]);
     }
 
@@ -32,7 +33,8 @@ class ForgotPasswordController extends Controller
         $this->service->resetPassword($data);
 
         return response()->json([
-            'message' => 'Password reset successfully.',
+            'message' => 'تمت إعادة تعيين كلمة المرور بنجاح',
+            'data'    => null,
         ]);
     }
 }

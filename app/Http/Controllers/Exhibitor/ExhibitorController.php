@@ -18,8 +18,8 @@ class ExhibitorController extends Controller
 
         return response()->json([
             'voting_status' => $voting,
+            'message' => 'تم جلب بيانات العارضين بنجاح',
             'data' => ExhibitorProfileResource::collection($exhibitors),
-            'message' => 'exhibitors retrieved successfully',
         ]);
     }
 }

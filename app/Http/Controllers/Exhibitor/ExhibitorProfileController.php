@@ -20,7 +20,10 @@ class ExhibitorProfileController extends Controller
     public function show()
     {
         $profile = auth()->user()->exhibitorProfile()->first();
-        return new ExhibitorProfileResource($profile);
+        return response()->json([
+            'message' => 'تم عرض ملف العارض بنجاح',
+            'data' => new ExhibitorProfileResource($profile),
+        ]);
     }
 
     public function update(UpdateExhibitorProfileRequest $request)
@@ -28,8 +31,10 @@ class ExhibitorProfileController extends Controller
         $data = $request->validated();
         $profile = $this->profileService->update(auth()->user()->exhibitorProfile, $data);
 
-        return (new ExhibitorProfileResource($profile))
-            ->additional(['message' => 'Exhibitor profile updated successfully']);
+        return response()->json([
+            'message' => 'تم تحديث ملف العارض بنجاح',
+            'data' => new ExhibitorProfileResource($profile),
+        ]);
     }
 
 }

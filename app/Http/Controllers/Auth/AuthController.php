@@ -23,11 +23,12 @@ class AuthController extends Controller
         $data= $request->validated();
         $result = $this->authService->register($data);
 
+        $result['user']->token = $result['token'];
+
         return response()->json([
-            'message' => 'User registered successfully',
-            'token'   => $result['token'],
-            'user'    => new UserResource($result['user']),
-        ], 201);
+            'message' => 'تم تسجيل المستخدم بنجاح',
+            'data'    => new UserResource($result['user']),
+        ]);
     }
 
     public function login(LoginRequest $request)
@@ -35,10 +36,11 @@ class AuthController extends Controller
         $data= $request->validated();
         $result = $this->authService->login($data);
 
+        $result['user']->token = $result['token'];
+
         return response()->json([
-            'message' => 'Login successful',
-            'token'   => $result['token'],
-            'user'    => new UserResource($result['user']),
+            'message' => 'تم تسجيل الدخول بنجاح',
+            'data'    => new UserResource($result['user']),
         ]);
     }
 
@@ -47,7 +49,8 @@ class AuthController extends Controller
         $this->authService->logout($request->user());
 
         return response()->json([
-            'message' => 'Logged out successfully',
+            'message' => 'تم تسجيل الخروج بنجاح',
+            'data'    => null,
         ]);
     }
 }

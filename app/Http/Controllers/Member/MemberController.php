@@ -14,8 +14,8 @@ class MemberController extends Controller
         $members = Member::with('socialLinks')->get();
 
         return response()->json([
+            'message' => 'تم جلب بيانات الأعضاء بنجاح',
             'data' => MemberResource::collection($members),
-            'message' => 'Members retrieved successfully',
         ]);
     }
 }

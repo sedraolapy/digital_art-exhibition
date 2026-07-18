@@ -30,8 +30,8 @@ class ExhibitorApplicationController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Your exhibitor application has been submitted successfully.',
+            'message' => 'تم تقديم طلبك كعارض بنجاح. يرجى متابعة بريدك الإلكتروني لتلقي ردنا قريباً',
             'data' => new ApplicationResource($application),
-        ], 201);
+        ]);
     }
 }
