@@ -26,7 +26,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->path('admin')
+            ->path('auth/admin/DAE')
             ->login()
             ->authGuard('admin')
             ->brandLogo(asset('images/logo.svg'))
