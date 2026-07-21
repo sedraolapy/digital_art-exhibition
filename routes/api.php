@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\CheckIn\CheckInController;
+use App\Http\Controllers\CheckIn\EventController;
 use App\Http\Controllers\Exhibitor\ExhibitorApplicationController;
 use App\Http\Controllers\Exhibitor\ExhibitorController;
 use App\Http\Controllers\Exhibitor\ExhibitorProfileController;
@@ -47,5 +49,9 @@ Route::middleware(['auth:sanctum', 'role:user|exhibitor'])->group(function () {
     Route::post('/bookings', [BookingController::class, 'store']);
     Route::delete('/bookings/{id}', [BookingController::class, 'destroy']);
     Route::post('/votes', [VoteController::class, 'store']);
+});
 
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+    Route::get('/days', [EventController::class, 'index']);
+    Route::post('/check-in', [CheckInController::class, 'store']);
 });

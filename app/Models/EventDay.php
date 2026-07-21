@@ -21,4 +21,8 @@ class EventDay extends Model
     {
         return $this->hasMany(Lecture::class);
     }
+    public function getDayNumberAttribute(): string
+    {
+        return 'Day ' . $this->attributes['day_number'];
+    }
 }
