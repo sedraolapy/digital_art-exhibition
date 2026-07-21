@@ -37,6 +37,7 @@ class AuthController extends Controller
         $result = $this->authService->login($data);
 
         $result['user']->token = $result['token'];
+        $result['user']->voted_exhibitors = $result['voted_exhibitors'];
 
         return response()->json([
             'message' => 'تم تسجيل الدخول بنجاح',

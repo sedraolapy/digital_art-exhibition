@@ -30,6 +30,7 @@ class UserResource extends JsonResource
             }),
             'role'       => $this->role,
             'qr_code'    => $this->qr_token,
+            'voted_exhibitors' => $this->when(isset($this->voted_exhibitors), $this->voted_exhibitors),
             'created_at' => $this->created_at->toDateTimeString(),
         ];
     }

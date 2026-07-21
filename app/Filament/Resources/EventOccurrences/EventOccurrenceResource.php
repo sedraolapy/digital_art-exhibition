@@ -6,6 +6,7 @@ use App\Filament\Resources\EventOccurrences\Pages\CreateEventOccurrence;
 use App\Filament\Resources\EventOccurrences\Pages\EditEventOccurrence;
 use App\Filament\Resources\EventOccurrences\Pages\ListEventOccurrences;
 use App\Filament\Resources\EventOccurrences\Pages\ViewEventOccurrence;
+use App\Filament\Resources\EventOccurrences\RelationManagers\DaysRelationManager;
 use App\Filament\Resources\EventOccurrences\Schemas\EventOccurrenceForm;
 use App\Filament\Resources\EventOccurrences\Schemas\EventOccurrenceInfolist;
 use App\Filament\Resources\EventOccurrences\Tables\EventOccurrencesTable;
@@ -42,7 +43,7 @@ class EventOccurrenceResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            DaysRelationManager::class,
         ];
     }
 

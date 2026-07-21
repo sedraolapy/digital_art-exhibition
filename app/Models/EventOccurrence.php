@@ -36,8 +36,9 @@ class EventOccurrence extends Model
 
     public function days()
     {
-        return $this->hasMany(EventDay::class);
+        return $this->hasMany(EventDay::class, 'event_occurrences_id');
     }
+
 
     public function exhibitors()
     {

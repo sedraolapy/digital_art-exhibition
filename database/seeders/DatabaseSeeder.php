@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
             CyclesSeeder::class,
             EventsOccurrencesSeeder::class,
             ExperienceSeeder::class,
+            StatisticsSeeder::class,
+            LecturesSeeder::class,
         ]);
     }
 }

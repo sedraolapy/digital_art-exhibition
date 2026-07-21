@@ -46,6 +46,11 @@ class ExhibitorProfile extends Model implements HasMedia
         return $this->belongsTo(Category::class);
     }
 
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'user_id', 'user_id');
+    }
+    
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('webp')
@@ -53,5 +58,9 @@ class ExhibitorProfile extends Model implements HasMedia
             ->quality(70)
             ->nonQueued();
     }
+
+
+
+
 
 }

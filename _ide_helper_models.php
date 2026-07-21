@@ -147,6 +147,7 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
+ * @property string $title
  * @property int $cycle_id
  * @property int $location_id
  * @property \Illuminate\Support\Carbon $start_date
@@ -174,6 +175,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventOccurrence whereLocationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventOccurrence whereStartDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventOccurrence whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventOccurrence whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventOccurrence whereUpdatedAt($value)
  */
 	class EventOccurrence extends \Eloquent {}
@@ -187,14 +189,14 @@ namespace App\Models{
  * @property int $category_id
  * @property \App\Enums\ExhibitorStatus $status
  * @property int $experience_years
- * @property string $cv_file
  * @property string $portfolio_url
  * @property string $bio
- * @property string $image_url
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Category $category
  * @property-read \App\Models\EventOccurrence $eventOccurrence
+ * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
+ * @property-read int|null $media_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SocialLink> $socialLinks
  * @property-read int|null $social_links_count
  * @property-read \App\Models\User $user
@@ -204,17 +206,15 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereBio($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereCvFile($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereEventOccurrencesId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereExperienceYears($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereImageUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication wherePortfolioUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereUserId($value)
  */
-	class ExhibitorApplication extends \Eloquent {}
+	class ExhibitorApplication extends \Eloquent implements \Spatie\MediaLibrary\HasMedia {}
 }
 
 namespace App\Models{
@@ -224,14 +224,14 @@ namespace App\Models{
  * @property int $event_occurrences_id
  * @property int $category_id
  * @property int $experience_years
- * @property string $cv_file
  * @property string $portfolio_url
  * @property string $bio
- * @property string $image_url
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Category $category
  * @property-read \App\Models\EventOccurrence $eventOccurrence
+ * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
+ * @property-read int|null $media_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SocialLink> $socialLinks
  * @property-read int|null $social_links_count
  * @property-read \App\Models\User $user
@@ -243,26 +243,41 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereBio($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereCvFile($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereEventOccurrencesId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereExperienceYears($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereImageUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile wherePortfolioUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereUserId($value)
  */
-	class ExhibitorProfile extends \Eloquent {}
+	class ExhibitorProfile extends \Eloquent implements \Spatie\MediaLibrary\HasMedia {}
 }
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property string $title
+ * @property string|null $description
+ * @property string $start_date
+ * @property string|null $end_date
  * @property \App\Enums\ExperienceStatus $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
+ * @property-read int|null $media_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Experience newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Experience newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Experience query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Experience whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Experience whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Experience whereEndDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Experience whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Experience whereStartDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Experience whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Experience whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Experience whereUpdatedAt($value)
  */
-	class Experience extends \Eloquent {}
+	class Experience extends \Eloquent implements \Spatie\MediaLibrary\HasMedia {}
 }
 
 namespace App\Models{
@@ -347,9 +362,11 @@ namespace App\Models{
  * @property string $name
  * @property string $role
  * @property string $bio
- * @property string|null $image_url
+ * @property string|null $portfolio_url
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
+ * @property-read int|null $media_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SocialLink> $socialLinks
  * @property-read int|null $social_links_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Member newModelQuery()
@@ -358,12 +375,12 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Member whereBio($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Member whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Member whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Member whereImageUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Member whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Member wherePortfolioUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Member whereRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Member whereUpdatedAt($value)
  */
-	class Member extends \Eloquent {}
+	class Member extends \Eloquent implements \Spatie\MediaLibrary\HasMedia {}
 }
 
 namespace App\Models{
@@ -439,6 +456,25 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
+ * @property string $name
+ * @property int $value
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Statistic newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Statistic newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Statistic query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Statistic whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Statistic whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Statistic whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Statistic whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Statistic whereValue($value)
+ */
+	class Statistic extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
  * @property string $first_name
  * @property string $last_name
  * @property string $email
@@ -461,6 +497,8 @@ namespace App\Models{
  * @property-read \App\Models\UserProfile|null $profile
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
  * @property-read int|null $roles_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SocialLink> $socialLinks
+ * @property-read int|null $social_links_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Vote> $votes
@@ -493,20 +531,20 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $user_id
- * @property string|null $profile_image_url
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
+ * @property-read int|null $media_count
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile whereProfileImageUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile whereUserId($value)
  */
-	class UserProfile extends \Eloquent {}
+	class UserProfile extends \Eloquent implements \Spatie\MediaLibrary\HasMedia {}
 }
 
 namespace App\Models{

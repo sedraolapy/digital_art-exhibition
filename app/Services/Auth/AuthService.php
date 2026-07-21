@@ -2,9 +2,12 @@
 
 namespace App\Services\Auth;
 
+use App\Enums\EventOccurrenceStatus;
 use App\Enums\Role;
 use App\Events\UserRegistered;
+use App\Models\EventOccurrence;
 use App\Models\User;
+use App\Models\Vote;
 use App\Services\Exhibitor\SocialLinkService;
 use DB;
 use Illuminate\Support\Facades\Hash;
@@ -68,9 +71,21 @@ class AuthService
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
+
+        $activeOccurrence = EventOccurrence::where('status', EventOccurrenceStatus::ACTIVE->value)->first();
+
+        $votedExhibitors = [];
+        if ($activeOccurrence) {
+            $votedExhibitors = Vote::where('user_id', $user->id)
+                ->where('event_occurrence_id', $activeOccurrence->id)
+                ->pluck('exhibitor_id')
+                ->toArray();
+        }
+        
         return [
             'user'  => $user,
             'token' => $token,
+            'voted_exhibitors' => $votedExhibitors,
         ];
     }
 

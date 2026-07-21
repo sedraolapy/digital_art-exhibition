@@ -19,6 +19,11 @@ class UserProfile extends Model implements HasMedia
         return $this->belongsTo(User::class);
     }
 
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'user_id', 'user_id');
+    }
+
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('webp')

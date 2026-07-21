@@ -5,9 +5,13 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Exhibitor\ExhibitorApplicationController;
 use App\Http\Controllers\Exhibitor\ExhibitorController;
 use App\Http\Controllers\Exhibitor\ExhibitorProfileController;
+use App\Http\Controllers\Exhibitor\VoteController;
 use App\Http\Controllers\Experience\ExperienceController;
+use App\Http\Controllers\Lecture\BookingController;
+use App\Http\Controllers\Lecture\LectureController;
 use App\Http\Controllers\Member\MemberController;
 use App\Http\Controllers\Sponsor\SponsorController;
+use App\Http\Controllers\Statistic\StatisticController;
 use App\Http\Controllers\User\UserProfileController;
 use App\Mail\ForgotPasswordMail;
 use App\Models\User;
@@ -24,16 +28,24 @@ Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'
 Route::get('/members', [MemberController::class, 'index']);
 Route::get('/exhibitors', [ExhibitorController::class, 'index']);
 Route::get('/experiences', [ExperienceController::class, 'index']);
+Route::get('/statistics', [StatisticController::class, 'index']);
+Route::get('/lectures', [LectureController::class, 'index']);
 Route::get('/sponsors/active', [SponsorController::class, 'activeSponsors']);
 
 Route::middleware(['auth:sanctum', 'role:user'])->group(function () {
     Route::get('/user/profile', [UserProfileController::class, 'show']);
     Route::put('/user/profile', [UserProfileController::class, 'update']);
-
     Route::post('/exhibitor-applications', [ExhibitorApplicationController::class, 'store']);
 });
 
 Route::middleware(['auth:sanctum', 'role:exhibitor'])->group(function () {
     Route::get('/exhibitor/profile', [ExhibitorProfileController::class, 'show']);
     Route::put('/exhibitor/profile', [ExhibitorProfileController::class, 'update']);
+});
+
+Route::middleware(['auth:sanctum', 'role:user|exhibitor'])->group(function () {
+    Route::post('/bookings', [BookingController::class, 'store']);
+    Route::delete('/bookings/{id}', [BookingController::class, 'destroy']);
+    Route::post('/votes', [VoteController::class, 'store']);
+
 });

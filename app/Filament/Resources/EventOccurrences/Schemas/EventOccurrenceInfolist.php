@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\EventOccurrences\Schemas;
 
 use Filament\Infolists\Components\IconEntry;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -31,6 +32,12 @@ class EventOccurrenceInfolist
                 TextEntry::make('updated_at')
                     ->dateTime()
                     ->placeholder('-'),
+                RepeatableEntry::make('days')
+                    ->schema([
+                        TextEntry::make('day_number'),
+                        TextEntry::make('date')
+                            ->date(),
+                    ]),
             ]);
     }
 }

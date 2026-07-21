@@ -8,18 +8,36 @@ use App\Http\Resources\Exhibitor\ExhibitorProfileResource;
 use App\Models\EventOccurrence;
 use App\Models\ExhibitorProfile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ExhibitorController extends Controller
 {
     public function index()
     {
-        $exhibitors = ExhibitorProfile::with('socialLinks')->get();
-        $voting= EventOccurrence::where('status', EventOccurrenceStatus::ACTIVE->value)->pluck('is_voting_enabled');
+        $userId = Auth::id();
+
+        $activeOccurrence = EventOccurrence::where('status', EventOccurrenceStatus::ACTIVE->value)->first();
+
+        $exhibitors = ExhibitorProfile::with('socialLinks')
+            ->whereHas('eventOccurrence', function ($query) {
+                $query->where('status', EventOccurrenceStatus::ACTIVE->value);
+            })
+            ->get()
+            ->map(function ($exhibitor) use ($userId, $activeOccurrence) {
+                $hasVoted = \App\Models\Vote::where('user_id', $userId)
+                    ->where('exhibitor_id', $exhibitor->id)
+                    ->where('event_occurrence_id', $activeOccurrence->id)
+                    ->exists();
+
+                $exhibitor->can_vote = !$hasVoted;
+                return $exhibitor;
+            });
 
         return response()->json([
-            'voting_status' => $voting,
-            'message' => 'تم جلب بيانات العارضين بنجاح',
-            'data' => ExhibitorProfileResource::collection($exhibitors),
+            'voting_status' => $activeOccurrence?->is_voting_enabled,
+            'message'       => 'تم جلب بيانات العارضين بنجاح',
+            'data'          => ExhibitorProfileResource::collection($exhibitors),
         ]);
     }
+
 }

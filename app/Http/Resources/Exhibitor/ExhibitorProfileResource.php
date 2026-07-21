@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Exhibitor;
 
+use App\Http\Resources\Booking\BookingResource;
+use App\Http\Resources\Lecture\LectureResource;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -30,6 +32,9 @@ class ExhibitorProfileResource extends JsonResource
                     'url'      => $link->url,
                 ];
             }),
+
+            'bookings' => BookingResource::collection($this->bookings),
+            'voted_exhibitors' => $this->when(isset($this->voted_exhibitors), $this->voted_exhibitors),
         ];
     }
 }

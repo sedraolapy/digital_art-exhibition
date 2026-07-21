@@ -5,9 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Lecture extends Model
+class Lecture extends Model implements HasMedia
 {
+    use InteractsWithMedia;
+
     protected $fillable = [
         'event_day_id',
         'title',
@@ -36,5 +41,13 @@ class Lecture extends Model
     public function bookings()
     {
         return $this->hasMany(Booking::class);
+    }
+
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion('webp')
+            ->format('webp')
+            ->quality(70)
+            ->nonQueued();
     }
 }

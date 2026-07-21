@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\User;
 
+use App\Http\Resources\Booking\BookingResource;
+use App\Http\Resources\Lecture\LectureResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -18,6 +20,9 @@ class UserProfileResource extends JsonResource
             'id'                => $this->id,
             'image'     => $this->getMedia('user_profie')->map(fn($media) => $media->getFullUrl('webp')),
             'user' => new UserResource($this->user),
+
+            'bookings'  => BookingResource::collection($this->bookings),
+            'voted_exhibitors' => $this->when(isset($this->voted_exhibitors), $this->voted_exhibitors),
         ];
     }
 }

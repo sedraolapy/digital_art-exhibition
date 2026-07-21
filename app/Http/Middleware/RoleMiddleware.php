@@ -14,13 +14,16 @@ class RoleMiddleware
      *
      * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next, string $role): Response
+    public function handle(Request $request, Closure $next, string $roles): Response
     {
         $user = $request->user();
 
-        if (! $user || $user->role !== Role::from($role)) {
+        $allowedRoles = preg_split('/[,\|]/', $roles);
+        $allowedRoles = array_map(fn($r) => Role::from(trim($r)), $allowedRoles);
+
+        if (! $user || ! in_array($user->role, $allowedRoles)) {
             return response()->json([
-                'message' => 'Unauthorized. Role required: ' . $role,
+                'message' => 'غير مصرح لك بالدخول. الدور المطلوب: ' . $roles,
             ], 403);
         }
 

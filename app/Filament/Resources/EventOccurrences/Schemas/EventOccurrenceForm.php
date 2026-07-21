@@ -5,6 +5,7 @@ namespace App\Filament\Resources\EventOccurrences\Schemas;
 use App\Models\Cycle;
 use App\Models\Location;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -37,6 +38,18 @@ class EventOccurrenceForm
                 DatePicker::make('end_date')
                     ->required()
                     ->afterOrEqual('start_date'),
+
+                Repeater::make('days')
+                    ->relationship('days')
+                    ->schema([
+                        TextInput::make('day_number')
+                            ->numeric()
+                            ->required(),
+
+                        DatePicker::make('date')
+                            ->required(),
+                    ])
+                    ->collapsible(),
             ]);
     }
 }
