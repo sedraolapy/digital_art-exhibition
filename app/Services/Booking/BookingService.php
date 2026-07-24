@@ -5,6 +5,7 @@ namespace App\Services\Booking;
 use App\Enums\BookingStatus;
 use App\Models\Booking;
 use App\Models\Lecture;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class BookingService
@@ -15,6 +16,7 @@ class BookingService
             $this->checkDuplicateBooking($userId, $lectureId);
             $this->checkMaxBookings($userId);
             $lecture = $this->lockLecture($lectureId);
+            $this->checkLectureNotEnded($lecture);
             $this->checkSeatsAvailability($lecture);
 
             $booking = Booking::create([
@@ -59,6 +61,15 @@ class BookingService
         }
     }
 
+    private function checkLectureNotEnded(Lecture $lecture): void
+    {
+        $lectureEndDateTime = Carbon::parse($lecture->end_time);
+
+        if (now()->greaterThan($lectureEndDateTime)) {
+            throw new \Exception('انتهى وقت التسجيل لهذه المحاضرة');
+        }
+    }
+
     public function cancelBooking(int $bookingId): void
     {
         $booking = Booking::where('id', $bookingId)
@@ -69,7 +80,7 @@ class BookingService
             $booking->delete();
     }
 
-    
+
     public function getUserConfirmedBookings(int $userId): array
     {
         return Booking::where('user_id', $userId)

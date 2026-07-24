@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers\Lecture;
 
-use App\Enums\EventOccurrenceStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Lecture\LectureResource;
-use App\Models\Booking;
-use App\Models\Lecture;
-use Illuminate\Http\Request;
+use App\Services\Booking\LectureService;
 
 class LectureController extends Controller
 {
+    private LectureService $lectureService;
+
+    public function __construct(LectureService $lectureService)
+    {
+        $this->lectureService = $lectureService;
+    }
+
     public function index()
     {
-        $lectures = Lecture::whereHas('day.occurrence', function ($query) {
-            $query->where('status', EventOccurrenceStatus::ACTIVE->value);
-        })->get();
-
+        $lectures = $this->lectureService->getActiveLectures();
 
         return response()->json([
-            'message' => 'تم جلب االمحاضرات بنجاح',
+            'message' => 'تم جلب المحاضرات بنجاح',
             'data' => LectureResource::collection($lectures),
         ]);
     }

@@ -36,6 +36,7 @@ class ExperienceForm
                     ->collection('experience_gallery')
                     ->multiple()
                     ->image()
+                    ->maxFiles(4)
                     ->maxSize(1024)
                     ->validationMessages([
                         'max' => 'The image size must not exceed 1 MB.',

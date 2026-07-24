@@ -19,8 +19,10 @@ class LectureForm
         return $schema
             ->components([
                 TextInput::make('title')
+                    ->rule('regex:/^[\p{Arabic}\s]+$/u')
                     ->required(),
                 Textarea::make('description')
+                    ->rule('regex:/^[\p{Arabic}\s]+$/u')
                     ->default(null)
                     ->columnSpanFull(),
                 TextInput::make('speaker_name')
@@ -38,9 +40,19 @@ class LectureForm
                         ])
                     )
                     ->searchable()
-                    ->required(),
+                    ->required()
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        $day = EventDay::find($state);
+                        if ($day) {
+                            $set('date', $day->date);
+                        }
+                    }),
                 DatePicker::make('date')
-                    ->required(),
+                    ->required()
+                    ->disabled()
+                    ->dehydrated()  
+                    ->statePath('date'),
                 TimePicker::make('start_time')
                     ->required(),
                 TimePicker::make('end_time')

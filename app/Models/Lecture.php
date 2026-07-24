@@ -19,6 +19,7 @@ class Lecture extends Model implements HasMedia
         'description',
         'speaker_name',
         'max_seats',
+        'date',
         'start_time',
         'end_time',
     ];

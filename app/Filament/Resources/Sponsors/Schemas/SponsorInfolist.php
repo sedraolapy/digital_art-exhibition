@@ -5,7 +5,7 @@ namespace App\Filament\Resources\Sponsors\Schemas;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
-
+use Filament\Infolists\Components\HtmlEntry;
 class SponsorInfolist
 {
     public static function configure(Schema $schema): Schema
@@ -13,12 +13,10 @@ class SponsorInfolist
         return $schema
             ->components([
                 TextEntry::make('name'),
-                ImageEntry::make('logo_url')
-                    ->circular()
+                ImageEntry::make('logo')
                     ->label('Logo')
-                    ->height(150)
-                    ->width(150)
-                    ->getStateUsing(fn ($record) => $record->logo_url ? asset('storage/'.$record->logo_url) : null),
+                    ->getStateUsing(fn ($record) => $record->getFirstMediaUrl('sponsors'))
+                    ->height(60),
                 TextEntry::make('type')
                     ->badge(),
                 TextEntry::make('created_at')

@@ -22,18 +22,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:3,1');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->middleware('throttle:3,1');
-Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->middleware('throttle:2,1');
+Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->middleware('throttle:2,1');;
 
 Route::get('/members', [MemberController::class, 'index']);
 Route::get('/exhibitors', [ExhibitorController::class, 'index']);
 Route::get('/experiences', [ExperienceController::class, 'index']);
 Route::get('/statistics', [StatisticController::class, 'index']);
 Route::get('/lectures', [LectureController::class, 'index']);
-Route::get('/sponsors/active', [SponsorController::class, 'activeSponsors']);
+Route::get('/sponsors', [SponsorController::class, 'index']);
+Route::get('/categories', [SponsorController::class, 'getCategoris']);
 
 Route::middleware(['auth:sanctum', 'role:user'])->group(function () {
     Route::get('/user/profile', [UserProfileController::class, 'show']);

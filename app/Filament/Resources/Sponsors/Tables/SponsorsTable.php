@@ -18,12 +18,10 @@ class SponsorsTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                ImageColumn::make('logo_url')
+                ImageColumn::make('logo')
                     ->label('Logo')
-                    ->circular()
-                    ->height(90)
-                    ->width(90)
-                    ->getStateUsing(fn ($record) => $record->logo_url ? asset('storage/'.$record->logo_url) : null),
+                    ->getStateUsing(fn ($record) => $record->getFirstMediaUrl('sponsors'))
+                    ->height(50),
                 TextColumn::make('type')
                     ->badge()
                     ->searchable(),

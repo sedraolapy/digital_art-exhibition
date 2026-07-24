@@ -18,7 +18,7 @@ class SponsorResource extends JsonResource
             'id'    => $this->id,
             'name'  => $this->name,
             'type'  => $this->type->value,
-            'logo'  => $this->logo_url ? asset('storage/'.$this->logo_url) : null,
+            'logo'  => $this->getMedia('sponsors')->map(fn($media) => $media->getFullUrl()),
         ];
     }
 }

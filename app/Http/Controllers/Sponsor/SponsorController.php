@@ -5,35 +5,38 @@ namespace App\Http\Controllers\Sponsor;
 use App\Enums\EventOccurrenceStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Sponsor\SponsorResource;
+use App\Models\Category;
 use App\Models\EventOccurrence;
 use App\Models\Sponsor;
+use App\Services\Sponsor\SponsorService;
 use Illuminate\Http\Request;
 
 class SponsorController extends Controller
 {
-    public function activeSponsors()
+    private SponsorService $sponsorService;
+
+    public function __construct(SponsorService $sponsorService)
     {
-        $activeOccurrence = EventOccurrence::where('status', EventOccurrenceStatus::ACTIVE->value)
-            ->with('cycle')
-            ->firstOrFail();
+        $this->sponsorService = $sponsorService;
+    }
 
-        $occurrenceSponsors = Sponsor::whereHas('occurrences', function ($query) use ($activeOccurrence) {
-                $query->where('event_occurrence_id', $activeOccurrence->id);
-            })
-                ->with(['cycles', 'occurrences.location', 'occurrences.cycle'])
-                ->get();
-
-        $cycleSponsors = Sponsor::whereHas('cycles', function ($query) use ($activeOccurrence) {
-                $query->where('cycle_id', $activeOccurrence->cycle_id);
-            })
-                ->with(['cycles', 'occurrences.location', 'occurrences.cycle'])
-                ->get();
-
-        $allSponsors = $occurrenceSponsors->merge($cycleSponsors);
+    public function index()
+    {
+        $sponsors = $this->sponsorService->getSponsorsForActiveOccurrence();
 
         return response()->json([
             'message' => 'تم جلب بيانات الرعاة بنجاح',
-            'data' => SponsorResource::collection($allSponsors),
+            'data'    => SponsorResource::collection($sponsors),
+        ]);
+    }
+
+    public function getCategoris()
+    {
+        $categories= Category::where('is_active', true)->get();
+
+        return response()->json([
+            'message' => 'تم جلب التصنيفات بنجاح',
+            'data'    => $categories,
         ]);
     }
 }

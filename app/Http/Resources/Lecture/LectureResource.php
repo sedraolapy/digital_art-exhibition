@@ -8,11 +8,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class LectureResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
         $bookingsCount = Booking::where('lecture_id', $this->id)->count();
@@ -21,7 +16,7 @@ class LectureResource extends JsonResource
         return [
             'id'          => $this->id,
             'title'       => $this->title,
-            'image'     => $this->getMedia('lectures')->map(fn($media) => $media->getFullUrl('webp')),
+            'image'       => $this->getMedia('lectures')->map(fn($media) => $media->getFullUrl('webp')),
             'description' => $this->description,
             'speaker'     => $this->speaker_name,
             'max_seats'   => $this->max_seats,
@@ -29,6 +24,9 @@ class LectureResource extends JsonResource
             'date'        => $this->date,
             'start_time'  => $this->start_time,
             'end_time'    => $this->end_time,
+
+            'hasEnded'    => now()->greaterThan($this->end_time),
+
             'event_day'   => [
                 'day_number' => $this->day?->day_number,
                 'date'       => $this->day?->date,

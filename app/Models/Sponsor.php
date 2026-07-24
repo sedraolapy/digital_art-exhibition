@@ -4,12 +4,15 @@ namespace App\Models;
 
 use App\Enums\SponsorType;
 use Illuminate\Database\Eloquent\Model;
-
-class Sponsor extends Model
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+class Sponsor extends Model implements HasMedia
 {
+    use InteractsWithMedia;
+
     protected $fillable = [
         'name',
-        'logo_url',
         'type',
     ];
 
@@ -26,4 +29,5 @@ class Sponsor extends Model
     {
         return $this->belongsToMany(EventOccurrence::class, 'occurrence_sponsors', 'sponsor_id', 'event_occurrence_id');
     }
+
 }
