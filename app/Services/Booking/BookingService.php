@@ -85,7 +85,7 @@ class BookingService
     {
         return Booking::where('user_id', $userId)
             ->where('status', BookingStatus::CONFIRMED->value)
-            ->pluck('lecture_id')
+            ->get(['id', 'lecture_id'])
             ->toArray();
     }
 }
