@@ -68,4 +68,13 @@ class BookingService
             $booking->save();
             $booking->delete();
     }
+
+    
+    public function getUserConfirmedBookings(int $userId): array
+    {
+        return Booking::where('user_id', $userId)
+            ->where('status', BookingStatus::CONFIRMED->value)
+            ->pluck('lecture_id')
+            ->toArray();
+    }
 }

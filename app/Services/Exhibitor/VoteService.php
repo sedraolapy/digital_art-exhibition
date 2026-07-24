@@ -46,4 +46,18 @@ class VoteService
             'data'    => $vote,
         ];
     }
+
+    public function getUserVotesForActiveOccurrence(int $userId): array
+    {
+        $activeOccurrence = EventOccurrence::where('status', EventOccurrenceStatus::ACTIVE->value)->first();
+
+        if (! $activeOccurrence) {
+            return [];
+        }
+
+        return Vote::where('user_id', $userId)
+            ->where('event_occurrence_id', $activeOccurrence->id)
+            ->pluck('exhibitor_id')
+            ->toArray();
+    }
 }

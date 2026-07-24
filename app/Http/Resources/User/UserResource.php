@@ -27,10 +27,12 @@ class UserResource extends JsonResource
                     'platform' => $link->platform,
                     'url'      => $link->url,
                 ];
-            }),
+            })??null,
             'role'       => $this->role,
             'qr_code'    => $this->qr_token,
-            'voted_exhibitors' => $this->when(isset($this->voted_exhibitors), $this->voted_exhibitors),
+            'voted_exhibitors' => $this->voted_exhibitors ?? [],
+            'bookings'         => $this->bookings ?? [],
+            'exhibitor_application_status' => $this->exhibitor_application_status,
             'created_at' => $this->created_at->toDateTimeString(),
         ];
     }

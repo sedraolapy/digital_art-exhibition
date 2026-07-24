@@ -14,6 +14,7 @@ use App\Http\Controllers\Lecture\LectureController;
 use App\Http\Controllers\Member\MemberController;
 use App\Http\Controllers\Sponsor\SponsorController;
 use App\Http\Controllers\Statistic\StatisticController;
+use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\UserProfileController;
 use App\Mail\ForgotPasswordMail;
 use App\Models\User;
@@ -49,6 +50,7 @@ Route::middleware(['auth:sanctum', 'role:user|exhibitor'])->group(function () {
     Route::post('/bookings', [BookingController::class, 'store']);
     Route::delete('/bookings/{id}', [BookingController::class, 'destroy']);
     Route::post('/votes', [VoteController::class, 'store']);
+    Route::get('/user', [UserController::class, 'user']);
 });
 
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {

@@ -18,7 +18,6 @@ class ExhibitorProfileResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'               => $this->id,
             'user'             => new UserResource($this->user),
             'category'         => $this->category?->name,
             'bio'              => $this->bio,
@@ -32,9 +31,6 @@ class ExhibitorProfileResource extends JsonResource
                     'url'      => $link->url,
                 ];
             }),
-
-            'bookings' => BookingResource::collection($this->bookings),
-            'voted_exhibitors' => $this->when(isset($this->voted_exhibitors), $this->voted_exhibitors),
         ];
     }
 }

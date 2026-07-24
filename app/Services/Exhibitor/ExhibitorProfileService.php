@@ -5,9 +5,19 @@ use App\Enums\Role;
 use App\Models\ExhibitorApplication;
 use App\Models\ExhibitorProfile;
 use App\Models\User;
+use App\Services\Booking\BookingService;
 use Illuminate\Support\Facades\DB;
 class ExhibitorProfileService
 {
+    private VoteService $voteService;
+    private BookingService $bookingService;
+
+    public function __construct(VoteService $voteService, BookingService $bookingService)
+    {
+        $this->voteService = $voteService;
+        $this->bookingService = $bookingService;
+    }
+
     private function assignExhibitorRole(int $userId): void
     {
         User::where('id', $userId)->update([
@@ -67,6 +77,23 @@ class ExhibitorProfileService
         });
     }
 
+
+    public function getExhibitorProfileData(User $user)
+    {
+        $profile = $user->exhibitorProfile()->first();
+
+        $votedExhibitors = $this->voteService->getUserVotesForActiveOccurrence($user->id);
+        $bookings = $this->bookingService->getUserConfirmedBookings($user->id);
+
+        $user->voted_exhibitors = $votedExhibitors;
+        $user->bookings = $bookings;
+        $user->exhibitor_application_status = ExhibitorApplication::where('user_id', $user->id)->value('status');
+
+        $profile->user = $user;
+        return $profile;
+    }
+
+
     public function update(ExhibitorProfile $profile, array $data): ExhibitorProfile
     {
         if (isset($data['cv_file'])) {
@@ -93,6 +120,17 @@ class ExhibitorProfileService
             'last_name'  => $data['last_name'],
             'phone'      => $data['phone'],
         ]);
+
+        $user = $profile->user;
+
+        $votedExhibitors = $this->voteService->getUserVotesForActiveOccurrence($user->id);
+        $bookings = $this->bookingService->getUserConfirmedBookings($user->id);
+
+        $user->voted_exhibitors = $votedExhibitors;
+        $user->bookings = $bookings;
+        $user->exhibitor_application_status = ExhibitorApplication::where('user_id', $user->id)->value('status');
+
+        $profile->user = $user;
 
         return $profile;
     }

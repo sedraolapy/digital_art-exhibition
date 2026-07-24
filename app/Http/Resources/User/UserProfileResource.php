@@ -17,12 +17,8 @@ class UserProfileResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'                => $this->id,
             'image'     => $this->getMedia('user_profie')->map(fn($media) => $media->getFullUrl('webp')),
             'user' => new UserResource($this->user),
-
-            'bookings'  => BookingResource::collection($this->bookings),
-            'voted_exhibitors' => $this->when(isset($this->voted_exhibitors), $this->voted_exhibitors),
         ];
     }
 }

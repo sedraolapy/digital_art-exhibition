@@ -2,20 +2,43 @@
 
 namespace App\Services\User;
 
+use App\Models\ExhibitorApplication;
 use App\Models\User;
+use App\Services\Booking\BookingService;
 use App\Services\Exhibitor\SocialLinkService;
+use App\Services\Exhibitor\VoteService;
 use Illuminate\Support\Facades\Storage;
 
 class UserProfileService
 {
     private SocialLinkService $socialLinkService;
+    private VoteService $voteService;
+    private BookingService $bookingService;
 
-    public function __construct(SocialLinkService $socialLinkService)
+    public function __construct(SocialLinkService $socialLinkService, VoteService $voteService, BookingService $bookingService)
     {
         $this->socialLinkService = $socialLinkService;
+        $this->voteService = $voteService;
+        $this->bookingService = $bookingService;
     }
 
-    public function update(User $user, array $data): User
+    public function getProfileData(User $user)
+    {
+        $profile = $user->profile()->first();
+
+        $votedExhibitors = $this->voteService->getUserVotesForActiveOccurrence($user->id);
+        $bookings = $this->bookingService->getUserConfirmedBookings($user->id);
+
+        $user->voted_exhibitors = $votedExhibitors;
+        $user->bookings = $bookings;
+        $user->exhibitor_application_status = ExhibitorApplication::where('user_id', $user->id)->value('status');
+
+        $profile->user = $user;
+
+        return $profile;
+    }
+
+    public function update(User $user, array $data)
     {
         $this->handleProfileImage($user, $data);
 
@@ -27,8 +50,19 @@ class UserProfileService
 
         $this->socialLinkService->updateLinks($user, $data);
 
-        return $user->fresh(['profile']);
+        $votedExhibitors = $this->voteService->getUserVotesForActiveOccurrence($user->id);
+        $bookings = $this->bookingService->getUserConfirmedBookings($user->id);
+
+        $user->voted_exhibitors = $votedExhibitors;
+        $user->bookings = $bookings;
+        $user->exhibitor_application_status = ExhibitorApplication::where('user_id', $user->id)->value('status');
+
+        $profile = $user->fresh(['profile'])->profile;
+        $profile->user = $user;
+
+        return $profile;
     }
+
 
     private function handleProfileImage(User $user, array $data): void
     {

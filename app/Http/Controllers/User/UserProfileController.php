@@ -9,6 +9,8 @@ use App\Http\Resources\User\UserProfileResource;
 use App\Http\Resources\UserResource;
 use App\Models\EventOccurrence;
 use App\Models\Vote;
+use App\Services\Booking\BookingService;
+use App\Services\Exhibitor\VoteService;
 use App\Services\User\UserProfileService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,19 +26,9 @@ class UserProfileController extends Controller
 
     public function show()
     {
-        $profile = Auth::user()->profile()->with('bookings.lecture')->first();
+        $user = Auth::user();
 
-        $activeOccurrence = EventOccurrence::where('status', EventOccurrenceStatus::ACTIVE->value)->first();
-
-        $votedExhibitors = [];
-        if ($activeOccurrence) {
-            $votedExhibitors = Vote::where('user_id', Auth::id())
-                ->where('event_occurrence_id', $activeOccurrence->id)
-                ->pluck('exhibitor_id')
-                ->toArray();
-        }
-        
-        $profile->voted_exhibitors = $votedExhibitors;
+        $profile = $this->profileService->getProfileData($user);
 
         return response()->json([
             'message' => 'تم عرض ملف المستخدم بنجاح',
@@ -45,15 +37,17 @@ class UserProfileController extends Controller
     }
 
 
-
     public function update(UpdateUserProfileRequest $request)
     {
         $data = $request->validated();
-        $user = $this->profileService->update($request->user(), $data);
+        $user =$request->user();
+
+        $profile = $this->profileService->update($user, $data);
 
         return response()->json([
             'message' => 'تم تحديث ملف المستخدم بنجاح',
-            'data'    => new UserProfileResource($user->profile),
+            'data'    => new UserProfileResource($profile),
         ]);
     }
+
 }
