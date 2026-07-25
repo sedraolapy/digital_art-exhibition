@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -41,6 +42,13 @@ class Lecture extends Model implements HasMedia
     public function getDateAttribute()
     {
         return $this->day->date;
+    }
+
+    public function getHasEndedAttribute()
+    {
+        $endDateTime = Carbon::parse($this->date . ' ' . $this->end_time);
+
+        return now()->greaterThan($endDateTime);
     }
 
 

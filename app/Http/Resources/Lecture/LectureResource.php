@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Lecture;
 
 use App\Models\Booking;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -25,7 +26,7 @@ class LectureResource extends JsonResource
             'start_time'  => $this->start_time,
             'end_time'    => $this->end_time,
 
-            'hasEnded'    => now()->greaterThan($this->end_time),
+            'hasEnded' => $this->hasEnded,
 
             'event_day'   => [
                 'day_number' => $this->day?->day_number,
