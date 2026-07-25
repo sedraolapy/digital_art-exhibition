@@ -20,7 +20,6 @@ return new class extends Migration
             $table->foreignId('event_day_id')
                 ->constrained('event_days')
                 ->onDelete('cascade');
-            $table->date('date');
             $table->time('start_time');
             $table->time('end_time');
             $table->timestamps();

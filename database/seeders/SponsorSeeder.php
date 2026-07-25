@@ -19,19 +19,16 @@ class SponsorSeeder extends Seeder
     {
         $diamond = Sponsor::create([
             'name' => 'Diamond Sponsor',
-            'logo_url' => 'diamond.png',
             'type' => SponsorType::DIAMOND->value,
         ]);
 
         $gold = Sponsor::create([
             'name' => 'Gold Sponsor',
-            'logo_url' => 'gold.png',
             'type' => SponsorType::GOLD->value,
         ]);
 
         $silver = Sponsor::create([
             'name' => 'Silver Sponsor',
-            'logo_url' => 'silver.png',
             'type' => SponsorType::SILVER->value,
         ]);
 

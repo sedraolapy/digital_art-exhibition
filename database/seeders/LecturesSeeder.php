@@ -24,7 +24,6 @@ class LecturesSeeder extends Seeder
                 'speaker_name' => 'د. أحمد العلي',
                 'max_seats' => 100,
                 'event_day_id' => $eventDay1->id,
-                'date' => $eventDay1->date,
                 'start_time' => '10:00',
                 'end_time' => '12:00',
             ]);
@@ -37,7 +36,6 @@ class LecturesSeeder extends Seeder
                 'speaker_name' => 'م. ليلى يوسف',
                 'max_seats' => 80,
                 'event_day_id' => $eventDay2->id,
-                'date' => $eventDay2->date,
                 'start_time' => '14:00',
                 'end_time' => '16:00',
             ]);

@@ -63,12 +63,20 @@ class BookingService
 
     private function checkLectureNotEnded(Lecture $lecture): void
     {
-        $lectureEndDateTime = Carbon::parse($lecture->end_time);
+        $lectureDate = Carbon::parse($lecture->date)->startOfDay();
 
-        if (now()->greaterThan($lectureEndDateTime)) {
-            throw new \Exception('انتهى وقت التسجيل لهذه المحاضرة');
+        $lectureEndDateTime = Carbon::parse($lecture->date . ' ' . $lecture->end_time);
+        if (now()->startOfDay()->greaterThan($lectureDate)) {
+            throw new \Exception('انتهى وقت التسجيل لهذه المحاضرة (انتهى تاريخ المحاضرة)');
+        }
+
+        if (now()->isSameDay($lectureDate)) {
+            if (now()->greaterThan($lectureEndDateTime)) {
+                throw new \Exception('انتهى وقت التسجيل لهذه المحاضرة (انتهى وقت النهاية)');
+            }
         }
     }
+
 
     public function cancelBooking(int $bookingId): void
     {

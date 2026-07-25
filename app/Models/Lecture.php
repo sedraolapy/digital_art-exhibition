@@ -19,14 +19,8 @@ class Lecture extends Model implements HasMedia
         'description',
         'speaker_name',
         'max_seats',
-        'date',
         'start_time',
         'end_time',
-    ];
-
-    protected $casts = [
-        'start_time' => 'datetime:H:i',
-        'end_time'   => 'datetime:H:i',
     ];
 
     public function day()
@@ -43,6 +37,12 @@ class Lecture extends Model implements HasMedia
     {
         return $this->hasMany(Booking::class);
     }
+
+    public function getDateAttribute()
+    {
+        return $this->day->date;
+    }
+
 
     public function registerMediaConversions(Media $media = null): void
     {

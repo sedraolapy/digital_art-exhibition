@@ -25,4 +25,6 @@ class EventDay extends Model
     {
         return 'Day ' . $this->attributes['day_number'];
     }
+
+
 }

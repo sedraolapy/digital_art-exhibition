@@ -48,11 +48,6 @@ class LectureForm
                             $set('date', $day->date);
                         }
                     }),
-                DatePicker::make('date')
-                    ->required()
-                    ->disabled()
-                    ->dehydrated()  
-                    ->statePath('date'),
                 TimePicker::make('start_time')
                     ->required(),
                 TimePicker::make('end_time')
