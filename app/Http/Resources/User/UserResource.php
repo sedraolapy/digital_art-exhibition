@@ -18,6 +18,7 @@ class UserResource extends JsonResource
         return [
             'id'         => $this->id,
             'token'      => $this->when(isset($this->token), $this->token),
+            'image'     =>  $this->profile->getMedia('user_profie')->map(fn($media) => $media->getFullUrl('webp')),
             'first_name' => $this->first_name,
             'last_name'  => $this->last_name,
             'email'      => $this->email,
