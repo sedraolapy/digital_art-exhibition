@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Resources\User\UserProfileResource;
 use App\Http\Resources\User\UserResource;
 use App\Models\ExhibitorApplication;
 use App\Services\Auth\AuthService;
@@ -28,7 +29,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'تم تسجيل المستخدم بنجاح',
-            'data'    => new UserResource($user),
+            'data'    => new UserProfileResource($user->profile),
         ]);
     }
 
@@ -41,7 +42,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'تم تسجيل الدخول بنجاح',
-            'data'    => new UserResource($user),
+            'data'    => new UserProfileResource($user->profile),
         ]);
     }
 

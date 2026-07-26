@@ -32,10 +32,6 @@ class ApplicationResource extends JsonResource
             'status'           => $this->status,
             'created_at'       => $this->created_at->toDateTimeString(),
 
-            'social_links'     => $this->socialLinks->map(fn ($link) => [
-                'platform' => $link->platform,
-                'url'      => $link->url,
-            ]),
         ];
     }
 }

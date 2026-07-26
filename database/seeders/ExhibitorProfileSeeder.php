@@ -28,19 +28,19 @@ class ExhibitorProfileSeeder extends Seeder
                 'bio'                 => 'مطور خلفية بخبرة 5 سنوات في Laravel و Filament.',
             ]);
 
-            $profile1->socialLinks()->create([
+            $profile1->user->socialLinks()->create([
                 'platform' => 'Facebook',
                 'url'      => 'https://linkedin.com/in/sedra',
             ]);
-            $profile1->socialLinks()->create([
+            $profile1->user->socialLinks()->create([
                 'platform' => 'Instagram',
                 'url'      => 'https://github.com/sedra',
             ]);
-            $profile1->socialLinks()->create([
+            $profile1->user->socialLinks()->create([
                 'platform' => 'Behance',
                 'url'      => 'https://github.com/sedra',
             ]);
-            $profile1->socialLinks()->create([
+            $profile1->user->socialLinks()->create([
                 'platform' => 'LinkedIn',
                 'url'      => 'https://github.com/sedra',
             ]);
@@ -61,19 +61,19 @@ class ExhibitorProfileSeeder extends Seeder
                 'bio'                 => 'مصمم واجهات وتجارب مستخدم.',
             ]);
 
-            $profile2->socialLinks()->create([
+            $profile2->user->socialLinks()->create([
                 'platform' => 'linkedIn',
                 'url'      => 'https://behance.net/user2',
             ]);
-            $profile2->socialLinks()->create([
+            $profile2->user->socialLinks()->create([
                 'platform' => 'Instagram',
                 'url'      => 'https://dribbble.com/user2',
             ]);
-            $profile2->socialLinks()->create([
+            $profile2->user->socialLinks()->create([
                 'platform' => 'Facebook',
                 'url'      => 'https://dribbble.com/user2',
             ]);
-            $profile2->socialLinks()->create([
+            $profile2->user->socialLinks()->create([
                 'platform' => 'Behance',
                 'url'      => 'https://dribbble.com/user2',
             ]);

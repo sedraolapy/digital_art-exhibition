@@ -42,12 +42,14 @@ class SponsorForm
 
                 Select::make('cycle_id')
                     ->label('Cycle')
+                    ->required()
                     ->options(Cycle::pluck('name', 'id'))
                     ->visible(fn ($get) => $get('type') === SponsorType::DIAMOND->value)
                     ->reactive(),
 
                 Select::make('event_occurrence_id')
                     ->label('Occurrence')
+                    ->required()
                     ->options(
                         EventOccurrence::where('status', EventOccurrenceStatus::ACTIVE->value)->with('location')
                             ->get()

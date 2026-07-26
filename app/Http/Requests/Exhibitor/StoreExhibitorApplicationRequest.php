@@ -29,7 +29,7 @@ class StoreExhibitorApplicationRequest extends FormRequest
             'experience_years' => 'required|integer|min:0',
             'cv_file'          => 'required|file|mimes:pdf,doc,docx|max:5120',
             'portfolio_url'    => 'required|url',
-            'bio'              => 'required|string|max:300|min:20|regex:/^[\p{Arabic}\s.,،!?؟()\-]+$/u',
+            'bio' => 'required|string|max:300|min:20|regex:/^[\p{Arabic}0-9٠-٩\s.,،!?؟()\-]+$/u',
             'image'        => 'required|image|max:2048',
             'instagram'        => 'required|url',
             'facebook'         => 'required|url',

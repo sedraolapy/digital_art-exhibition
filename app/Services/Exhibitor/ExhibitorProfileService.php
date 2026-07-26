@@ -11,11 +11,13 @@ class ExhibitorProfileService
 {
     private VoteService $voteService;
     private BookingService $bookingService;
+    private SocialLinkService $socialLinkService;
 
-    public function __construct(VoteService $voteService, BookingService $bookingService)
+    public function __construct(VoteService $voteService, BookingService $bookingService, SocialLinkService $socialLinkService)
     {
         $this->voteService = $voteService;
         $this->bookingService = $bookingService;
+        $this->socialLinkService = $socialLinkService;
     }
 
     private function assignExhibitorRole(int $userId): void
@@ -25,20 +27,21 @@ class ExhibitorProfileService
         ]);
     }
 
-    private function transferSocialLinks(ExhibitorApplication $application, ExhibitorProfile $profile): void
-    {
-        if ($application->socialLinks()->exists()) {
-            $socialLinks = $application->socialLinks->map(fn($link) => [
-                'platform' => $link->platform,
-                'url'      => $link->url,
-            ])->toArray();
+    // private function transferSocialLinks(ExhibitorApplication $application, ExhibitorProfile $profile): void
+    // {
+    //     if ($application->socialLinks()->exists()) {
+    //         $socialLinks = $application->socialLinks->map(fn($link) => [
+    //             'platform' => $link->platform,
+    //             'url'      => $link->url,
+    //         ])->toArray();
 
-            $profile->socialLinks()->createMany($socialLinks);
-        }
-    }
+    //         $profile->socialLinks()->createMany($socialLinks);
+    //     }
+    // }
 
     public function createFromApplication(ExhibitorApplication $application): ExhibitorProfile
     {
+        $application->load('socialLinks');
         return DB::transaction(function () use ($application) {
 
             $profile = ExhibitorProfile::create([
@@ -71,7 +74,19 @@ class ExhibitorProfileService
             }
 
             $this->assignExhibitorRole($application->user_id);
-            $this->transferSocialLinks($application, $profile);
+            $user = $profile->user->load('socialLinks');
+            $oldLinks = $application->socialLinks;
+
+            $data = [
+                'instagram' => $oldLinks->where('platform', 'instagram')->first()?->url,
+                'facebook'  => $oldLinks->where('platform', 'facebook')->first()?->url,
+                'linkedin'  => $oldLinks->where('platform', 'linkedin')->first()?->url,
+                'behance'   => $oldLinks->where('platform', 'behance')->first()?->url,
+            ];
+
+            $this->socialLinkService->updateLinks($profile->user, $data);
+
+
 
             return $profile;
         });

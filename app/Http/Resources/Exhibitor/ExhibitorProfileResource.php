@@ -25,12 +25,6 @@ class ExhibitorProfileResource extends JsonResource
             'cv_file'          =>$this->getMedia('exhibitor_cv')->map(fn($media) => $media->getFullUrl()),
             'portfolio_url'    => $this->portfolio_url,
             'image'            => $this->getMedia('exhibitor_profile')->map(fn($media) => $media->getFullUrl('webp')),
-            'social_links'     => $this->socialLinks->map(function ($link) {
-                return [
-                    'platform' => $link->platform,
-                    'url'      => $link->url,
-                ];
-            }),
         ];
     }
 }

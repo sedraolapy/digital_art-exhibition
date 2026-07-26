@@ -25,12 +25,7 @@ class ExhibitorProfile extends Model implements HasMedia
     {
         return $this->belongsTo(User::class);
     }
-
-    public function socialLinks()
-    {
-        return $this->morphMany(SocialLink::class, 'linkable');
-    }
-
+    
     public function votes()
     {
         return $this->hasMany(Vote::class, 'exhibitor_id');
@@ -50,7 +45,7 @@ class ExhibitorProfile extends Model implements HasMedia
     {
         return $this->hasMany(Booking::class, 'user_id', 'user_id');
     }
-    
+
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('webp')
