@@ -23,7 +23,7 @@ class StatisticsTable
                     ->numeric()
                     ->sortable()
                     ->badge()
-                    ->color('secondary')
+                    ->color('primary')
                     ->summarize(
                         Sum::make()
                     ),

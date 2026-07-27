@@ -28,7 +28,14 @@ class ExperiencesTable
                     ->sortable(),
                 TextColumn::make('status')
                     ->badge()
-                    ->searchable(),
+                    ->searchable()
+                    ->color(fn ($state) => match ($state) {
+                        ExperienceStatus::DRAFT->value => 'warning',
+                        ExperienceStatus::PUBLISHED->value => 'success',
+                        ExperienceStatus::ARCHIVED->value => 'danger',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn ($state) => ucfirst($state->value)),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

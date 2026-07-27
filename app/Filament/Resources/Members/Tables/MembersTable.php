@@ -2,12 +2,16 @@
 
 namespace App\Filament\Resources\Members\Tables;
 
+use App\Models\Member;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class MembersTable
@@ -29,6 +33,14 @@ class MembersTable
                         ),
                 TextColumn::make('role')
                     ->searchable(),
+                TextColumn::make('portfolio_url')
+                    ->label('Portfolio')
+                    ->searchable()
+                    ->url(fn ($record) => $record->portfolio_url)
+                    ->openUrlInNewTab()
+                    ->formatStateUsing(fn () => 'View Portfolio')
+                    ->color('primary')
+                    ->icon('heroicon-o-link'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -39,7 +51,7 @@ class MembersTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                
             ])
             ->recordActions([
                 ViewAction::make()->modal(),

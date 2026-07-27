@@ -21,11 +21,11 @@ class MemberSeeder extends Seeder
         ]);
 
         $member1->socialLinks()->create([
-            'platform' => 'LinkedIn',
+            'platform' => 'linkedin',
             'url'      => 'https://linkedin.com/in/sedra',
         ]);
         $member1->socialLinks()->create([
-            'platform' => 'Insatgram',
+            'platform' => 'insatgram',
             'url'      => 'https://github.com/sedra',
         ]);
 
@@ -38,11 +38,11 @@ class MemberSeeder extends Seeder
         ]);
 
         $member2->socialLinks()->create([
-            'platform' => 'Facebook',
+            'platform' => 'facebook',
             'url'      => 'https://behance.net/rewa',
         ]);
         $member2->socialLinks()->create([
-            'platform' => 'LinkedIn',
+            'platform' => 'linkedin',
             'url'      => 'https://dribbble.com/rewa',
         ]);
 

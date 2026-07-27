@@ -14,4 +14,5 @@ class SocialLink extends Model
     {
         return $this->morphTo();
     }
+
 }

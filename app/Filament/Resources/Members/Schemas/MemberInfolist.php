@@ -23,7 +23,9 @@ class MemberInfolist
                     ->label('Portfolio')
                     ->url(fn ($state) => $state)
                     ->openUrlInNewTab()
-                    ->formatStateUsing(fn ($state) => 'Visit'),
+                    ->formatStateUsing(fn () => 'Visit Portfolio')
+                    ->color('primary')
+                    ->icon('heroicon-o-link'),
                 ImageEntry::make('image')
                     ->label('Image')
                     ->getStateUsing(fn ($record) =>
@@ -42,12 +44,15 @@ class MemberInfolist
                     ->label('Social Links')
                     ->schema([
                         TextEntry::make('platform')
-                            ->label('Platform'),
+                            ->label('Platform')
+                            ->badge(),
 
                         TextEntry::make('url')
                             ->label('Link')
                             ->url(fn ($state) => $state)
-                            ->openUrlInNewTab(),
+                            ->openUrlInNewTab()
+                            ->formatStateUsing(fn () => 'Visit Profile')
+                            ->icon('heroicon-o-link'),
                     ])
                     ->columns(2)
                     ->columnSpanFull()

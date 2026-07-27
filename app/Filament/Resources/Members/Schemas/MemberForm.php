@@ -18,13 +18,13 @@ class MemberForm
             ->components([
                 TextInput::make('name')
                     ->required()
-                    ->hint('يرجى إدخال الاسم الكامل باللغة العربية')
+                    ->hint('Enter the full name in Arabic')
                     ->rule('regex:/^[\p{Arabic}\s]+$/u'),
                 TextInput::make('role')
                     ->required(),
                 Textarea::make('bio')
                     ->required()
-                    ->rule('regex:/^[\p{Arabic}\s]+$/u')
+                    ->rule('regex:/^[\p{Arabic}0-9٠-٩\s.,،!?؟()\-]+$/u')
                     ->columnSpanFull(),
                 TextInput::make('portfolio_url')
                     ->url(),
@@ -32,6 +32,9 @@ class MemberForm
                     ->required()
                     ->collection('members')
                     ->image()
+                    ->imageCropAspectRatio('1:1')
+                    ->imageEditor()
+                    ->hint('The image must be square (1:1 ratio)')
                     ->maxSize(1024)
                     ->validationMessages([
                         'max' => 'The image size must not exceed 1 MB.',
