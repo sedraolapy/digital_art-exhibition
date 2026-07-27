@@ -8,6 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\Summarizers\Sum;
 
 class StatisticsTable
 {
@@ -18,8 +19,14 @@ class StatisticsTable
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('value')
+                    ->searchable()
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->badge()
+                    ->color('secondary')
+                    ->summarize(
+                        Sum::make()
+                    ),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -33,8 +40,8 @@ class StatisticsTable
                 //
             ])
             ->recordActions([
-                ViewAction::make()->modal(),
-                EditAction::make()->modal(),
+                ViewAction::make(),
+                EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

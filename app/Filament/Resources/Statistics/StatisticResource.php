@@ -20,7 +20,7 @@ class StatisticResource extends Resource
 {
     protected static ?string $model = Statistic::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChartPie;
 
     protected static ?string $recordTitleAttribute = 'name';
 

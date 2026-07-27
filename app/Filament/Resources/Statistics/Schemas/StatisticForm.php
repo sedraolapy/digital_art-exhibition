@@ -12,6 +12,7 @@ class StatisticForm
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->disabled()
                     ->required(),
                 TextInput::make('value')
                     ->required()
