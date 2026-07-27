@@ -18,6 +18,7 @@ class EventOccurrenceForm
             ->components([
                 TextInput::make('title')
                     ->required()
+                    ->rule('regex:/^[\p{Arabic}\s0-9٠-٩]+$/u')
                     ->maxLength(255),
 
                 Select::make('cycle_id')
@@ -33,23 +34,43 @@ class EventOccurrenceForm
                     ->required(),
 
                 DatePicker::make('start_date')
-                    ->required(),
+                    ->required()
+                    ->reactive()
+                    ->minDate(function (callable $get) {
+                        $cycleId = $get('cycle_id');
+                        if (!$cycleId) return null;
+
+                        $cycle = Cycle::find($cycleId);
+                        return $cycle?->start_date;
+                    })
+                    ->maxDate(function (callable $get) {
+                        $cycleId = $get('cycle_id');
+                        if (!$cycleId) return null;
+
+                        $cycle = Cycle::find($cycleId);
+                        return $cycle?->end_date;
+                    }),
 
                 DatePicker::make('end_date')
                     ->required()
-                    ->afterOrEqual('start_date'),
+                    ->reactive()
+                    ->minDate(function (callable $get) {
+                        $cycleId = $get('cycle_id');
+                        if (!$cycleId) return null;
 
-                Repeater::make('days')
-                    ->relationship('days')
-                    ->schema([
-                        TextInput::make('day_number')
-                            ->numeric()
-                            ->required(),
+                        $cycle = Cycle::find($cycleId);
+                        return $get('start_date') ?? $cycle?->start_date;
+                    })
+                    ->maxDate(function (callable $get) {
+                        $cycleId = $get('cycle_id');
+                        if (!$cycleId) return null;
 
-                        DatePicker::make('date')
-                            ->required(),
-                    ])
-                    ->collapsible(),
+                        $cycle = Cycle::find($cycleId);
+                        return $cycle?->end_date;
+                    }),
+
+
+
             ]);
     }
 }

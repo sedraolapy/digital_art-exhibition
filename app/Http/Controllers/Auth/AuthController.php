@@ -29,7 +29,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'تم تسجيل المستخدم بنجاح',
-            'data'    => new UserProfileResource($user->profile),
+            'data'    => new UserResource($user),
         ]);
     }
 
@@ -42,7 +42,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'تم تسجيل الدخول بنجاح',
-            'data'    => new UserProfileResource($user->profile),
+            'data'    => new UserResource($user),
         ]);
     }
 

@@ -27,17 +27,6 @@ class ExhibitorProfileService
         ]);
     }
 
-    // private function transferSocialLinks(ExhibitorApplication $application, ExhibitorProfile $profile): void
-    // {
-    //     if ($application->socialLinks()->exists()) {
-    //         $socialLinks = $application->socialLinks->map(fn($link) => [
-    //             'platform' => $link->platform,
-    //             'url'      => $link->url,
-    //         ])->toArray();
-
-    //         $profile->socialLinks()->createMany($socialLinks);
-    //     }
-    // }
 
     public function createFromApplication(ExhibitorApplication $application): ExhibitorProfile
     {
@@ -67,9 +56,9 @@ class ExhibitorProfileService
                 $media = $application->getFirstMedia('application_image');
 
                 if ($media) {
-                    $profile->addMedia($media->getPath())
+                    $profile->user->addMedia($media->getPath())
                         ->preservingOriginal()
-                        ->toMediaCollection('exhibitor_profile');
+                        ->toMediaCollection('exhibitor_image');
                 }
             }
 
@@ -118,9 +107,9 @@ class ExhibitorProfileService
         }
 
         if (isset($data['image'])) {
-            $profile->clearMediaCollection('exhibitor_profile');
-            $profile->addMedia($data['image'])
-                ->toMediaCollection('exhibitor_profile');
+            $profile->user->clearMediaCollection('exhibitor_image');
+            $profile->user->addMedia($data['image'])
+                ->toMediaCollection('exhibitor_image');
         }
 
         $profile->update([

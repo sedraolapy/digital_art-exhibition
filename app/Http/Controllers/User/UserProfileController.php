@@ -6,7 +6,7 @@ use App\Enums\EventOccurrenceStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UpdateUserProfileRequest;
 use App\Http\Resources\User\UserProfileResource;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\User\UserResource;
 use App\Models\EventOccurrence;
 use App\Models\Vote;
 use App\Services\Booking\BookingService;
@@ -32,7 +32,7 @@ class UserProfileController extends Controller
 
         return response()->json([
             'message' => 'تم عرض ملف المستخدم بنجاح',
-            'data'    => new UserProfileResource($profile),
+            'data'    => new UserResource($profile->user),
         ]);
     }
 
@@ -46,7 +46,7 @@ class UserProfileController extends Controller
 
         return response()->json([
             'message' => 'تم تحديث ملف المستخدم بنجاح',
-            'data'    => new UserProfileResource($profile),
+            'data'    => new UserResource($profile->user),
         ]);
     }
 

@@ -78,17 +78,17 @@ class UserProfileService
     // رفع صورة جديدة
     private function uploadProfileImage(User $user, $image): void
     {
-        $user->profile?->clearMediaCollection('user_profie');
+        $user->clearMediaCollection('user_image');
 
-        $user->profile?->addMedia($image)
-            ->toMediaCollection('user_profie');
+        $user->addMedia($image)
+            ->toMediaCollection('user_image');
     }
 
     //  حذف الصورة الحالية
     private function removeProfileImage(User $user): void
     {
-        if ($user->profile) {
-            $user->profile->clearMediaCollection('user_profie');
+        if ($user) {
+            $user->clearMediaCollection('user_image');
         }
     }
 

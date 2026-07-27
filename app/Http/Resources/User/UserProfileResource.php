@@ -17,8 +17,8 @@ class UserProfileResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'user' => new UserResource($this->user),
-            'image'     =>  $this->getMedia('user_profie')->map(fn($media) => $media->getFullUrl('webp')),
+            'user' => new UserResource($this),
+            'image' => $this->profile->getMedia('user_profie')->map(fn($media) => $media->getFullUrl('webp')),
         ];
     }
 }

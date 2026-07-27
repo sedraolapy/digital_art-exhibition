@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\EventOccurrences\Schemas;
 
+use App\Enums\EventOccurrenceStatus;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -18,26 +19,27 @@ class EventOccurrenceInfolist
                     ->label('Cycle'),
                 TextEntry::make('location.name')
                     ->label('Location'),
+                IconEntry::make('is_voting_enabled')
+                    ->boolean(),
                 TextEntry::make('start_date')
                     ->date(),
                 TextEntry::make('end_date')
                     ->date(),
-                IconEntry::make('is_voting_enabled')
-                    ->boolean(),
                 TextEntry::make('status')
-                    ->badge(),
+                    ->badge()
+                    ->color(fn ($state) => match ($state) {
+                        EventOccurrenceStatus::UPCOMING => 'warning',
+                        EventOccurrenceStatus::ACTIVE => 'success',
+                        EventOccurrenceStatus::FINISHED => 'danger',
+                    })
+                    ->formatStateUsing(fn ($state) => $state->value)
+                    ->columnSpanFull(),
                 TextEntry::make('created_at')
                     ->dateTime()
                     ->placeholder('-'),
                 TextEntry::make('updated_at')
                     ->dateTime()
                     ->placeholder('-'),
-                RepeatableEntry::make('days')
-                    ->schema([
-                        TextEntry::make('day_number'),
-                        TextEntry::make('date')
-                            ->date(),
-                    ]),
             ]);
     }
 }

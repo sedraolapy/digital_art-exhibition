@@ -26,7 +26,7 @@ Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:3,
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->middleware('throttle:2,1');
-Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->middleware('throttle:2,1');;
+Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->middleware('throttle:2,1');
 
 Route::get('/members', [MemberController::class, 'index']);
 Route::get('/exhibitors', [ExhibitorController::class, 'index']);

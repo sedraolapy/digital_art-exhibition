@@ -25,16 +25,18 @@ class EventOccurrencesTable
             ->columns([
                 TextColumn::make('title')
                     ->searchable(),
-                TextColumn::make('cycle.name')
-                    ->numeric()
-                    ->sortable(),
                 TextColumn::make('location.name')
-                    ->numeric()
-                    ->sortable(),
+                    ->searchable(),
                 IconColumn::make('is_voting_enabled')
                     ->boolean(),
                 TextColumn::make('status')
                     ->badge()
+                    ->color(fn ($state) => match ($state) {
+                        EventOccurrenceStatus::UPCOMING => 'warning',
+                        EventOccurrenceStatus::ACTIVE => 'success',
+                        EventOccurrenceStatus::FINISHED => 'danger',
+                    })
+                    ->formatStateUsing(fn ($state) => $state->value)
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -58,7 +60,11 @@ class EventOccurrencesTable
                     ->form([
                         Select::make('status')
                             ->label('Status')
-                            ->options(EventOccurrenceStatus::class)
+                            ->options([
+                                EventOccurrenceStatus::UPCOMING->value => EventOccurrenceStatus::UPCOMING->value,
+                                EventOccurrenceStatus::ACTIVE->value => EventOccurrenceStatus::ACTIVE->value,
+                                EventOccurrenceStatus::FINISHED->value => EventOccurrenceStatus::FINISHED->value,
+                            ])
                             ->live()
                             ->required(),
                         Placeholder::make('warning')

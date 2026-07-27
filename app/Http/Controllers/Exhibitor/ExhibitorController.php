@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Exhibitor\ExhibitorProfileResource;
 use App\Models\EventOccurrence;
 use App\Models\ExhibitorProfile;
+use App\Models\Vote;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,13 +19,13 @@ class ExhibitorController extends Controller
 
         $activeOccurrence = EventOccurrence::where('status', EventOccurrenceStatus::ACTIVE->value)->first();
 
-        $exhibitors = ExhibitorProfile::with('socialLinks')
+        $exhibitors = ExhibitorProfile::with('user.socialLinks')
             ->whereHas('eventOccurrence', function ($query) {
                 $query->where('status', EventOccurrenceStatus::ACTIVE->value);
             })
             ->get()
             ->map(function ($exhibitor) use ($userId, $activeOccurrence) {
-                $hasVoted = \App\Models\Vote::where('user_id', $userId)
+                $hasVoted = Vote::where('user_id', $userId)
                     ->where('exhibitor_id', $exhibitor->id)
                     ->where('event_occurrence_id', $activeOccurrence->id)
                     ->exists();

@@ -6,6 +6,7 @@ use App\Enums\Role;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Exhibitor\ExhibitorProfileResource;
 use App\Http\Resources\User\UserProfileResource;
+use App\Http\Resources\User\UserResource;
 use App\Models\ExhibitorApplication;
 use App\Services\Exhibitor\ExhibitorProfileService;
 use App\Services\User\UserProfileService;
@@ -35,7 +36,7 @@ class UserController extends Controller
 
             return response()->json([
                 'message' => 'تم عرض ملف المستخدم بنجاح',
-                'data'    => new UserProfileResource($profile),
+                'data'    => new UserResource($user),
             ]);
         }
 
