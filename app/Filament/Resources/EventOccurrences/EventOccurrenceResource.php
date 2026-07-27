@@ -21,7 +21,7 @@ class EventOccurrenceResource extends Resource
 {
     protected static ?string $model = EventOccurrence::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendar;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTicket;
 
     protected static ?string $recordTitleAttribute = 'title';
 

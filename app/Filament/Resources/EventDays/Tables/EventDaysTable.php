@@ -6,7 +6,10 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class EventDaysTable
@@ -40,7 +43,33 @@ class EventDaysTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('event_occurrences_id')
+                    ->label('Event Occurrence')
+                    ->relationship('occurrence', 'title')
+                    ->searchable()
+                    ->preload(),
+
+                Filter::make('date')
+                    ->form([
+                        DatePicker::make('from')
+                            ->label('From date'),
+
+                        DatePicker::make('until')
+                            ->label('Until date'),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when(
+                                $data['from'] ?? null,
+                                fn ($query, $date) =>
+                                    $query->whereDate('date', '>=', $date)
+                            )
+                            ->when(
+                                $data['until'] ?? null,
+                                fn ($query, $date) =>
+                                    $query->whereDate('date', '<=', $date)
+                            );
+                    }),
             ])
             ->recordActions([
                 ViewAction::make(),

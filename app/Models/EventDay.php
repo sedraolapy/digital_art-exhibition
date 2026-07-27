@@ -8,7 +8,7 @@ class EventDay extends Model
 {
     protected $fillable = [
         'day_number',
-        'event_occurrence_id',
+        'event_occurrences_id',
         'date',
     ];
 
