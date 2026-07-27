@@ -22,4 +22,15 @@ class Cycle extends Model
         return $this->belongsToMany(Sponsor::class, 'cycle_sponsors')
             ->where('type', 'diamond');
     }
+
+    public function sponsors()
+    {
+        return $this->belongsToMany(
+            Sponsor::class,
+            'cycle_sponsors',
+            'cycle_id',
+            'sponsor_id'
+        )
+        ->using(CycleSponsor::class);
+    }
 }

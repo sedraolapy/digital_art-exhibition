@@ -26,14 +26,24 @@ class MemberInfolist
                     ->formatStateUsing(fn () => 'Visit Portfolio')
                     ->color('primary')
                     ->icon('heroicon-o-link'),
-                ImageEntry::make('image')
+                RepeatableEntry::make('image')
                     ->label('Image')
                     ->getStateUsing(fn ($record) =>
                         $record->getMedia('members')
-                            ->map(fn($media) => $media->getUrl('webp'))
+                            ->map(fn ($media) => [
+                                'image' => $media->getUrl('webp'),
+                            ])
+                            ->toArray()
                     )
-                    ->height(200)
-                    ->width(200),
+                    ->schema([
+                        ImageEntry::make('image')
+                            ->hiddenLabel()
+                            ->height(200)
+                            ->width(200)
+                            ->url(fn ($state) => $state)
+                            ->openUrlInNewTab(),
+                    ])
+                    ->grid(2),
                 TextEntry::make('created_at')
                     ->dateTime()
                     ->placeholder('-'),

@@ -4,9 +4,7 @@ namespace App\Filament\Resources\Sponsors\Schemas;
 
 use App\Enums\EventOccurrenceStatus;
 use App\Enums\SponsorType;
-use App\Models\Cycle;
 use App\Models\EventOccurrence;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
@@ -20,10 +18,12 @@ class SponsorForm
             ->components([
                 TextInput::make('name')
                     ->required(),
+
                 SpatieMediaLibraryFileUpload::make('logo_url')
+                    ->label('Logo')
                     ->required()
                     ->collection('sponsors')
-                    ->hint('only svg format')
+                    ->hint('Only SVG format')
                     ->acceptedFileTypes(['image/svg+xml'])
                     ->maxSize(1024)
                     ->validationMessages([
@@ -31,37 +31,54 @@ class SponsorForm
                         'accepted' => 'Only SVG files are allowed.',
                     ])
                     ->preserveFilenames(),
+
                 Select::make('type')
+                    ->label('Sponsor Type')
                     ->options([
                         SponsorType::DIAMOND->value => 'Diamond',
-                        SponsorType::GOLD->value    => 'Gold',
-                        SponsorType::SILVER->value  => 'Silver',
+                        SponsorType::GOLD->value => 'Gold',
+                        SponsorType::SILVER->value => 'Silver',
                     ])
                     ->required()
-                    ->reactive(),
+                    ->live(),
 
-                Select::make('cycle_id')
-                    ->label('Cycle')
-                    ->required()
-                    ->options(Cycle::pluck('name', 'id'))
-                    ->visible(fn ($get) => $get('type') === SponsorType::DIAMOND->value)
-                    ->reactive(),
-
-                Select::make('event_occurrence_id')
-                    ->label('Occurrence')
-                    ->required()
-                    ->options(
-                        EventOccurrence::where('status', EventOccurrenceStatus::ACTIVE->value)->with('location')
-                            ->get()
-                            ->mapWithKeys(fn ($occurrence) => [
-                                $occurrence->id => $occurrence->location?->name,
-                            ])
+                Select::make('cycles')
+                    ->label('Cycles')
+                    ->relationship(
+                        name: 'cycles',
+                        titleAttribute: 'name'
                     )
-                    ->visible(fn ($get) => in_array($get('type'), [
-                        SponsorType::GOLD->value,
-                        SponsorType::SILVER->value,
-                    ]))
-                    ->reactive(),
+                    ->multiple()
+                    ->preload()
+                    ->searchable()
+                    ->required()
+                    ->visible(fn ($get) =>
+                        $get('type') === SponsorType::DIAMOND->value
+                    ),
+
+                Select::make('occurrences')
+                    ->label('Event Occurrences')
+                    ->relationship(
+                        name: 'occurrences',
+                        titleAttribute: 'title',
+                        modifyQueryUsing: fn ($query) =>
+                            $query
+                                ->with('location')
+                    )
+                    ->getOptionLabelFromRecordUsing(
+                        fn (EventOccurrence $record) =>
+                            "{$record->title} - {$record->location?->name}"
+                    )
+                    ->multiple()
+                    ->preload()
+                    ->searchable()
+                    ->required()
+                    ->visible(fn ($get) =>
+                        in_array($get('type'), [
+                            SponsorType::GOLD->value,
+                            SponsorType::SILVER->value,
+                        ])
+                    ),
             ]);
     }
 }

@@ -47,7 +47,12 @@ class EventOccurrence extends Model
 
     public function sponsors()
     {
-        return $this->belongsToMany(Sponsor::class, 'occurrence_sponsors')
-            ->whereIn('type', ['gold', 'silver']);
+        return $this->belongsToMany(
+            Sponsor::class,
+            'occurrence_sponsors',
+            'event_occurrence_id',
+            'sponsor_id'
+        )
+        ->using(OccurrenceSponsor::class);
     }
 }

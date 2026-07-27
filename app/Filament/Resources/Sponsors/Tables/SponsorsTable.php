@@ -2,12 +2,14 @@
 
 namespace App\Filament\Resources\Sponsors\Tables;
 
+use App\Enums\SponsorType;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class SponsorsTable
@@ -24,7 +26,19 @@ class SponsorsTable
                     ->height(50),
                 TextColumn::make('type')
                     ->badge()
-                    ->searchable(),
+                    ->searchable()
+                    ->color(fn ($state) => match ($state) {
+                        SponsorType::DIAMOND => 'info',
+                        SponsorType::GOLD => 'warning',
+                        SponsorType::SILVER => 'gray',
+                    })
+                    ->formatStateUsing(fn ($state) => ucfirst($state->value)),
+                TextColumn::make('cycles_count')
+                    ->counts('cycles')
+                    ->label('Cycles'),
+                TextColumn::make('occurrences_count')
+                    ->counts('occurrences')
+                    ->label('Events'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -35,11 +49,16 @@ class SponsorsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('type')
+                    ->options([
+                        'diamond'=>'Diamond',
+                        'gold'=>'Gold',
+                        'silver'=>'Silver',
+                    ])
             ])
             ->recordActions([
-                ViewAction::make()->modal(),
-                EditAction::make()->modal(),
+                ViewAction::make(),
+                EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

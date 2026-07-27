@@ -21,12 +21,14 @@ class ExperienceForm
                     ->required(),
                 Textarea::make('description')
                     ->required()
-                    ->rule('regex:/^[\p{Arabic}\s]+$/u')
+                    ->rule('regex:/^[\p{Arabic}0-9٠-٩\s.,،!?؟()\-]+$/u')
                     ->hint('Enter the description in Arabic')
                     ->columnSpanFull(),
                 DatePicker::make('start_date')
+                    ->disabled()
                     ->required(),
-                DatePicker::make('end_date'),
+                DatePicker::make('end_date')
+                    ->disabled(),
                 Select::make('status')
                     ->options(ExperienceStatus::class)
                     ->default('draft')
@@ -38,6 +40,9 @@ class ExperienceForm
                     ->image()
                     ->maxFiles(4)
                     ->maxSize(1024)
+                    ->imageCropAspectRatio('16:9')
+                    ->imageEditor()
+                    ->hint('The image must be landscape (16:9 ratio), Maximum 4 images.')
                     ->validationMessages([
                         'max' => 'The image size must not exceed 1 MB.',
                     ])

@@ -21,7 +21,7 @@ class SponsorResource extends Resource
 {
     protected static ?string $model = Sponsor::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBanknotes;
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -47,7 +47,7 @@ class SponsorResource extends Resource
         $record->occurrences()->sync([]);
     } elseif (in_array($record->type, [SponsorType::GOLD, SponsorType::SILVER])) {
         $record->occurrences()->sync(!empty($data['event_occurrence_id']) ? [$data['event_occurrence_id']] : []);
-        $record->cycles()->sync([]); 
+        $record->cycles()->sync([]);
     }
 }
 

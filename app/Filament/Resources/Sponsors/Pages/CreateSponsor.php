@@ -11,6 +11,12 @@ class CreateSponsor extends CreateRecord
 
     protected function afterCreate(): void
     {
-        SponsorResource::syncTypeRelation($this->record, $this->data);
+        $this->record->cycles()->sync(
+            $this->data['cycles'] ?? []
+        );
+
+        $this->record->occurrences()->sync(
+            $this->data['occurrences'] ?? []
+        );
     }
 }

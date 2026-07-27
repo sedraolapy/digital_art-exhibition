@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class OccurrenceSponsor extends Model
+class OccurrenceSponsor extends Pivot
 {
     protected $table = 'occurrence_sponsors';
 
@@ -15,7 +15,10 @@ class OccurrenceSponsor extends Model
 
     public function occurrence()
     {
-        return $this->belongsTo(EventOccurrence::class, 'event_occurrence_id');
+        return $this->belongsTo(
+            EventOccurrence::class,
+            'event_occurrence_id'
+        );
     }
 
     public function sponsor()

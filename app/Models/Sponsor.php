@@ -22,12 +22,23 @@ class Sponsor extends Model implements HasMedia
 
     public function cycles()
     {
-        return $this->belongsToMany(Cycle::class, 'cycle_sponsors', 'sponsor_id', 'cycle_id');
+        return $this->belongsToMany(
+            Cycle::class,
+            'cycle_sponsors',
+            'sponsor_id',
+            'cycle_id'
+        )
+        ->using(CycleSponsor::class);
     }
 
     public function occurrences()
     {
-        return $this->belongsToMany(EventOccurrence::class, 'occurrence_sponsors', 'sponsor_id', 'event_occurrence_id');
+        return $this->belongsToMany(
+            EventOccurrence::class,
+            'occurrence_sponsors',
+            'sponsor_id',
+            'event_occurrence_id'
+        )
+        ->using(OccurrenceSponsor::class);
     }
-
 }

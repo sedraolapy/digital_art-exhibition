@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class CycleSponsor extends Model
+class CycleSponsor extends Pivot
 {
     protected $table = 'cycle_sponsors';
 

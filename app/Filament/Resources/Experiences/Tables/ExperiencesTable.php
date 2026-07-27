@@ -8,8 +8,11 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class ExperiencesTable
@@ -25,15 +28,15 @@ class ExperiencesTable
                     ->sortable(),
                 TextColumn::make('end_date')
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->placeholder('_'),
                 TextColumn::make('status')
                     ->badge()
                     ->searchable()
                     ->color(fn ($state) => match ($state) {
-                        ExperienceStatus::DRAFT->value => 'warning',
-                        ExperienceStatus::PUBLISHED->value => 'success',
-                        ExperienceStatus::ARCHIVED->value => 'danger',
-                        default => 'gray',
+                        ExperienceStatus::DRAFT => 'secondary',
+                        ExperienceStatus::PUBLISHED => 'primary',
+                        ExperienceStatus::ARCHIVED => 'danger',
                     })
                     ->formatStateUsing(fn ($state) => ucfirst($state->value)),
                 TextColumn::make('created_at')
@@ -46,11 +49,40 @@ class ExperiencesTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->label('Status')
+                    ->options([
+                        ExperienceStatus::DRAFT->value => 'Draft',
+                        ExperienceStatus::PUBLISHED->value => 'Published',
+                        ExperienceStatus::ARCHIVED->value => 'Archived',
+                    ]),
+
+                Filter::make('date_range')
+                    ->label('Date Range')
+                    ->form([
+                        DatePicker::make('start_date')
+                            ->label('From'),
+
+                        DatePicker::make('end_date')
+                            ->label('To'),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when(
+                                $data['start_date'],
+                                fn ($query, $date) =>
+                                    $query->whereDate('start_date', '>=', $date)
+                            )
+                            ->when(
+                                $data['end_date'],
+                                fn ($query, $date) =>
+                                    $query->whereDate('end_date', '<=', $date)
+                            );
+                    }),
             ])
             ->recordActions([
-                ViewAction::make()->modal(),
-                EditAction::make()->modal(),
+                ViewAction::make(),
+                EditAction::make(),
 
                 Action::make('change_status')
                     ->label('Change Status')
@@ -58,7 +90,11 @@ class ExperiencesTable
                     ->form([
                         Select::make('status')
                             ->label('Status')
-                            ->options(ExperienceStatus::class)
+                            ->options([
+                                ExperienceStatus::DRAFT->value => 'Draft',
+                                ExperienceStatus::PUBLISHED->value => 'Published',
+                                ExperienceStatus::ARCHIVED->value => 'Archived',
+                            ])
                             ->required(),
                     ])
                     ->action(function ($record, array $data) {

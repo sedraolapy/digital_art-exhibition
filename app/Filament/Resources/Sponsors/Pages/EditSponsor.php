@@ -31,6 +31,12 @@ class EditSponsor extends EditRecord
 
     protected function afterSave(): void
     {
-        SponsorResource::syncTypeRelation($this->record, $this->data);
+        $this->record->cycles()->sync(
+            $this->data['cycles'] ?? []
+        );
+
+        $this->record->occurrences()->sync(
+            $this->data['occurrences'] ?? []
+        );
     }
 }
