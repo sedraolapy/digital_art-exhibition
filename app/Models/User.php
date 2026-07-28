@@ -4,7 +4,9 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Enums\PermissionEnum;
 use App\Enums\Role;
+use App\Enums\RoleEnum;
 use Database\Factories\UserFactory;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,15 +28,12 @@ class User extends Authenticatable implements HasMedia
      * @var list<string>
      */
 
-    protected $guard_name = 'admin';
-
     protected $fillable = [
         'first_name',
         'last_name',
         'email',
         'phone',
         'password',
-        'role',
         'qr_token',
     ];
     /**
@@ -57,7 +56,6 @@ class User extends Authenticatable implements HasMedia
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'role' => Role::class,
         ];
     }
 
@@ -70,10 +68,6 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(LectureAttendance::class);
     }
 
-    public function profile()
-    {
-        return $this->hasOne(UserProfile::class);
-    }
 
     public function exhibitorProfile()
     {
@@ -97,8 +91,15 @@ class User extends Authenticatable implements HasMedia
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->role === Role::ADMIN->value && $this->guard === 'admin';
+        if ($this->hasRole(RoleEnum::SUPER_ADMIN->value)) {
+            return true;
+        }
+
+        return $this->can(
+            PermissionEnum::ACCESS_ADMIN_PANEL->value
+        );
     }
+
 
     public function registerMediaConversions(Media $media = null): void
     {

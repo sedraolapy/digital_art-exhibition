@@ -33,9 +33,7 @@ class UserProfileService
         $user->bookings = $bookings;
         $user->exhibitor_application_status = ExhibitorApplication::where('user_id', $user->id)->value('status');
 
-        $profile->user = $user;
-
-        return $profile;
+        return $user;
     }
 
     public function update(User $user, array $data)
@@ -57,10 +55,7 @@ class UserProfileService
         $user->bookings = $bookings;
         $user->exhibitor_application_status = ExhibitorApplication::where('user_id', $user->id)->value('status');
 
-        $profile = $user->fresh(['profile'])->profile;
-        $profile->user = $user;
-
-        return $profile;
+        return $user;
     }
 
 

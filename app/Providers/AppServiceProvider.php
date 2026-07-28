@@ -6,6 +6,9 @@ use App\Models\EventOccurrence;
 use App\Observers\EventOccurrenceObserver;
 use Illuminate\Support\ServiceProvider;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Gate;
+use App\Enums\Role;
+use App\Enums\RoleEnum;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,5 +28,10 @@ class AppServiceProvider extends ServiceProvider
         EventOccurrence::observe(EventOccurrenceObserver::class);
         Carbon::setLocale('ar');
         date_default_timezone_set('Asia/Damascus');
+        Gate::before(function ($user, $ability) {
+            return $user->hasRole(RoleEnum::SUPER_ADMIN->value)
+                ? true
+                : null;
+        });
     }
 }

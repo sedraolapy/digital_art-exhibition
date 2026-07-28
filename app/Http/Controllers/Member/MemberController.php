@@ -11,7 +11,7 @@ class MemberController extends Controller
 {
     public function index()
     {
-        $members = Member::with('socialLinks')->get();
+        $members = Member::with('socialLinks')->orderBy('name')->get();
 
         return response()->json([
             'message' => 'تم جلب بيانات الأعضاء بنجاح',

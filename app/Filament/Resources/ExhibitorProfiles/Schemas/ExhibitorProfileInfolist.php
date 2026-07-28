@@ -13,18 +13,25 @@ class ExhibitorProfileInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('user.name'),
-                TextEntry::make('user.email'),
-                TextEntry::make('user.phone'),
-                TextEntry::make('eventOccurrence.location.name')
-                    ->label('Event occurrence location'),
+                TextEntry::make('user.name')
+                    ->label('User')
+                    ->url(fn ($record) => route(
+                        'filament.admin.resources.users.view',
+                        $record->user
+                    ))
+                    ->openUrlInNewTab(false)
+                    ->color('primary')
+                    ->weight('medium')
+                    ->icon('heroicon-o-link')
+                    ->iconPosition('before'),
+                TextEntry::make('eventOccurrence.title')
+                    ->label('Event occurrence'),
                 TextEntry::make('category.name')
-                ->label('Category')
+                    ->label('Category'),
+                TextEntry::make('experience_years')
                     ->numeric(),
                 TextEntry::make('bio')
                     ->columnSpanFull(),
-                TextEntry::make('experience_years')
-                    ->numeric(),
                 TextEntry::make('cv_file')
                     ->label('CV File')
                     ->getStateUsing(fn ($record) =>
@@ -37,35 +44,33 @@ class ExhibitorProfileInfolist
                     ->label('Portfolio')
                     ->url(fn ($state) => $state)
                     ->openUrlInNewTab()
-                    ->formatStateUsing(fn ($state) => 'Visit'),
-                ImageEntry::make('image')
-                    ->label('Image')
-                    ->getStateUsing(fn ($record) =>
-                        $record->getMedia('exhibitor_profile')
-                            ->map(fn($media) => $media->getUrl('webp'))
-                    )
-                    ->height(200)
-                    ->width(200),
+                    ->formatStateUsing(fn () => 'Visit Portfolio')
+                    ->color('primary')
+                    ->weight('medium')
+                    ->icon('heroicon-o-link')
+                    ->iconPosition('before'),
+                RepeatableEntry::make('user.socialLinks')
+                    ->label('Social Links')
+                    ->schema([
+                        TextEntry::make('platform')
+                            ->label('Platform')
+                            ->badge(),
+
+                        TextEntry::make('url')
+                            ->label('Link')
+                            ->url(fn ($state) => $state)
+                            ->openUrlInNewTab()
+                            ->formatStateUsing(fn () => 'Visit Profile')
+                            ->icon('heroicon-o-link'),
+                    ])
+                    ->columns(2)
+                    ->columnSpanFull(),
                 TextEntry::make('created_at')
                     ->dateTime()
                     ->placeholder('-'),
                 TextEntry::make('updated_at')
                     ->dateTime()
                     ->placeholder('-'),
-                RepeatableEntry::make('socialLinks')
-                    ->schema([
-                        TextEntry::make('platform')
-                            ->label('')
-                            ->formatStateUsing(fn ($state) => ucfirst($state)),
-                        TextEntry::make('url')
-                            ->label('')
-                            ->url(fn ($state) => $state)
-                            ->openUrlInNewTab()
-                            ->formatStateUsing(fn ($state) => 'Visit'),
-                    ])
-                    ->label('Social Links')
-                    ->columns(2)
-                    ->columnSpanFull(),
             ]);
     }
 }

@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\EventOccurrenceStatus;
-use App\Enums\Role;
+use App\Enums\RoleEnum;
 use App\Models\Category;
 use App\Models\EventOccurrence;
 use App\Models\ExhibitorProfile;
@@ -14,7 +14,7 @@ class ExhibitorProfileSeeder extends Seeder
 {
     public function run(): void
     {
-        $user = User::where('role', 'user')->first();
+        $user = User::role(RoleEnum::USER->value)->first();
         $occurrence = EventOccurrence::where('status', EventOccurrenceStatus::ACTIVE->value)->first();
         $category = Category::first();
 
@@ -45,12 +45,10 @@ class ExhibitorProfileSeeder extends Seeder
                 'url'      => 'https://github.com/sedra',
             ]);
 
-            $user->update([
-                'role' => Role::EXHIBITOR->value
-            ]);
+            $user->syncRoles(RoleEnum::EXHIBITOR->value);
         }
 
-        $user2 = User::where('role', 'user')->skip(1)->first();
+        $user2 = User::role(RoleEnum::USER->value)->skip(1)->first();
         if ($user2 && $occurrence && $category) {
             $profile2 = ExhibitorProfile::create([
                 'user_id'             => $user2->id,
@@ -78,9 +76,7 @@ class ExhibitorProfileSeeder extends Seeder
                 'url'      => 'https://dribbble.com/user2',
             ]);
 
-            $user2->update([
-                'role' => Role::EXHIBITOR->value
-            ]);
+            $user2->syncRoles(RoleEnum::EXHIBITOR->value);
         }
     }
 }

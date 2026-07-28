@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\RoleEnum;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -20,10 +21,9 @@ class AdminUserSeeder extends Seeder
                 'last_name' => 'Admin',
                 'phone' => '0999999999',
                 'password' => bcrypt('password123'),
-                'role' => 'admin',
             ]
         );
 
-        $admin->assignRole('superadmin');
+        $admin->syncRoles(RoleEnum::SUPER_ADMIN->value);
     }
 }

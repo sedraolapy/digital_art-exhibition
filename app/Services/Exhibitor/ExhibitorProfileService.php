@@ -1,7 +1,7 @@
 <?php
 namespace App\Services\Exhibitor;
 
-use App\Enums\Role;
+use App\Enums\RoleEnum;
 use App\Models\ExhibitorApplication;
 use App\Models\ExhibitorProfile;
 use App\Models\User;
@@ -22,11 +22,10 @@ class ExhibitorProfileService
 
     private function assignExhibitorRole(int $userId): void
     {
-        User::where('id', $userId)->update([
-            'role' => Role::EXHIBITOR->value,
-        ]);
-    }
+        $user = User::findOrFail($userId);
 
+        $user->syncRoles(RoleEnum::EXHIBITOR->value);
+    }
 
     public function createFromApplication(ExhibitorApplication $application): ExhibitorProfile
     {

@@ -4,8 +4,7 @@ namespace App\Services\Auth;
 
 use App\Enums\BookingStatus;
 use App\Enums\EventOccurrenceStatus;
-use App\Enums\Role;
-use App\Events\UserRegistered;
+use App\Enums\RoleEnum;
 use App\Models\Booking;
 use App\Models\EventOccurrence;
 use App\Models\ExhibitorApplication;
@@ -43,14 +42,14 @@ class AuthService
                 'email'      => $data['email'],
                 'phone'      => $data['phone'],
                 'password'   => Hash::make($data['password']),
-                'role'       => Role::USER->value,
             ]);
+
+            $user->assignRole(RoleEnum::USER->value);
 
             $this->socialLinkService->attachLinks($user, $data);
 
             $this->generateQrCode($user);
 
-            event(new UserRegistered($user));
             $token = $user->createToken('auth_token')->plainTextToken;
 
             $user->voted_exhibitors = [];

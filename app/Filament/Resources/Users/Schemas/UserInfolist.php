@@ -2,11 +2,11 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
-use Illuminate\Support\HtmlString;
-use Illuminate\Support\Facades\Crypt;
-use SimpleSoftwareIO\QrCode\Generator;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class UserInfolist
 {
@@ -19,28 +19,65 @@ class UserInfolist
                 TextEntry::make('email')
                     ->label('Email address'),
                 TextEntry::make('phone'),
+                TextEntry::make('phone'),
                 TextEntry::make('role')
-                    ->badge(),
+                    ->label('Role')
+                    ->badge()
+                    ->state(fn ($record) =>
+                        $record->getRoleNames()->first()
+                    ),
+                ImageEntry::make('image')
+                    ->label('Image')
+                    ->circular()
+                    ->size(150)
+                    ->state(function ($record) {
+
+                        $collection = $record->hasRole('exhibitor')
+                            ? 'exhibitor_image'
+                            : 'user_image';
+
+                        return $record->getFirstMediaUrl($collection, 'webp')
+                            ?: null;
+                    })
+                    ->url(fn ($state) => $state)
+                    ->openUrlInNewTab(),
+                ImageEntry::make('qr_code')
+                    ->label('QR Code')
+                    ->state(function ($record) {
+
+                        if (! $record->qr_token) {
+                            return null;
+                        }
+
+                        return 'data:image/svg+xml;base64,' . base64_encode(
+                            QrCode::format('svg')
+                                ->size(150)
+                                ->generate($record->qr_token)
+                        );
+                    })
+                    ->size(150),
+                RepeatableEntry::make('socialLinks')
+                    ->label('Social Links')
+                    ->schema([
+                        TextEntry::make('platform')
+                            ->label('Platform')
+                            ->badge(),
+
+                        TextEntry::make('url')
+                            ->label('Link')
+                            ->url(fn ($state) => $state)
+                            ->openUrlInNewTab()
+                            ->formatStateUsing(fn () => 'Visit Profile')
+                            ->icon('heroicon-o-link'),
+                    ])
+                    ->columns(2)
+                    ->columnSpanFull(),
                 TextEntry::make('created_at')
                     ->dateTime()
                     ->placeholder('-'),
                 TextEntry::make('updated_at')
                     ->dateTime()
                     ->placeholder('-'),
-                TextEntry::make('qr_token')
-                    ->label('QR Code')
-                    ->html()
-                    ->state(function (?object $record): HtmlString|string {
-                        if (! $record?->qr_token) {
-                            return '';
-                        }
-
-                        return new HtmlString(
-                            app(Generator::class)
-                                ->size(200)
-                                ->generate($record->qr_token)
-                        );
-                    }),
             ]);
     }
 }

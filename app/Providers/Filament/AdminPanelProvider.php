@@ -29,7 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('auth/admin/DAE')
             ->login()
-            ->authGuard('admin')
+            ->authGuard('web')
             ->brandLogo(asset('images/logo.svg'))
             ->brandLogoHeight('50px')
             ->colors([

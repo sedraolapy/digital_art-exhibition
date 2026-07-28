@@ -5,7 +5,6 @@ namespace App\Http\Controllers\User;
 use App\Enums\EventOccurrenceStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UpdateUserProfileRequest;
-use App\Http\Resources\User\UserProfileResource;
 use App\Http\Resources\User\UserResource;
 use App\Models\EventOccurrence;
 use App\Models\Vote;
@@ -28,11 +27,11 @@ class UserProfileController extends Controller
     {
         $user = Auth::user();
 
-        $profile = $this->profileService->getProfileData($user);
+        $user = $this->profileService->getProfileData($user);
 
         return response()->json([
             'message' => 'تم عرض ملف المستخدم بنجاح',
-            'data'    => new UserResource($profile->user),
+            'data'    => new UserResource($user),
         ]);
     }
 
@@ -42,11 +41,11 @@ class UserProfileController extends Controller
         $data = $request->validated();
         $user =$request->user();
 
-        $profile = $this->profileService->update($user, $data);
+        $user = $this->profileService->update($user, $data);
 
         return response()->json([
             'message' => 'تم تحديث ملف المستخدم بنجاح',
-            'data'    => new UserResource($profile->user),
+            'data'    => new UserResource($user),
         ]);
     }
 
