@@ -23,6 +23,13 @@ class VoteService
             ];
         }
 
+        if (!$activeOccurrence->is_voting_enabled) {
+            return [
+                'message' => 'التصويت غير مفعل حالياً ',
+                'data'    => null,
+            ];
+        }
+
         $alreadyVoted = Vote::where('user_id', $userId)
             ->where('exhibitor_id', $exhibitorId)
             ->where('event_occurrence_id', $activeOccurrence->id)
