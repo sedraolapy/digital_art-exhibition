@@ -24,7 +24,7 @@ class UserProfileService
 
     public function getProfileData(User $user)
     {
-        $profile = $user->profile()->first();
+        $profile = $user->first();
 
         $votedExhibitors = $this->voteService->getUserVotesForActiveOccurrence($user->id);
         $bookings = $this->bookingService->getUserConfirmedBookings($user->id);

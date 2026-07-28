@@ -33,7 +33,7 @@ return [
     ],
 
     'defaults' => [
-        'guard' => 'admin',
+        'guard' => 'web',
     ],
 
     'table_names' => [
