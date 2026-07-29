@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ExhibitorApplications\Schemas;
 
+use App\Enums\ExhibitorStatus;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
@@ -22,7 +23,20 @@ class ExhibitorApplicationInfolist
                 ->label('Category')
                     ->numeric(),
                 TextEntry::make('status')
-                    ->badge(),
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(fn (ExhibitorStatus $state) => match ($state) {
+                        ExhibitorStatus::PENDING => 'Pending',
+                        ExhibitorStatus::REJECTED => 'Rejected',
+                        ExhibitorStatus::APPROVED_INITIAL => 'Approved (Initial)',
+                        ExhibitorStatus::APPROVED_FINAL => 'Approved (Final)',
+                    })
+                    ->color(fn (ExhibitorStatus $state) => match ($state) {
+                        ExhibitorStatus::PENDING => 'warning',
+                        ExhibitorStatus::REJECTED => 'danger',
+                        ExhibitorStatus::APPROVED_INITIAL => 'info',
+                        ExhibitorStatus::APPROVED_FINAL => 'success',
+                    }),
                 TextEntry::make('bio')
                     ->columnSpanFull(),
                 TextEntry::make('experience_years')
@@ -39,7 +53,11 @@ class ExhibitorApplicationInfolist
                     ->label('Portfolio')
                     ->url(fn ($state) => $state)
                     ->openUrlInNewTab()
-                    ->formatStateUsing(fn ($state) => 'Visit'),
+                    ->formatStateUsing(fn () => 'Visit Portfolio')
+                    ->color('primary')
+                    ->weight('medium')
+                    ->icon('heroicon-o-link')
+                    ->iconPosition('before'),
                 ImageEntry::make('image')
                     ->label('Image')
                     ->getStateUsing(fn ($record) =>
@@ -48,26 +66,28 @@ class ExhibitorApplicationInfolist
                     )
                     ->height(200)
                     ->width(200),
+                RepeatableEntry::make('socialLinks')
+                    ->label('Social Links')
+                    ->schema([
+                        TextEntry::make('platform')
+                            ->label('Platform')
+                            ->badge(),
+
+                        TextEntry::make('url')
+                            ->label('Link')
+                            ->url(fn ($state) => $state)
+                            ->openUrlInNewTab()
+                            ->formatStateUsing(fn () => 'Visit Profile')
+                            ->icon('heroicon-o-link'),
+                    ])
+                    ->columns(2)
+                    ->columnSpanFull(),
                 TextEntry::make('created_at')
                     ->dateTime()
                     ->placeholder('-'),
                 TextEntry::make('updated_at')
                     ->dateTime()
                     ->placeholder('-'),
-                RepeatableEntry::make('socialLinks')
-                    ->schema([
-                        TextEntry::make('platform')
-                            ->label('')
-                            ->formatStateUsing(fn ($state) => ucfirst($state)),
-                        TextEntry::make('url')
-                            ->label('')
-                            ->url(fn ($state) => $state)
-                            ->openUrlInNewTab()
-                            ->formatStateUsing(fn ($state) => 'Visit'),
-                    ])
-                    ->label('Social Links')
-                    ->columns(2)
-                    ->columnSpanFull(),
             ]);
     }
 }

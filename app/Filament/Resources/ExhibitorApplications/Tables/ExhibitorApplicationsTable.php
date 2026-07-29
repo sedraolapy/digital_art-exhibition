@@ -16,6 +16,10 @@ use App\Mail\ExhibitorApplicationStatusMail;
 use App\Services\Exhibitor\ExhibitorProfileService;
 use Event;
 use Filament\Actions\Action;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Mail;
 
 class ExhibitorApplicationsTable
@@ -37,14 +41,33 @@ class ExhibitorApplicationsTable
                             ->map(fn ($media) => $media->getUrl('webp'))
                         ),
                 TextColumn::make('category.name')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('experience_years')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('status')
                     ->badge()
                     ->searchable(),
+                TextColumn::make('portfolio_url')
+                    ->label('Portfolio')
+                    ->url(fn ($state) => $state)
+                    ->formatStateUsing(fn () => 'Visit Portfolio')
+                    ->openUrlInNewTab()
+                    ->color('primary')
+                    ->weight('medium')
+                    ->icon('heroicon-o-link')
+                    ->iconPosition('before'),
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->searchable()
+                    ->formatStateUsing(fn (ExhibitorStatus $state) => match ($state) {
+                        ExhibitorStatus::PENDING => 'Pending',
+                        ExhibitorStatus::REJECTED => 'Rejected',
+                        ExhibitorStatus::APPROVED_INITIAL => 'Approved (Initial)',
+                        ExhibitorStatus::APPROVED_FINAL => 'Approved (Final)',
+                    })
+                    ->color(fn (ExhibitorStatus $state) => match ($state) {
+                        ExhibitorStatus::PENDING => 'warning',
+                        ExhibitorStatus::REJECTED => 'danger',
+                        ExhibitorStatus::APPROVED_INITIAL => 'info',
+                        ExhibitorStatus::APPROVED_FINAL => 'success',
+                    }),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -55,11 +78,71 @@ class ExhibitorApplicationsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+
+                SelectFilter::make('status')
+                    ->label('Status')
+                    ->options([
+                        ExhibitorStatus::PENDING->value => 'Pending',
+                        ExhibitorStatus::APPROVED_INITIAL->value => 'Approved (Initial)',
+                        ExhibitorStatus::APPROVED_FINAL->value => 'Approved (Final)',
+                        ExhibitorStatus::REJECTED->value => 'Rejected',
+                    ]),
+
+                SelectFilter::make('category')
+                    ->relationship('category', 'name')
+                    ->label('Category')
+                    ->searchable()
+                    ->preload(),
+
+                SelectFilter::make('event_occurrences_id')
+                    ->relationship('eventOccurrence', 'title')
+                    ->label('Event')
+                    ->searchable()
+                    ->preload(),
+
+                Filter::make('experience_years')
+                    ->form([
+                        TextInput::make('min')
+                            ->numeric()
+                            ->label('Min Years'),
+
+                        TextInput::make('max')
+                            ->numeric()
+                            ->label('Max Years'),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when(
+                                filled($data['min']),
+                                fn ($q) => $q->where('experience_years', '>=', $data['min'])
+                            )
+                            ->when(
+                                filled($data['max']),
+                                fn ($q) => $q->where('experience_years', '<=', $data['max'])
+                            );
+                    }),
+
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('from'),
+                        DatePicker::make('until'),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when(
+                                $data['from'],
+                                fn ($q) => $q->whereDate('created_at', '>=', $data['from'])
+                            )
+                            ->when(
+                                $data['until'],
+                                fn ($q) => $q->whereDate('created_at', '<=', $data['until'])
+                            );
+                    }),
+
             ])
             ->recordActions([
-                ViewAction::make()->modal(),
-                EditAction::make()->modal(),
+                ViewAction::make(),
+                EditAction::make(),
 
             Action::make('approveInitial')
                 ->label('Approve')
@@ -81,7 +164,12 @@ class ExhibitorApplicationsTable
                 ->icon('heroicon-o-x-circle')
                 ->color('danger')
                 ->requiresConfirmation()
-                ->visible(fn ($record) => $record->status === ExhibitorStatus::PENDING)
+                ->visible(fn ($record) =>
+                    in_array($record->status, [
+                        ExhibitorStatus::PENDING,
+                        ExhibitorStatus::APPROVED_INITIAL,
+                    ])
+                )
                 ->action(function ($record) {
                     $record->update(['status' => ExhibitorStatus::REJECTED]);
 

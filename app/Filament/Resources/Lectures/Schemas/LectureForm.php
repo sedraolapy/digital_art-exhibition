@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Lectures\Schemas;
 
 use App\Enums\EventOccurrenceStatus;
 use App\Models\EventDay;
+use App\Models\Lecture;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -19,10 +20,11 @@ class LectureForm
         return $schema
             ->components([
                 TextInput::make('title')
-                    ->rule('regex:/^[\p{Arabic}\s]+$/u')
+                    ->rule('regex:/^[\p{Arabic}0-9٠-٩\s.,،!?؟()\-]+$/u')
                     ->required(),
                 Textarea::make('description')
-                    ->rule('regex:/^[\p{Arabic}\s]+$/u')
+                    ->rule('regex:/^[\p{Arabic}0-9٠-٩\s.,،!?؟()\-]+$/u')
+                    ->maxLength(80)
                     ->default(null)
                     ->columnSpanFull(),
                 TextInput::make('speaker_name')
@@ -48,14 +50,37 @@ class LectureForm
                             $set('date', $day->date);
                         }
                     }),
+
                 TimePicker::make('start_time')
-                    ->required(),
+                    ->label('Start Time')
+                    ->required()
+                    ->seconds(false)
+                    ->live(),
+
                 TimePicker::make('end_time')
-                    ->required(),
+                    ->label('End Time')
+                    ->required()
+                    ->seconds(false)
+                    ->rules([
+                        function ($get) {
+                            return function (string $attribute, $value, \Closure $fail) use ($get) {
+
+                                $startTime = $get('start_time');
+
+                                if ($startTime && $value <= $startTime) {
+                                    $fail('End time must be after start time.');
+                                }
+                            };
+                        },
+                    ]),
+
                 SpatieMediaLibraryFileUpload::make('image')
                     ->required()
                     ->collection('lectures')
                     ->image()
+                    ->imageCropAspectRatio('16:9')
+                    ->imageEditor()
+                    ->hint('The image must be landscape (16:9 ratio)')
                     ->maxSize(1024)
                     ->validationMessages([
                         'max' => 'The image size must not exceed 1 MB.',

@@ -19,17 +19,22 @@ namespace App\Models{
  * @property \App\Enums\BookingStatus $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Models\Lecture $lecture
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Booking newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Booking newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Booking onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Booking query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Booking whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Booking whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Booking whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Booking whereLectureId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Booking whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Booking whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Booking whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Booking withTrashed(bool $withTrashed = true)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Booking withoutTrashed()
  */
 	class Booking extends \Eloquent {}
 }
@@ -67,6 +72,9 @@ namespace App\Models{
  * @property-read int|null $diamond_sponsors_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\EventOccurrence> $occurrences
  * @property-read int|null $occurrences_count
+ * @property-read \App\Models\CycleSponsor|null $pivot
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sponsor> $sponsors
+ * @property-read int|null $sponsors_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cycle newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cycle newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cycle query()
@@ -125,18 +133,20 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
+ * @property string $day_number
  * @property int $event_occurrences_id
  * @property string $date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Lecture> $lectures
  * @property-read int|null $lectures_count
- * @property-read \App\Models\EventOccurrence|null $occurrence
+ * @property-read \App\Models\EventOccurrence $occurrence
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay whereDayNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay whereEventOccurrencesId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay whereUpdatedAt($value)
@@ -162,6 +172,7 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ExhibitorProfile> $exhibitors
  * @property-read int|null $exhibitors_count
  * @property-read \App\Models\Location $location
+ * @property-read \App\Models\OccurrenceSponsor|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sponsor> $sponsors
  * @property-read int|null $sponsors_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventOccurrence newModelQuery()
@@ -228,12 +239,12 @@ namespace App\Models{
  * @property string $bio
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Booking> $bookings
+ * @property-read int|null $bookings_count
  * @property-read \App\Models\Category $category
  * @property-read \App\Models\EventOccurrence $eventOccurrence
  * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
  * @property-read int|null $media_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SocialLink> $socialLinks
- * @property-read int|null $social_links_count
  * @property-read \App\Models\User $user
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Vote> $votes
  * @property-read int|null $votes_count
@@ -288,9 +299,8 @@ namespace App\Models{
  * @property string $speaker_name
  * @property int $max_seats
  * @property int $event_day_id
- * @property string $date
- * @property \Illuminate\Support\Carbon $start_time
- * @property \Illuminate\Support\Carbon $end_time
+ * @property string $start_time
+ * @property string $end_time
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LectureAttendance> $attendance
@@ -298,11 +308,14 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Booking> $bookings
  * @property-read int|null $bookings_count
  * @property-read \App\Models\EventDay $day
+ * @property-read mixed $date
+ * @property-read mixed $has_ended
+ * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
+ * @property-read int|null $media_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Lecture newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Lecture newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Lecture query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Lecture whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Lecture whereDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Lecture whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Lecture whereEndTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Lecture whereEventDayId($value)
@@ -313,7 +326,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Lecture whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Lecture whereUpdatedAt($value)
  */
-	class Lecture extends \Eloquent {}
+	class Lecture extends \Eloquent implements \Spatie\MediaLibrary\HasMedia {}
 }
 
 namespace App\Models{
@@ -432,12 +445,14 @@ namespace App\Models{
 /**
  * @property int $id
  * @property string $name
- * @property string|null $logo_url
  * @property \App\Enums\SponsorType $type
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\OccurrenceSponsor|\App\Models\CycleSponsor|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Cycle> $cycles
  * @property-read int|null $cycles_count
+ * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
+ * @property-read int|null $media_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\EventOccurrence> $occurrences
  * @property-read int|null $occurrences_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Sponsor newModelQuery()
@@ -445,12 +460,11 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Sponsor query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Sponsor whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Sponsor whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Sponsor whereLogoUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Sponsor whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Sponsor whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Sponsor whereUpdatedAt($value)
  */
-	class Sponsor extends \Eloquent {}
+	class Sponsor extends \Eloquent implements \Spatie\MediaLibrary\HasMedia {}
 }
 
 namespace App\Models{
@@ -481,7 +495,6 @@ namespace App\Models{
  * @property string $phone
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property string $password
- * @property \App\Enums\Role $role
  * @property string|null $qr_token
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -490,11 +503,12 @@ namespace App\Models{
  * @property-read string $name
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LectureAttendance> $lectureAttendance
  * @property-read int|null $lecture_attendance_count
+ * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
+ * @property-read int|null $media_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
  * @property-read int|null $permissions_count
- * @property-read \App\Models\UserProfile|null $profile
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
  * @property-read int|null $roles_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SocialLink> $socialLinks
@@ -519,32 +533,11 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePhone($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereQrToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutPermission($permissions)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutRole($roles, $guard = null)
  */
-	class User extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * @property int $id
- * @property int $user_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
- * @property-read int|null $media_count
- * @property-read \App\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile whereUserId($value)
- */
-	class UserProfile extends \Eloquent implements \Spatie\MediaLibrary\HasMedia {}
+	class User extends \Eloquent implements \Spatie\MediaLibrary\HasMedia {}
 }
 
 namespace App\Models{
@@ -569,6 +562,29 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Vote whereUserId($value)
  */
 	class Vote extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property int $exhibitor_id
+ * @property int $event_occurrence_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\EventOccurrence $eventOccurrence
+ * @property-read \App\Models\ExhibitorProfile $exhibitor
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VotingResult newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VotingResult newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VotingResult query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VotingResult whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VotingResult whereEventOccurrenceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VotingResult whereExhibitorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VotingResult whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VotingResult whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|VotingResult whereUserId($value)
+ */
+	class VotingResult extends \Eloquent {}
 }
 
 namespace App\Models{

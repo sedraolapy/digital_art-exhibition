@@ -15,6 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class EventDayResource extends Resource
 {
@@ -23,6 +24,8 @@ class EventDayResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;
 
     protected static ?string $recordTitleAttribute = 'day_number';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Event Managment';
 
     public static function form(Schema $schema): Schema
     {

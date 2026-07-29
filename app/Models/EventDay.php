@@ -26,5 +26,10 @@ class EventDay extends Model
         return 'Day ' . $this->attributes['day_number'];
     }
 
+    public function attendances()
+    {
+        return $this->hasMany(EventAttendance::class, 'event_day_id');
+    }
+
 
 }

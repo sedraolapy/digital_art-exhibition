@@ -12,12 +12,8 @@ class LectureAttendance extends Model
     protected $fillable = [
         'user_id',
         'lecture_id',
-        'checkin_time',
     ];
 
-    protected $casts = [
-        'checkin_time' => 'datetime',
-    ];
 
     public function user()
     {

@@ -2,12 +2,18 @@
 
 namespace App\Filament\Resources\Lectures\Tables;
 
+use App\Models\EventDay;
+use App\Models\Lecture;
+use Carbon\Carbon;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class LecturesTable
@@ -20,7 +26,6 @@ class LecturesTable
                     ->searchable(),
                 ImageColumn::make('image')
                     ->label('Lecture Image')
-                    ->circular()
                     ->height(60)
                     ->width(60)
                     ->getStateUsing(fn ($record) =>
@@ -29,17 +34,14 @@ class LecturesTable
                         ),
                 TextColumn::make('speaker_name')
                     ->searchable(),
-                TextColumn::make('max_seats')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('day.day_number')
-                    ->label('Event day')
+                TextColumn::make('day.date')
+                    ->label('Date')
                     ->sortable(),
                 TextColumn::make('start_time')
-                    ->time()
+                    ->time('H:i')
                     ->sortable(),
                 TextColumn::make('end_time')
-                    ->time()
+                    ->time('H:i')
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -51,11 +53,54 @@ class LecturesTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('day_id')
+                    ->label('Event Day')
+                    ->options(
+                        EventDay::with('occurrence')
+                            ->get()
+                            ->mapWithKeys(fn ($day) => [
+                                $day->id => "{$day->day_number} - {$day->occurrence->title}",
+                            ])
+                    )
+                    ->searchable()
+                    ->query(function ($query, array $data) {
+
+                        if (! filled($data['value'])) {
+                            return;
+                        }
+
+                        $query->where('day_id', $data['value']);
+                    }),
+
+                SelectFilter::make('speaker_name')
+                    ->label('Speaker')
+                    ->options(fn () =>
+                        Lecture::query()
+                            ->pluck('speaker_name', 'speaker_name')
+                            ->unique()
+                    )
+                    ->searchable(),
+
+                Filter::make('date')
+                    ->form([
+                        DatePicker::make('date')
+                            ->label('Lecture Date'),
+                    ])
+                    ->query(function ($query, array $data) {
+
+                        if (! filled($data['date'])) {
+                            return;
+                        }
+
+                        $query->whereHas('day', function ($q) use ($data) {
+                            $q->whereDate('date', $data['date']);
+                        });
+                    }),
+
             ])
             ->recordActions([
-                ViewAction::make()->modal(),
-                EditAction::make()->modal(),
+                ViewAction::make(),
+                EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
