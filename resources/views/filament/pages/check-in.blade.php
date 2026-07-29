@@ -1,10 +1,5 @@
 <x-filament-panels::page>
 
-    <a
-        href="{{ $url }}"
-        class="fi-btn fi-btn-color-primary"
-    >
-        Open Check-in
-    </a>
+    {{ $this->form }}
 
 </x-filament-panels::page>

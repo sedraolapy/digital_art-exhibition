@@ -3,6 +3,7 @@
 namespace App\Services\Exhibitor;
 
 use App\Enums\EventOccurrenceStatus;
+use App\Models\EventAttendance;
 use App\Models\EventOccurrence;
 use App\Models\Vote;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +27,17 @@ class VoteService
         if (!$activeOccurrence->is_voting_enabled) {
             return [
                 'message' => 'التصويت غير مفعل حالياً ',
+                'data'    => null,
+            ];
+        }
+
+        $hasAttendance = EventAttendance::where('user_id', $userId)
+            ->whereHas('eventDay', function ($query) use ($activeOccurrence) {
+                $query->where('event_occurrences_id',$activeOccurrence->id);})->exists();
+
+        if (! $hasAttendance) {
+            return [
+                'message' => 'يجب حضور يوم واحد على الأقل من الحدث قبل التصويت',
                 'data'    => null,
             ];
         }

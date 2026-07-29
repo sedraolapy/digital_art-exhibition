@@ -63,6 +63,33 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
+ * @property int $user_id
+ * @property int $event_occurrence_id
+ * @property string $token
+ * @property \Illuminate\Support\Carbon $expires_at
+ * @property bool $is_active
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\EventOccurrence|null $event
+ * @property-read \App\Models\User $organizer
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession whereEventOccurrenceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession whereExpiresAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession whereToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession whereUserId($value)
+ */
+	class CheckInSession extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
  * @property string $name
  * @property string|null $start_date
  * @property string|null $end_date
@@ -138,6 +165,8 @@ namespace App\Models{
  * @property string $date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\EventAttendance> $attendances
+ * @property-read int|null $attendances_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Lecture> $lectures
  * @property-read int|null $lectures_count
  * @property-read \App\Models\EventOccurrence $occurrence
@@ -166,6 +195,8 @@ namespace App\Models{
  * @property \App\Enums\EventOccurrenceStatus $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\EventAttendance> $attendances
+ * @property-read int|null $attendances_count
  * @property-read \App\Models\Cycle $cycle
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\EventDay> $days
  * @property-read int|null $days_count

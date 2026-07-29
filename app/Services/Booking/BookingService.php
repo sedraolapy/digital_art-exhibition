@@ -13,22 +13,27 @@ class BookingService
     public function createBooking(int $userId, int $lectureId): Booking
     {
         return DB::transaction(function () use ($userId, $lectureId) {
-            $this->checkDuplicateBooking($userId, $lectureId);
-            $this->checkMaxBookings($userId);
+
             $lecture = $this->lockLecture($lectureId);
+
+            $eventOccurrenceId = $lecture->day->event_occurrences_id;
+
+            $this->checkDuplicateBooking($userId, $lectureId);
+
+            $this->checkMaxBookings($userId,$eventOccurrenceId);
+
             $this->checkLectureNotEnded($lecture);
+
             $this->checkSeatsAvailability($lecture);
 
-            $booking = Booking::create([
+
+            return Booking::create([
                 'user_id'    => $userId,
                 'lecture_id' => $lectureId,
                 'status'     => BookingStatus::CONFIRMED->value,
             ]);
-
-            return $booking;
         });
     }
-
     private function checkDuplicateBooking(int $userId, int $lectureId): void
     {
         $existing = Booking::where('user_id', $userId)
@@ -40,13 +45,19 @@ class BookingService
         }
     }
 
-    private function checkMaxBookings(int $userId): void
+    private function checkMaxBookings(int $userId, int $eventOccurrenceId): void
     {
-        $count = Booking::where('user_id', $userId)->count();
+        $count = Booking::where('user_id', $userId)
+            ->whereHas('lecture.day', function ($query) use ($eventOccurrenceId) {
+                $query->where('event_occurrences_id', $eventOccurrenceId);
+            })
+            ->count();
+
         if ($count >= 3) {
-            throw new \Exception('لا يمكنك حجز أكثر من 3 محاضرات');
+            throw new \Exception('لا يمكنك حجز أكثر من 3 محاضرات في نفس الحدث');
         }
     }
+
 
     private function lockLecture(int $lectureId): Lecture
     {

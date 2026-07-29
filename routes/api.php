@@ -67,6 +67,4 @@ use Illuminate\Support\Facades\Route;
 
 
 
-    Route::middleware(['auth:sanctum','permission:' . PermissionEnum::PERFORM_CHECK_IN->value])->group(function () {
-        Route::post('/check-in', [CheckInController::class, 'store']);
-    });
+    Route::post('/check-in',[CheckInController::class,'store'])->middleware('checkin.session');

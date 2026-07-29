@@ -55,4 +55,14 @@ class EventOccurrence extends Model
         )
         ->using(OccurrenceSponsor::class);
     }
+
+    public function attendances()
+    {
+        return $this->hasManyThrough(
+            EventAttendance::class,
+            EventDay::class,
+            'event_occurrences_id',
+            'event_day_id'
+        );
+    }
 }

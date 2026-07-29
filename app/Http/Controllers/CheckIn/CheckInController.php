@@ -19,11 +19,17 @@ class CheckInController extends Controller
 
     public function store(CheckInRequest $request)
     {
-        $result = $this->checkInService->checkIn($request->validated());
+        $session = $request->checkInSession;
+        $data = $request->validated();
+        $result = $this->checkInService->checkIn($data, $session);
+
 
         return response()->json([
             'message' => $result['message'],
-            'data'    => $result['data'] ? new UserResource($result['data']) : null,
+            'data' =>
+                $result['data']
+                    ? new UserResource($result['data'])
+                    : null,
         ]);
     }
 }

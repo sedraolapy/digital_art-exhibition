@@ -4,7 +4,14 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\CheckIn;
 use App\Filament\Pages\Dashboard as PagesDashboard;
+use App\Filament\Pages\EventDashboard;
+use App\Filament\Widgets\AttendanceAnalyticsStats;
+use App\Filament\Widgets\AttendanceOverviewStats;
 use App\Filament\Widgets\CurrentTimeWidget;
+use App\Filament\Widgets\EventAttendanceRanking;
+use App\Filament\Widgets\EventOverviewStats;
+use App\Filament\Widgets\EventStatusStats;
+use App\Filament\Widgets\SystemOverviewStats;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -48,10 +55,17 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 \Filament\Pages\Dashboard::class,
                 CheckIn::class,
+                EventDashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
+            // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
+                SystemOverviewStats::class,
+                EventStatusStats::class,
+                EventAttendanceRanking::class,
+
+                AttendanceOverviewStats::class,
+
             ])
             ->middleware([
                 EncryptCookies::class,
