@@ -2,44 +2,22 @@
 
 namespace App\Services\User;
 
-use App\Enums\EventOccurrenceStatus;
-use App\Models\EventOccurrence;
-use App\Models\ExhibitorApplication;
 use App\Models\User;
-use App\Services\Booking\BookingService;
 use App\Services\Exhibitor\SocialLinkService;
-use App\Services\Exhibitor\VoteService;
-use Illuminate\Support\Facades\Storage;
 
 class UserProfileService
 {
-    private SocialLinkService $socialLinkService;
-    private VoteService $voteService;
-    private BookingService $bookingService;
+    public function __construct(
+        private SocialLinkService $socialLinkService,
+        private UserDataService $userDataService,
+    ) {}
 
-    public function __construct(SocialLinkService $socialLinkService, VoteService $voteService, BookingService $bookingService)
+    public function getProfileData(User $user): User
     {
-        $this->socialLinkService = $socialLinkService;
-        $this->voteService = $voteService;
-        $this->bookingService = $bookingService;
+        return $this->userDataService->attachEventContext($user);
     }
 
-    public function getProfileData(User $user)
-    {
-        $profile = $user->first();
-
-        $votedExhibitors = $this->voteService->getUserVotesForActiveOccurrence($user->id);
-        $bookings = $this->bookingService->getUserConfirmedBookings($user->id);
-        $eventId = EventOccurrence::where('status', EventOccurrenceStatus::ACTIVE)->value('id');
-
-        $user->voted_exhibitors = $votedExhibitors;
-        $user->bookings = $bookings;
-        $user->exhibitor_application_status = ExhibitorApplication::where('user_id', $user->id)->where('event_occurrence_id',$eventId)->value('status');
-
-        return $user;
-    }
-
-    public function update(User $user, array $data)
+    public function update(User $user, array $data): User
     {
         $this->handleProfileImage($user, $data);
 
@@ -51,14 +29,7 @@ class UserProfileService
 
         $this->socialLinkService->updateLinks($user, $data);
 
-        $votedExhibitors = $this->voteService->getUserVotesForActiveOccurrence($user->id);
-        $bookings = $this->bookingService->getUserConfirmedBookings($user->id);
-
-        $user->voted_exhibitors = $votedExhibitors;
-        $user->bookings = $bookings;
-        $user->exhibitor_application_status = ExhibitorApplication::where('user_id', $user->id)->value('status');
-
-        return $user;
+        return $this->userDataService->attachEventContext($user);
     }
 
 
@@ -85,9 +56,7 @@ class UserProfileService
     //  حذف الصورة الحالية
     private function removeProfileImage(User $user): void
     {
-        if ($user) {
-            $user->clearMediaCollection('user_image');
-        }
+        $user->clearMediaCollection('user_image');
     }
 
 }

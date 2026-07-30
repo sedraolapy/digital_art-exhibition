@@ -45,20 +45,19 @@ class AuthService
 
     public function login(array $data): array
     {
-        $user = User::where('email',$data['email'])->first();
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        if (! $user ||! Hash::check($data['password'],$user->password))
-        {
+        $user = User::where('email', $data['email'])->first();
+        
+        if (! $user || ! Hash::check($data['password'], $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
 
+        $token = $user->createToken('auth_token')->plainTextToken;
+
         return [
             'user' => $this->userDataService->loadAuthData($user),
-            'token' => $token ,
+            'token' => $token,
         ];
     }
 

@@ -31,9 +31,12 @@ class BookingService
         });
     }
 
-    public function cancelBooking(int $bookingId): void
+    public function cancelBooking(int $bookingId, int $userId): void
     {
-        $booking = Booking::findOrFail($bookingId);
+        $booking = Booking::where('id', $bookingId)
+            ->where('user_id', $userId)
+            ->firstOrFail();
+
         $booking->update(['status' => BookingStatus::CANCELLED->value]);
         $booking->delete();
     }

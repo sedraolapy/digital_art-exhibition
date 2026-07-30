@@ -1,118 +1,65 @@
 <?php
+
 namespace App\Services\Exhibitor;
 
-use App\Enums\EventOccurrenceStatus;
 use App\Enums\RoleEnum;
-use App\Models\EventOccurrence;
 use App\Models\ExhibitorApplication;
 use App\Models\ExhibitorProfile;
 use App\Models\User;
-use App\Services\Booking\BookingService;
+use App\Services\User\UserDataService;
 use Illuminate\Support\Facades\DB;
+
 class ExhibitorProfileService
 {
-    private VoteService $voteService;
-    private BookingService $bookingService;
-    private SocialLinkService $socialLinkService;
-
-    public function __construct(VoteService $voteService, BookingService $bookingService, SocialLinkService $socialLinkService)
-    {
-        $this->voteService = $voteService;
-        $this->bookingService = $bookingService;
-        $this->socialLinkService = $socialLinkService;
-    }
+    public function __construct(
+        private SocialLinkService $socialLinkService,
+        private UserDataService $userDataService,
+    ) {}
 
     private function assignExhibitorRole(int $userId): void
     {
-        $user = User::findOrFail($userId);
-
-        $user->syncRoles(RoleEnum::EXHIBITOR->value);
+        User::findOrFail($userId)->syncRoles(RoleEnum::EXHIBITOR->value);
     }
 
     public function createFromApplication(ExhibitorApplication $application): ExhibitorProfile
     {
         $application->load('socialLinks');
-        return DB::transaction(function () use ($application) {
 
+        return DB::transaction(function () use ($application) {
             $profile = ExhibitorProfile::create([
-                'user_id'               => $application->user_id,
-                'event_occurrence_id'  => $application->event_occurrence_id,
-                'category_id'           => $application->category_id,
-                'experience_years'      => $application->experience_years,
-                'portfolio_url'         => $application->portfolio_url,
-                'bio'                   => $application->bio,
+                'user_id'             => $application->user_id,
+                'event_occurrence_id' => $application->event_occurrence_id,
+                'category_id'         => $application->category_id,
+                'experience_years'    => $application->experience_years,
+                'portfolio_url'       => $application->portfolio_url,
+                'bio'                 => $application->bio,
             ]);
 
-            if ($application->hasMedia('application_cv')) {
-                $media = $application->getFirstMedia('application_cv');
-
-                if ($media) {
-                    $profile->addMedia($media->getPath())
-                        ->preservingOriginal()
-                        ->toMediaCollection('exhibitor_cv');
-                }
-            }
-
-            if ($application->hasMedia('application_image')) {
-                $media = $application->getFirstMedia('application_image');
-
-                if ($media) {
-                    $profile->user->addMedia($media->getPath())
-                        ->preservingOriginal()
-                        ->toMediaCollection('exhibitor_image');
-                }
-            }
-
+            $this->transferCvFile($application, $profile);
+            $this->transferImage($application, $profile);
             $this->assignExhibitorRole($application->user_id);
-            $user = $profile->user->load('socialLinks');
-            $oldLinks = $application->socialLinks;
-
-            $data = [
-                'instagram' => $oldLinks->where('platform', 'instagram')->first()?->url,
-                'facebook'  => $oldLinks->where('platform', 'facebook')->first()?->url,
-                'linkedin'  => $oldLinks->where('platform', 'linkedin')->first()?->url,
-                'behance'   => $oldLinks->where('platform', 'behance')->first()?->url,
-            ];
-
-            $this->socialLinkService->updateLinks($profile->user, $data);
-
-
+            $this->updateSocialLinksFromApplication($application, $profile->user);
 
             return $profile;
         });
     }
 
-
-    public function getExhibitorProfileData(User $user)
+    public function getExhibitorProfileData(User $user): ?ExhibitorProfile
     {
         $profile = $user->exhibitorProfile()->first();
+        if (! $profile) {
+            return null;
+        }
 
-        $votedExhibitors = $this->voteService->getUserVotesForActiveOccurrence($user->id);
-        $bookings = $this->bookingService->getUserConfirmedBookings($user->id);
-        $eventId = EventOccurrence::where('status', EventOccurrenceStatus::ACTIVE)->value('id');
+        $profile->user = $this->userDataService->attachEventContext($user);
 
-        $user->voted_exhibitors = $votedExhibitors;
-        $user->bookings = $bookings;
-        $user->exhibitor_application_status = ExhibitorApplication::where('user_id', $user->id)->where('event_occurrence_id',$eventId)->value('status');
-
-        $profile->user = $user;
         return $profile;
     }
 
-
     public function update(ExhibitorProfile $profile, array $data): ExhibitorProfile
     {
-        if (isset($data['cv_file'])) {
-            $profile->clearMediaCollection('exhibitor_cv');
-            $profile->addMedia($data['cv_file'])
-                ->toMediaCollection('exhibitor_cv');
-        }
-
-        if (isset($data['image'])) {
-            $profile->user->clearMediaCollection('exhibitor_image');
-            $profile->user->addMedia($data['image'])
-                ->toMediaCollection('exhibitor_image');
-        }
+        $this->updateCvFile($profile, $data);
+        $this->updateImage($profile, $data);
 
         $profile->update([
             'category_id'      => $data['category_id'],
@@ -127,17 +74,62 @@ class ExhibitorProfileService
             'phone'      => $data['phone'],
         ]);
 
-        $user = $profile->user;
-
-        $votedExhibitors = $this->voteService->getUserVotesForActiveOccurrence($user->id);
-        $bookings = $this->bookingService->getUserConfirmedBookings($user->id);
-
-        $user->voted_exhibitors = $votedExhibitors;
-        $user->bookings = $bookings;
-        $user->exhibitor_application_status = ExhibitorApplication::where('user_id', $user->id)->value('status');
-
-        $profile->user = $user;
+        $profile->user = $this->userDataService->attachEventContext($profile->user);
 
         return $profile;
+    }
+
+
+    private function transferCvFile(ExhibitorApplication $application, ExhibitorProfile $profile): void
+    {
+        if ($application->hasMedia('application_cv')) {
+            $media = $application->getFirstMedia('application_cv');
+            if ($media) {
+                $profile->addMedia($media->getPath())
+                    ->preservingOriginal()
+                    ->toMediaCollection('exhibitor_cv');
+            }
+        }
+    }
+
+    private function transferImage(ExhibitorApplication $application, ExhibitorProfile $profile): void
+    {
+        if ($application->hasMedia('application_image')) {
+            $media = $application->getFirstMedia('application_image');
+            if ($media) {
+                $profile->user->addMedia($media->getPath())
+                    ->preservingOriginal()
+                    ->toMediaCollection('exhibitor_image');
+            }
+        }
+    }
+
+    private function updateSocialLinksFromApplication(ExhibitorApplication $application, User $user): void
+    {
+        $oldLinks = $application->socialLinks;
+
+        $data = collect(SocialLinkService::PLATFORMS)
+            ->mapWithKeys(fn ($platform) => [
+                $platform => $oldLinks->where('platform', $platform)->first()?->url,
+            ])
+            ->toArray();
+
+        $this->socialLinkService->updateLinks($user, $data);
+    }
+
+    private function updateCvFile(ExhibitorProfile $profile, array $data): void
+    {
+        if (isset($data['cv_file'])) {
+            $profile->clearMediaCollection('exhibitor_cv');
+            $profile->addMedia($data['cv_file'])->toMediaCollection('exhibitor_cv');
+        }
+    }
+
+    private function updateImage(ExhibitorProfile $profile, array $data): void
+    {
+        if (isset($data['image'])) {
+            $profile->user->clearMediaCollection('exhibitor_image');
+            $profile->user->addMedia($data['image'])->toMediaCollection('exhibitor_image');
+        }
     }
 }

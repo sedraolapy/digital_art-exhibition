@@ -2,20 +2,20 @@
 
 namespace App\Services\Exhibitor;
 
-use App\Enums\EventOccurrenceStatus;
 use App\Models\EventAttendance;
-use App\Models\EventOccurrence;
 use App\Models\Vote;
+use App\Services\Event\EventService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class VoteService
 {
+    public function __construct(private EventService $eventService) {}
+
     public function vote(int $exhibitorId): array
     {
         $userId = Auth::id();
 
-        $activeOccurrence = EventOccurrence::where('status', EventOccurrenceStatus::ACTIVE->value)->first();
+        $activeOccurrence = $this->eventService->getActiveEvent();
 
         if (! $activeOccurrence) {
             return [
@@ -24,7 +24,7 @@ class VoteService
             ];
         }
 
-        if (!$activeOccurrence->is_voting_enabled) {
+        if (! $activeOccurrence->is_voting_enabled) {
             return [
                 'message' => 'التصويت غير مفعل حالياً ',
                 'data'    => null,
@@ -33,7 +33,8 @@ class VoteService
 
         $hasAttendance = EventAttendance::where('user_id', $userId)
             ->whereHas('eventDay', function ($query) use ($activeOccurrence) {
-                $query->where('event_occurrence_id',$activeOccurrence->id);})->exists();
+                $query->where('event_occurrence_id', $activeOccurrence->id);
+            })->exists();
 
         if (! $hasAttendance) {
             return [
@@ -55,9 +56,9 @@ class VoteService
         }
 
         $vote = Vote::create([
-            'user_id'            => $userId,
-            'exhibitor_id'       => $exhibitorId,
-            'event_occurrence_id'=> $activeOccurrence->id,
+            'user_id'             => $userId,
+            'exhibitor_id'        => $exhibitorId,
+            'event_occurrence_id' => $activeOccurrence->id,
         ]);
 
         return [
@@ -68,7 +69,7 @@ class VoteService
 
     public function getUserVotesForActiveOccurrence(int $userId): array
     {
-        $activeOccurrence = EventOccurrence::where('status', EventOccurrenceStatus::ACTIVE->value)->first();
+        $activeOccurrence = $this->eventService->getActiveEvent();
 
         if (! $activeOccurrence) {
             return [];

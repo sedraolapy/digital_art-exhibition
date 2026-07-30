@@ -28,36 +28,28 @@ class UserService
     }
 
 
-    public function getUserProfile($user): array
+    public function getUserProfile(User $user): array
     {
         $user->is_checked_in = $this->checkInService->hasCheckedIn($user);
 
-
         if ($user->hasRole(RoleEnum::EXHIBITOR->value)) {
-
             return [
                 'type' => 'exhibitor',
                 'data' => $this->exhibitorProfileService->getExhibitorProfileData($user),
             ];
         }
 
-
         if ($user->hasRole(RoleEnum::USER->value)) {
-
             return [
                 'type' => 'user',
                 'data' => $this->userProfileService->getProfileData($user),
             ];
         }
 
-
         return [
             'type' => null,
             'data' => null,
         ];
     }
-
-
-
 
 }

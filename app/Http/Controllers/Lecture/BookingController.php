@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Lecture\StoreBookingRequest;
 use App\Http\Resources\Booking\BookingResource;
 use App\Services\Booking\BookingService;
+use Auth;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
@@ -24,9 +25,12 @@ class BookingController extends Controller
         ]);
     }
 
-    public function destroy($id)
+    public function destroy(int $id)
     {
-        $this->bookingService->cancelBooking($id);
+        $this->bookingService->cancelBooking(
+            $id,
+            Auth::id()
+        );
 
         return response()->json([
             'message' => 'تم إلغاء الحجز بنجاح',

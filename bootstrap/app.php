@@ -22,11 +22,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'checkin.session' => \App\Http\Middleware\CheckInSessionMiddleware::class,
         ]);
 
-        $middleware->validateCsrfTokens(except: [
-            'api/check-in',
-            'check-in',
-            'api/check-in/*',
-        ]);
 
     })
     ->withExceptions(function (Exceptions $exceptions): void {

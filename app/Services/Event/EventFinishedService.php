@@ -38,11 +38,8 @@ class EventFinishedService
                 if (! $exhibitor->user) {
                     return;
                 }
-
-                $exhibitor->user->syncRoles([
-                    RoleEnum::USER->value,
-                ]);
-
+                
+                $exhibitor->user->syncRoles([RoleEnum::USER->value,]);
             });
     }
 }
