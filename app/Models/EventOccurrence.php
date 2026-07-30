@@ -42,7 +42,7 @@ class EventOccurrence extends Model
 
     public function exhibitors()
     {
-        return $this->hasMany(ExhibitorProfile::class);
+        return $this->hasMany(ExhibitorProfile::class,'event_occurrences_id');
     }
 
     public function sponsors()

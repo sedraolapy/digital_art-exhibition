@@ -66,5 +66,5 @@ use Illuminate\Support\Facades\Route;
     });
 
 
-
+    Route::middleware('auth:sanctum')->get('/check-in/session', [CheckInSessionController::class, 'show']);
     Route::post('/check-in',[CheckInController::class,'store'])->middleware('checkin.session');

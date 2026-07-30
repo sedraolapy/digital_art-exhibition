@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Event;
+namespace App\Services\CeckIn;
 
 use App\Enums\BookingStatus;
 use App\Models\Booking;

@@ -20,6 +20,8 @@ class MemberForm
                     ->required()
                     ->hint('Enter the full name in Arabic')
                     ->rule('regex:/^[\p{Arabic}\s]+$/u'),
+                TextInput::make('role')
+                    ->required(),
                 Textarea::make('bio')
                     ->required()
                     ->maxLength(80)

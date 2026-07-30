@@ -6,6 +6,7 @@ use App\Enums\EventOccurrenceStatus;
 use App\Enums\ExperienceStatus;
 use App\Models\EventOccurrence;
 use App\Models\Experience;
+use App\Services\Event\EventFinishedService;
 use Illuminate\Validation\ValidationException;
 
 class EventOccurrenceObserver
@@ -27,13 +28,8 @@ class EventOccurrenceObserver
             $eventOccurrence->wasChanged('status') &&
             $eventOccurrence->status === EventOccurrenceStatus::FINISHED
         ) {
-            Experience::create([
-                'title'       => $eventOccurrence->title,
-                'description' => null,
-                'start_date'  => $eventOccurrence->start_date,
-                'end_date'    => $eventOccurrence->end_date,
-                'status'      => ExperienceStatus::DRAFT->value,
-            ]);
+            app(EventFinishedService::class)
+                ->handle($eventOccurrence);
         }
     }
 
