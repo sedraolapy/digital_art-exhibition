@@ -16,7 +16,7 @@ use App\Services\Event\EventService;
 
 class CheckInService
 {
-    public function __construct(private EventService $eventService){}
+    public function __construct(private EventService $eventService) {}
 
     public function checkIn(array $data, CheckInSession $session): array
     {
@@ -25,29 +25,21 @@ class CheckInService
         if (! $user) {
             return [
                 'message' => 'QR غير صالح',
-                'data' => null,
+                'data' => null
             ];
         }
 
         if (! empty($data['lecture_id'])) {
-            return $this->handleLectureCheckIn(
-                $user,
-                $data['lecture_id'],
-                $session
-            );
+            return $this->handleLectureCheckIn($user, $data['lecture_id'], $session);
         }
 
         if (! empty($data['event_day_id'])) {
-            return $this->handleEventDayCheckIn(
-                $user,
-                $data['event_day_id'],
-                $session
-            );
+            return $this->handleEventDayCheckIn($user, $data['event_day_id'], $session);
         }
 
         return [
             'message' => 'لم يتم تحديد نوع الحضور',
-            'data' => null,
+            'data' => null
         ];
     }
 
@@ -56,48 +48,34 @@ class CheckInService
         return User::where('qr_token', $qrCode)->first();
     }
 
-    private function handleLectureCheckIn(
-        User $user,
-        int $lectureId,
-        CheckInSession $session
-    ): array {
-
+    private function handleLectureCheckIn(User $user, int $lectureId, CheckInSession $session): array
+    {
         $lecture = Lecture::with('day')
             ->whereKey($lectureId)
-            ->whereHas('day', function ($query) use ($session) {
-                $query->where(
-                    'event_occurrence_id',
-                    $session->event_occurrence_id
-                );
-            })
+            ->whereHas('day', fn($query) =>
+                $query->where('event_occurrence_id', $session->event_occurrence_id)
+            )
             ->first();
 
         if (! $lecture) {
             return [
                 'message' => 'هذه المحاضرة لا تتبع للحدث الحالي',
-                'data' => null,
+                'data' => null
             ];
         }
 
         if (! $this->hasConfirmedBooking($user, $lecture->id)) {
             return [
                 'message' => 'المستخدم غير مسجل على هذه المحاضرة',
-                'data' => null,
+                'data' => null
             ];
         }
 
-        return $this->registerLectureAttendance(
-            $user,
-            $lecture
-        );
+        return $this->registerLectureAttendance($user, $lecture);
     }
 
-    private function handleEventDayCheckIn(
-        User $user,
-        int $dayId,
-        CheckInSession $session
-    ): array {
-
+    private function handleEventDayCheckIn(User $user, int $dayId, CheckInSession $session): array
+    {
         $event = EventOccurrence::whereKey($session->event_occurrence_id)
             ->where('status', EventOccurrenceStatus::ACTIVE->value)
             ->first();
@@ -105,7 +83,7 @@ class CheckInService
         if (! $event) {
             return [
                 'message' => 'الحدث غير نشط',
-                'data' => null,
+                'data' => null
             ];
         }
 
@@ -116,35 +94,23 @@ class CheckInService
         if (! $day) {
             return [
                 'message' => 'هذا اليوم لا يتبع للحدث الحالي',
-                'data' => null,
+                'data' => null
             ];
         }
 
-        return $this->registerEventAttendance(
-            $user,
-            $day
-        );
+        return $this->registerEventAttendance($user, $day);
     }
 
-    private function hasConfirmedBooking(
-        User $user,
-        int $lectureId
-    ): bool {
-
+    private function hasConfirmedBooking(User $user, int $lectureId): bool
+    {
         return Booking::where('user_id', $user->id)
             ->where('lecture_id', $lectureId)
-            ->where(
-                'status',
-                BookingStatus::CONFIRMED->value
-            )
+            ->where('status', BookingStatus::CONFIRMED->value)
             ->exists();
     }
 
-    private function registerLectureAttendance(
-        User $user,
-        Lecture $lecture
-    ): array {
-
+    private function registerLectureAttendance(User $user, Lecture $lecture): array
+    {
         $attendance = LectureAttendance::firstOrCreate([
             'user_id' => $user->id,
             'lecture_id' => $lecture->id,
@@ -153,21 +119,18 @@ class CheckInService
         if (! $attendance->wasRecentlyCreated) {
             return [
                 'message' => 'تم تسجيل حضور المستخدم مسبقاً لهذه المحاضرة',
-                'data' => $user,
+                'data' => $user
             ];
         }
 
         return [
             'message' => 'تم تسجيل الحضور للمحاضرة بنجاح',
-            'data' => $user,
+            'data' => $user
         ];
     }
 
-    private function registerEventAttendance(
-        User $user,
-        EventDay $day
-    ): array {
-
+    private function registerEventAttendance(User $user, EventDay $day): array
+    {
         $attendance = EventAttendance::firstOrCreate([
             'user_id' => $user->id,
             'event_day_id' => $day->id,
@@ -176,16 +139,15 @@ class CheckInService
         if (! $attendance->wasRecentlyCreated) {
             return [
                 'message' => 'تم تسجيل حضور المستخدم مسبقاً لهذا اليوم',
-                'data' => $user,
+                'data' => $user
             ];
         }
 
         return [
             'message' => 'تم تسجيل الحضور لليوم بنجاح',
-            'data' => $user,
+            'data' => $user
         ];
     }
-
 
     public function hasCheckedIn(User $user): bool
     {
@@ -195,8 +157,8 @@ class CheckInService
         }
 
         return $user->eventAttendances()
-            ->whereHas('eventDay', function ($query) use ($event) {
-                $query->where('event_occurrence_id', $event->id);
-            })->exists();
+            ->whereHas('eventDay', fn($query) =>
+                $query->where('event_occurrence_id', $event->id)
+            )->exists();
     }
 }
