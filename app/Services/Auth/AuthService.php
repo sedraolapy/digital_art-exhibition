@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\Exhibitor\SocialLinkService;
 use App\Services\User\UserDataService;
 use App\Services\User\UserQrService;
+use App\Services\User\UserService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -18,6 +19,7 @@ class AuthService
         private SocialLinkService $socialLinkService,
         private UserDataService $userDataService,
         private UserQrService $userQrService,
+        private UserService $userService,
     ) {}
 
 
@@ -25,7 +27,8 @@ class AuthService
     {
         return DB::transaction(function () use ($data) {
 
-            $user = $this->createUser($data);
+            $user = $this->userService->createUser($data);
+
             $user->assignRole(RoleEnum::USER->value);
             $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -40,19 +43,16 @@ class AuthService
     }
 
 
-
-
     public function login(array $data): array
     {
         $user = User::where('email',$data['email'])->first();
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         if (! $user ||! Hash::check($data['password'],$user->password))
         {
             throw ValidationException::withMessages([
-                'email' => [
-                    'The provided credentials are incorrect.'
-                ],
+                'email' => ['The provided credentials are incorrect.'],
             ]);
         }
 
@@ -62,28 +62,9 @@ class AuthService
         ];
     }
 
-
-
-
     public function logout(User $user): void
     {
         $user->tokens()->delete();
-    }
-
-
-
-
-    private function createUser(array $data): User
-    {
-        return User::create([
-            'first_name' => $data['first_name'],
-            'last_name'  => $data['last_name'],
-            'email'      => $data['email'],
-            'phone'      => $data['phone'],
-            'password'   => Hash::make(
-                $data['password']
-            ),
-        ]);
     }
 
 }

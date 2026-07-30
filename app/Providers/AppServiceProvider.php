@@ -27,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
     {
         EventOccurrence::observe(EventOccurrenceObserver::class);
 
+        Carbon::setLocale('ar');
         date_default_timezone_set('Asia/Damascus');
 
         Gate::before(function ($user, $ability) {

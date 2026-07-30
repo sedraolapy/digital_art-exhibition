@@ -70,4 +70,13 @@ class ExhibitorApplicationService
             ->toMediaCollection('application_image');
     }
 
+    public function getApplicationStatus(
+        int $userId,
+        int $eventOccurrenceId
+    ): ?string {
+        return ExhibitorApplication::where('user_id', $userId)
+            ->where('event_occurrence_id', $eventOccurrenceId)
+            ->value('status');
+    }
+
 }

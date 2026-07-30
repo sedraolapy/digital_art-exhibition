@@ -8,7 +8,6 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\User\UserResource;
 use App\Models\ExhibitorApplication;
 use App\Services\Auth\AuthService;
-use App\Services\CheckIn\UserAttendanceService;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller

@@ -3,22 +3,34 @@
 namespace App\Services\User;
 
 use App\Enums\RoleEnum;
-use App\Services\CheckIn\UserAttendanceService;
+use App\Models\User;
+use App\Services\CheckIn\CheckInService;
 use App\Services\Exhibitor\ExhibitorProfileService;
+use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
     public function __construct(
-        private UserAttendanceService $attendanceService,
         private ExhibitorProfileService $exhibitorProfileService,
-        private UserProfileService $userProfileService
+        private UserProfileService $userProfileService,
+        private CheckInService $checkInService,
     ) {}
 
+    public function createUser(array $data): User
+    {
+        return User::create([
+            'first_name' => $data['first_name'],
+            'last_name'  => $data['last_name'],
+            'email'      => $data['email'],
+            'phone'      => $data['phone'],
+            'password'   => Hash::make($data['password']),
+        ]);
+    }
 
 
     public function getUserProfile($user): array
     {
-        $user->is_checked_in = $this->attendanceService->hasCheckedIn($user);
+        $user->is_checked_in = $this->checkInService->hasCheckedIn($user);
 
 
         if ($user->hasRole(RoleEnum::EXHIBITOR->value)) {
@@ -44,4 +56,8 @@ class UserService
             'data' => null,
         ];
     }
+
+
+
+
 }

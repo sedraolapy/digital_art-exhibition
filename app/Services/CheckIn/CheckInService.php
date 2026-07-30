@@ -12,9 +12,12 @@ use App\Models\EventOccurrence;
 use App\Models\Lecture;
 use App\Models\LectureAttendance;
 use App\Models\User;
+use App\Services\Event\EventService;
 
 class CheckInService
 {
+    public function __construct(private EventService $eventService){}
+
     public function checkIn(array $data, CheckInSession $session): array
     {
         $user = $this->findUser($data['qr_code']);
@@ -181,5 +184,19 @@ class CheckInService
             'message' => 'تم تسجيل الحضور لليوم بنجاح',
             'data' => $user,
         ];
+    }
+
+
+    public function hasCheckedIn(User $user): bool
+    {
+        $event = $this->eventService->getActiveEvent();
+        if (! $event) {
+            return false;
+        }
+
+        return $user->eventAttendances()
+            ->whereHas('eventDay', function ($query) use ($event) {
+                $query->where('event_occurrence_id', $event->id);
+            })->exists();
     }
 }
