@@ -8,12 +8,7 @@ use App\Services\Booking\LectureService;
 
 class LectureController extends Controller
 {
-    private LectureService $lectureService;
-
-    public function __construct(LectureService $lectureService)
-    {
-        $this->lectureService = $lectureService;
-    }
+    public function __construct(private LectureService $lectureService){}
 
     public function index()
     {

@@ -43,7 +43,7 @@ class EventDaysTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                SelectFilter::make('event_occurrences_id')
+                SelectFilter::make('event_occurrence_id')
                     ->label('Event Occurrence')
                     ->relationship('occurrence', 'title')
                     ->searchable()

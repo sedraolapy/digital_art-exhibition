@@ -2,23 +2,20 @@
 
 namespace App\Http\Controllers\CheckIn;
 
-use App\Enums\EventOccurrenceStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Event\EventDayResource;
-use App\Models\EventDay;
-use App\Models\EventOccurrence;
-use Illuminate\Http\Request;
+use App\Services\Event\EventService;
 
 class EventController extends Controller
 {
+    public function __construct(private EventService $eventService) {}
+
     public function index()
     {
-        $currentEventId = EventOccurrence::where('status', EventOccurrenceStatus::ACTIVE->value)->pluck('id');
-
-        $eventDays = EventDay::where('event_occurrences_id', $currentEventId)->get();
+        $eventDays = $this->eventService->getActiveEventDays();
 
         return response()->json([
-            'message' => 'تم جلب الايام بنجاح',
+            'message' => 'تم جلب الأيام بنجاح',
             'data' => EventDayResource::collection($eventDays),
         ]);
     }

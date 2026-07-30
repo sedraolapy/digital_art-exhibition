@@ -16,8 +16,8 @@ class EventDayResource extends JsonResource
     {
         return [
             'id'       => $this->id,
-            'day_number'  =>$this->day_number,
-            'event_occurrences_id'  =>$this->event_occurrences_id,
+            'day_number'  =>$this->day_label,
+            'event_occurrence_id'  =>$this->event_occurrence_id,
             'date'  =>$this->date,
         ];
     }

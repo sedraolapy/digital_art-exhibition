@@ -27,8 +27,6 @@ class MemberResource extends JsonResource
                     'url'      => $link->url,
                 ];
             }),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ];
     }
 }

@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Services\CeckIn;
+namespace App\Services\CheckIn;
 
 use App\Enums\BookingStatus;
+use App\Enums\EventOccurrenceStatus;
 use App\Models\Booking;
 use App\Models\CheckInSession;
 use App\Models\EventAttendance;
 use App\Models\EventDay;
+use App\Models\EventOccurrence;
 use App\Models\Lecture;
 use App\Models\LectureAttendance;
 use App\Models\User;
@@ -51,66 +53,80 @@ class CheckInService
         return User::where('qr_token', $qrCode)->first();
     }
 
-    private function handleLectureCheckIn(User $user,int $lectureId,CheckInSession $session): array {
+    private function handleLectureCheckIn(
+        User $user,
+        int $lectureId,
+        CheckInSession $session
+    ): array {
 
-        $lecture = Lecture::with('day')->find($lectureId);
+        $lecture = Lecture::with('day')
+            ->whereKey($lectureId)
+            ->whereHas('day', function ($query) use ($session) {
+                $query->where(
+                    'event_occurrence_id',
+                    $session->event_occurrence_id
+                );
+            })
+            ->first();
 
         if (! $lecture) {
             return [
-                'message' => 'المحاضرة غير موجودة',
+                'message' => 'هذه المحاضرة لا تتبع للحدث الحالي',
                 'data' => null,
             ];
         }
 
-        if (! $this->lectureBelongsToEvent($lecture, $session)) {
-            return [
-                'message' => 'هذه المحاضرة لا تتبع لهذا الحدث',
-                'data' => null,
-            ];
-        }
-
-        if (! $this->hasConfirmedBooking($user, $lectureId)) {
+        if (! $this->hasConfirmedBooking($user, $lecture->id)) {
             return [
                 'message' => 'المستخدم غير مسجل على هذه المحاضرة',
-                'data' => $user,
+                'data' => null,
             ];
         }
 
-        return $this->registerLectureAttendance($user,$lecture);
+        return $this->registerLectureAttendance(
+            $user,
+            $lecture
+        );
     }
 
-    private function handleEventDayCheckIn(User $user,int $dayId,CheckInSession $session): array {
+    private function handleEventDayCheckIn(
+        User $user,
+        int $dayId,
+        CheckInSession $session
+    ): array {
 
-        $day = EventDay::find($dayId);
+        $event = EventOccurrence::whereKey($session->event_occurrence_id)
+            ->where('status', EventOccurrenceStatus::ACTIVE->value)
+            ->first();
+
+        if (! $event) {
+            return [
+                'message' => 'الحدث غير نشط',
+                'data' => null,
+            ];
+        }
+
+        $day = EventDay::whereKey($dayId)
+            ->where('event_occurrence_id', $event->id)
+            ->first();
 
         if (! $day) {
             return [
-                'message' => 'اليوم غير موجود',
+                'message' => 'هذا اليوم لا يتبع للحدث الحالي',
                 'data' => null,
             ];
         }
 
-        if (! $this->dayBelongsToEvent($day, $session)) {
-            return [
-                'message' => 'هذا اليوم لا يتبع لهذا الحدث',
-                'data' => null,
-            ];
-        }
-
-        return $this->registerEventAttendance($user,$day);
+        return $this->registerEventAttendance(
+            $user,
+            $day
+        );
     }
 
-    private function lectureBelongsToEvent(Lecture $lecture,CheckInSession $session): bool {
-        return $lecture->day->event_occurrences_id
-            == $session->event_occurrence_id;
-    }
-
-    private function dayBelongsToEvent(EventDay $day,CheckInSession $session): bool {
-        return $day->event_occurrences_id
-            == $session->event_occurrence_id;
-    }
-
-    private function hasConfirmedBooking(User $user,int $lectureId): bool {
+    private function hasConfirmedBooking(
+        User $user,
+        int $lectureId
+    ): bool {
 
         return Booking::where('user_id', $user->id)
             ->where('lecture_id', $lectureId)
@@ -121,7 +137,10 @@ class CheckInService
             ->exists();
     }
 
-    private function registerLectureAttendance(User $user,Lecture $lecture): array {
+    private function registerLectureAttendance(
+        User $user,
+        Lecture $lecture
+    ): array {
 
         $attendance = LectureAttendance::firstOrCreate([
             'user_id' => $user->id,
@@ -141,7 +160,10 @@ class CheckInService
         ];
     }
 
-    private function registerEventAttendance(User $user,EventDay $day): array {
+    private function registerEventAttendance(
+        User $user,
+        EventDay $day
+    ): array {
 
         $attendance = EventAttendance::firstOrCreate([
             'user_id' => $user->id,

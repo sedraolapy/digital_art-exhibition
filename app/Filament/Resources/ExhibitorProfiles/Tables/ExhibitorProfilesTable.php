@@ -54,7 +54,7 @@ class ExhibitorProfilesTable
                     ->relationship('category', 'name')
                     ->searchable()
                     ->preload(),
-                SelectFilter::make('event_occurrences_id')
+                SelectFilter::make('event_occurrence_id')
                     ->label('Event')
                     ->relationship('eventOccurrence', 'title')
                     ->searchable()

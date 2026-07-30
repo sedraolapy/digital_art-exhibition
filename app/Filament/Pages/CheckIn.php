@@ -59,31 +59,21 @@ class CheckIn extends Page
                 ->action(function () {
 
                     $data = $this->form->getState();
-
-
+                    $token = Str::random(64);
                     $session = CheckInSession::create([
-
                         'user_id' => Auth::id(),
-
-                        'event_occurrence_id' =>
-                            $data['eventOccurrenceId'],
-
-                        'token' =>
-                            Str::random(64),
-
-                        'expires_at' =>
-                            now()->addHours(2),
-
+                        'event_occurrence_id' => $data['eventOccurrenceId'],
+                        'token_hash' => hash('sha256', $token),
+                        'expires_at' => now()->addHours(1),
                     ]);
-
-
                     return redirect(
                         config('app.frontend_url')
                         . '/check-in?session='
-                        . $session->token
+                        . $token
                     );
 
                 }),
         ];
     }
+
 }

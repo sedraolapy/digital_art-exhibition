@@ -21,7 +21,7 @@ class ExhibitorProfileSeeder extends Seeder
         if ($user && $occurrence && $category) {
             $profile1 = ExhibitorProfile::create([
                 'user_id'             => $user->id,
-                'event_occurrences_id'=> $occurrence->id,
+                'event_occurrence_id'=> $occurrence->id,
                 'category_id'         => $category->id,
                 'experience_years'    => 5,
                 'portfolio_url'       => 'https://portfolio.example.com/sedra',
@@ -52,7 +52,7 @@ class ExhibitorProfileSeeder extends Seeder
         if ($user2 && $occurrence && $category) {
             $profile2 = ExhibitorProfile::create([
                 'user_id'             => $user2->id,
-                'event_occurrences_id'=> $occurrence->id,
+                'event_occurrence_id'=> $occurrence->id,
                 'category_id'         => $category->id,
                 'experience_years'    => 3,
                 'portfolio_url'       => 'https://portfolio.example.com/user2',

@@ -30,7 +30,7 @@ class DaysRelationManager extends RelationManager
                             ->required()
                             ->default(function () {
                                 return EventDay::where(
-                                    'event_occurrences_id',
+                                    'event_occurrence_id',
                                     $this->getOwnerRecord()->id
                                 )->count() + 1;
                             }),
@@ -45,7 +45,7 @@ class DaysRelationManager extends RelationManager
                                 column: 'date',
                                 ignoreRecord: true,
                                 modifyRuleUsing: fn (Unique $rule) => $rule->where(
-                                    'event_occurrences_id',
+                                    'event_occurrence_id',
                                     $this->getOwnerRecord()->id,
                                 ),
                             )

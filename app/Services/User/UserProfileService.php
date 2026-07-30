@@ -2,6 +2,8 @@
 
 namespace App\Services\User;
 
+use App\Enums\EventOccurrenceStatus;
+use App\Models\EventOccurrence;
 use App\Models\ExhibitorApplication;
 use App\Models\User;
 use App\Services\Booking\BookingService;
@@ -28,10 +30,11 @@ class UserProfileService
 
         $votedExhibitors = $this->voteService->getUserVotesForActiveOccurrence($user->id);
         $bookings = $this->bookingService->getUserConfirmedBookings($user->id);
+        $eventId = EventOccurrence::where('status', EventOccurrenceStatus::ACTIVE)->value('id');
 
         $user->voted_exhibitors = $votedExhibitors;
         $user->bookings = $bookings;
-        $user->exhibitor_application_status = ExhibitorApplication::where('user_id', $user->id)->value('status');
+        $user->exhibitor_application_status = ExhibitorApplication::where('user_id', $user->id)->where('event_occurrence_id',$eventId)->value('status');
 
         return $user;
     }

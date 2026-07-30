@@ -18,6 +18,9 @@ use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\UserProfileController;
 use App\Enums\PermissionEnum;
 use App\Enums\RoleEnum;
+use App\Http\Controllers\Category\CategoryController;
+use App\Http\Controllers\CheckIn\CheckInSessionController;
+use App\Http\Middleware\CheckInSessionMiddleware;
 use Illuminate\Support\Facades\Route;
 
 
@@ -37,13 +40,12 @@ use Illuminate\Support\Facades\Route;
     Route::get('/statistics', [StatisticController::class, 'index']);
     Route::get('/lectures', [LectureController::class, 'index']);
     Route::get('/sponsors', [SponsorController::class, 'index']);
-    Route::get('/categories', [SponsorController::class, 'getCategoris']);
+    Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/days', [EventController::class, 'index']);
 
 
     // User
     Route::middleware(['auth:sanctum','role:' . RoleEnum::USER->value])->group(function () {
-        Route::get('/user/profile', [UserProfileController::class, 'show']);
         Route::put('/user/profile', [UserProfileController::class, 'update']);
         Route::post('/exhibitor-applications', [ExhibitorApplicationController::class, 'store']);
     });
@@ -51,7 +53,6 @@ use Illuminate\Support\Facades\Route;
 
     // Exhibitor
     Route::middleware(['auth:sanctum','role:' . RoleEnum::EXHIBITOR->value,])->group(function () {
-        Route::get('/exhibitor/profile', [ExhibitorProfileController::class, 'show']);
         Route::put('/exhibitor/profile', [ExhibitorProfileController::class, 'update']);
     });
 
@@ -66,5 +67,6 @@ use Illuminate\Support\Facades\Route;
     });
 
 
-    Route::middleware('auth:sanctum')->get('/check-in/session', [CheckInSessionController::class, 'show']);
-    Route::post('/check-in',[CheckInController::class,'store'])->middleware('checkin.session');
+    Route::get('/check-in/session',[CheckInSessionController::class, 'show']);
+
+    Route::post('/check-in', [CheckInController::class, 'store'])->middleware('checkin.session');

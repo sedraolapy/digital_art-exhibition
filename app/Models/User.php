@@ -79,6 +79,11 @@ class User extends Authenticatable implements HasMedia
         return $this->morphMany(SocialLink::class, 'linkable');
     }
 
+    public function eventAttendances()
+    {
+        return $this->hasMany(EventAttendance::class);
+    }
+
     public function getFilamentName(): string
     {
         return trim(($this->first_name ?? '') . ' ' . ($this->last_name ?? ''));

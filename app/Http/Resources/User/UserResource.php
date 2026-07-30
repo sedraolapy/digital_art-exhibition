@@ -24,22 +24,25 @@ class UserResource extends JsonResource
                     ? 'exhibitor_image'
                     : 'user_image'
             )->map(fn ($media) => $media->getFullUrl('webp')),
+
             'first_name' => $this->first_name,
             'last_name'  => $this->last_name,
             'email'      => $this->email,
             'phone'      => $this->phone,
+            
             'social_links'     => $this->socialLinks->map(function ($link) {
                 return [
                     'platform' => $link->platform,
                     'url'      => $link->url,
                 ];
             })??null,
+
             'role' => $this->getRoleNames()->first(),
             'qr_code'    => $this->qr_token,
             'voted_exhibitors' => $this->voted_exhibitors ?? [],
             'bookings'         => $this->bookings ?? [],
             'exhibitor_application_status' => $this->exhibitor_application_status,
-            'created_at' => $this->created_at->toDateTimeString(),
+            'is_checked_in' => $this->when(isset($this->is_checked_in),(bool) $this->is_checked_in),
         ];
     }
 }

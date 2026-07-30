@@ -21,8 +21,9 @@ class ExperienceForm
                     ->required(),
                 Textarea::make('description')
                     ->required()
-                    ->rule('regex:/^[\p{Arabic}0-9٠-٩\s.,،!?؟()\-]+$/u')
-                    ->hint('Enter the description in Arabic')
+                    // ->maxLength(1000) // أو أي حد مناسب
+                    // ->rule('regex:/^[\p{Arabic}0-9٠-٩\s.,،!?؟()\-]+$/u')
+                    // ->hint('Enter the description in Arabic')
                     ->columnSpanFull(),
                 DatePicker::make('start_date')
                     ->disabled()

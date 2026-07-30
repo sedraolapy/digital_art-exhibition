@@ -10,25 +10,18 @@ use Illuminate\Http\Request;
 
 class BookingController extends Controller
 {
-    protected BookingService $bookingService;
-
-    public function __construct(BookingService $bookingService)
-    {
-        $this->bookingService = $bookingService;
-    }
+    public function __construct(private BookingService $bookingService){}
 
     public function store(StoreBookingRequest $request)
     {
-        $userId = $request->user()->id;
-        $lectureId = $request->lecture_id;
+        $data = $request->validated();
 
-        $booking = $this->bookingService->createBooking($userId, $lectureId);
+        $booking = $this->bookingService->createBooking($request->user()->id,$data['lecture_id']);
 
         return response()->json([
             'message' => 'تم الحجز بنجاح',
-            'data'    => new BookingResource($booking),
+            'data' => new BookingResource($booking),
         ]);
-
     }
 
     public function destroy($id)

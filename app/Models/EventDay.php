@@ -8,22 +8,22 @@ class EventDay extends Model
 {
     protected $fillable = [
         'day_number',
-        'event_occurrences_id',
+        'event_occurrence_id',
         'date',
     ];
 
     public function occurrence()
     {
-        return $this->belongsTo(EventOccurrence::class, 'event_occurrences_id');
+        return $this->belongsTo(EventOccurrence::class, 'event_occurrence_id');
     }
 
     public function lectures()
     {
         return $this->hasMany(Lecture::class);
     }
-    public function getDayNumberAttribute(): string
+    public function getDayLabelAttribute(): string
     {
-        return 'Day ' . $this->attributes['day_number'];
+        return 'Day ' . $this->day_number;
     }
 
     public function attendances()

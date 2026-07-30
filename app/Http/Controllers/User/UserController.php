@@ -2,57 +2,40 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Enums\RoleEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Exhibitor\ExhibitorProfileResource;
 use App\Http\Resources\User\UserResource;
-use App\Models\ExhibitorApplication;
-use App\Services\Exhibitor\ExhibitorProfileService;
-use App\Services\User\UserProfileService;
+use App\Services\User\UserService;
 use Illuminate\Http\Request;
+
 
 class UserController extends Controller
 {
-    private UserProfileService $userProfileService;
-    private ExhibitorProfileService $exhibitorProfileService;
-
-    public function __construct(UserProfileService $userProfileService, ExhibitorProfileService $exhibitorProfileService)
-    {
-        $this->userProfileService = $userProfileService;
-        $this->exhibitorProfileService = $exhibitorProfileService;
-    }
+    public function __construct(private UserService $userService) {}
 
     public function user(Request $request)
     {
-        $user = $request->user();
+        $result = $this->userService->getUserProfile($request->user());
 
-        $applicationStatus = ExhibitorApplication::where('user_id', $user->id )->value('status');
-        $user->exhibitor_application_status = $applicationStatus;
+        return match ($result['type']) {
 
-        if ($user->hasRole(RoleEnum::EXHIBITOR->value)) {
+            'exhibitor' =>
+                response()->json([
+                    'message' => 'تم عرض ملف العارض بنجاح',
+                    'data' => new ExhibitorProfileResource($result['data']),
+                ]),
 
-            $profile = $this->exhibitorProfileService->getExhibitorProfileData($user);
+            'user' =>
+                response()->json([
+                    'message' => 'تم عرض ملف المستخدم بنجاح',
+                    'data' => new UserResource($result['data']),
+                ]),
 
-            return response()->json([
-                'message' => 'تم عرض ملف العارض بنجاح',
-                'data'    => new ExhibitorProfileResource($profile),
-            ]);
-        }
-
-
-        if ($user->hasRole(RoleEnum::USER->value)) {
-
-            $profile = $this->userProfileService->getProfileData($user);
-
-            return response()->json([
-                'message' => 'تم عرض ملف المستخدم بنجاح',
-                'data'    => new UserResource($user),
-            ]);
-        }
-
-        return response()->json([
-            'message' => 'لا يوجد ملف مرتبط بهذا الدور',
-            'data'    => null,
-        ]);
+            default =>
+                response()->json([
+                    'message' => 'لا يوجد ملف مرتبط بهذا الدور',
+                    'data' => null,
+                ]),
+        };
     }
 }

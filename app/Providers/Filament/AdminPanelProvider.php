@@ -63,7 +63,6 @@ class AdminPanelProvider extends PanelProvider
                 SystemOverviewStats::class,
                 EventStatusStats::class,
                 EventAttendanceRanking::class,
-
                 AttendanceOverviewStats::class,
 
             ])

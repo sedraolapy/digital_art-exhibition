@@ -15,23 +15,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 class ExhibitorProfileController extends Controller
 {
-    private ExhibitorProfileService $profileService;
 
-    public function __construct(ExhibitorProfileService $profileService)
-    {
-        $this->profileService = $profileService;
-    }
-
-    public function show()
-    {
-        $user = Auth::user();
-        $profile = $this->profileService->getExhibitorProfileData($user);
-
-        return response()->json([
-            'message' => 'تم عرض ملف العارض بنجاح',
-            'data'    => new ExhibitorProfileResource($profile),
-        ]);
-    }
+    public function __construct(private ExhibitorProfileService $profileService){}
 
     public function update(UpdateExhibitorProfileRequest $request)
     {

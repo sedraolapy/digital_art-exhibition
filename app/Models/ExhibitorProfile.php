@@ -16,7 +16,7 @@ class ExhibitorProfile extends Model implements HasMedia
         'experience_years',
         'portfolio_url',
         'bio',
-        'event_occurrences_id',
+        'event_occurrence_id',
         'category_id',
     ];
 
@@ -33,7 +33,7 @@ class ExhibitorProfile extends Model implements HasMedia
 
     public function eventOccurrence()
     {
-        return $this->belongsTo(EventOccurrence::class, 'event_occurrences_id');
+        return $this->belongsTo(EventOccurrence::class, 'event_occurrence_id');
     }
 
     public function category()
@@ -43,7 +43,14 @@ class ExhibitorProfile extends Model implements HasMedia
 
     public function bookings()
     {
-        return $this->hasMany(Booking::class, 'user_id', 'user_id');
+        return $this->hasManyThrough(
+            Booking::class,
+            User::class,
+            'id',       // المفتاح على users يلي بيربط مع exhibitor_profiles.user_id
+            'user_id',  // المفتاح على bookings يلي بيربط مع users.id
+            'user_id',  // المفتاح المحلي على exhibitor_profiles
+            'id'        // المفتاح المحلي على users
+        );
     }
 
 

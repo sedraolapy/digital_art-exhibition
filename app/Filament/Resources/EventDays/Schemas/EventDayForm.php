@@ -15,7 +15,7 @@ class EventDayForm
     {
         return $schema
             ->components([
-                Select::make('event_occurrences_id')
+                Select::make('event_occurrence_id')
                     ->label('Event Occurrence')
                     ->relationship('occurrence', 'title')
                     ->searchable()
@@ -27,34 +27,34 @@ class EventDayForm
                     ->numeric()
                     ->reactive()
                     ->default(function (callable $get) {
-                        $occurrenceId = $get('event_occurrences_id');
+                        $occurrenceId = $get('event_occurrence_id');
 
                         if (!$occurrenceId) {
                             return 1;
                         }
 
-                        return EventDay::where('event_occurrences_id', $occurrenceId)->count() + 1;
+                        return EventDay::where('event_occurrence_id', $occurrenceId)->count() + 1;
                     }),
 
                 DatePicker::make('date')
                     ->required()
                     ->reactive()
                     ->minDate(function (callable $get) {
-                        $occurrenceId = $get('event_occurrences_id');
+                        $occurrenceId = $get('event_occurrence_id');
                         if (!$occurrenceId) return null;
 
                         $occurrence = EventOccurrence::find($occurrenceId);
                         return $occurrence?->start_date;
                     })
                     ->maxDate(function (callable $get) {
-                        $occurrenceId = $get('event_occurrences_id');
+                        $occurrenceId = $get('event_occurrence_id');
                         if (!$occurrenceId) return null;
 
                         $occurrence = EventOccurrence::find($occurrenceId);
                         return $occurrence?->end_date;
                     })
                     ->rule(function (callable $get) {
-                        $occurrenceId = $get('event_occurrences_id');
+                        $occurrenceId = $get('event_occurrence_id');
                         if (!$occurrenceId) return null;
 
                         $occurrence = EventOccurrence::find($occurrenceId);

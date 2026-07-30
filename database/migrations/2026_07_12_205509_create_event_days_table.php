@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('event_days', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('day_number');
-            $table->foreignId('event_occurrences_id')->constrained();
+            $table->foreignId('event_occurrence_id')->constrained();
             $table->date('date');
             $table->timestamps();
         });

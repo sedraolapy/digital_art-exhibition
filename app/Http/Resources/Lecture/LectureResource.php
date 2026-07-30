@@ -25,12 +25,10 @@ class LectureResource extends JsonResource
             'date'        => $this->date,
             'start_time'  => $this->start_time,
             'end_time'    => $this->end_time,
-
             'hasEnded' => $this->hasEnded,
-
             'event_day'   => [
-                'day_number' => $this->day?->day_number,
-                'date'       => $this->day?->date,
+                'day_number' => $this->day->day_number,
+                'date'       => $this->day->date,
             ],
         ];
     }

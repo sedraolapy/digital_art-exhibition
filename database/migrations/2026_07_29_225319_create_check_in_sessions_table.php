@@ -23,17 +23,10 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
-
-            $table->string('token')
-                ->unique();
-
-
-            $table->timestamp('expires_at');
-
-
-            $table->boolean('is_active')
-                ->default(true);
-
+            $table->string('token_hash')->unique();
+            $table->string('device_id')->nullable();
+            $table->timestamp('expires_at')->nullable();
+            $table->boolean('is_active')->default(true);
 
             $table->timestamps();
         });

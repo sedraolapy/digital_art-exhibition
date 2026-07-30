@@ -25,7 +25,7 @@ class ExhibitorApplicationService
             $currentEvent = EventOccurrence::where('status', EventOccurrenceStatus::ACTIVE->value)->firstOrFail();
 
             $existing = ExhibitorApplication::where('user_id', $user->id)
-                ->where('event_occurrences_id', $currentEvent->id)
+                ->where('event_occurrence_id', $currentEvent->id)
                 ->first();
 
             if ($existing) {
@@ -35,7 +35,7 @@ class ExhibitorApplicationService
 
             $application = ExhibitorApplication::create([
                 'user_id'              => $user->id,
-                'event_occurrences_id' => $currentEvent->id,
+                'event_occurrence_id' => $currentEvent->id,
                 'category_id'          => $data['category_id'],
                 'experience_years'     => $data['experience_years'],
                 'portfolio_url'        => $data['portfolio_url'],

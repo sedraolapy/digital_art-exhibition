@@ -17,7 +17,7 @@ class ExhibitorApplication extends Model implements HasMedia
         'experience_years',
         'portfolio_url',
         'bio',
-        'event_occurrences_id',
+        'event_occurrence_id',
         'category_id',
     ];
 
@@ -37,7 +37,7 @@ class ExhibitorApplication extends Model implements HasMedia
 
     public function eventOccurrence()
     {
-        return $this->belongsTo(EventOccurrence::class, 'event_occurrences_id');
+        return $this->belongsTo(EventOccurrence::class, 'event_occurrence_id');
     }
 
     public function category()

@@ -16,25 +16,7 @@ use Illuminate\Support\Facades\Auth;
 
 class UserProfileController extends Controller
 {
-    private UserProfileService $profileService;
-
-    public function __construct(UserProfileService $profileService)
-    {
-        $this->profileService = $profileService;
-    }
-
-    public function show()
-    {
-        $user = Auth::user();
-
-        $user = $this->profileService->getProfileData($user);
-
-        return response()->json([
-            'message' => 'تم عرض ملف المستخدم بنجاح',
-            'data'    => new UserResource($user),
-        ]);
-    }
-
+    public function __construct(private UserProfileService $profileService){}
 
     public function update(UpdateUserProfileRequest $request)
     {

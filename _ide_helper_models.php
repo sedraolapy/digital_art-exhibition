@@ -65,22 +65,24 @@ namespace App\Models{
  * @property int $id
  * @property int $user_id
  * @property int $event_occurrence_id
- * @property string $token
- * @property \Illuminate\Support\Carbon $expires_at
+ * @property string $token_hash
+ * @property string|null $device_id
+ * @property \Illuminate\Support\Carbon|null $expires_at
  * @property bool $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\EventOccurrence|null $event
+ * @property-read \App\Models\EventOccurrence $event
  * @property-read \App\Models\User $organizer
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession whereDeviceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession whereEventOccurrenceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession whereExpiresAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession whereIsActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession whereToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession whereTokenHash($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession whereUserId($value)
  */
@@ -160,13 +162,14 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property string $day_number
- * @property int $event_occurrences_id
+ * @property int $day_number
+ * @property int $event_occurrence_id
  * @property string $date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\EventAttendance> $attendances
  * @property-read int|null $attendances_count
+ * @property-read string $day_label
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Lecture> $lectures
  * @property-read int|null $lectures_count
  * @property-read \App\Models\EventOccurrence $occurrence
@@ -176,7 +179,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay whereDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay whereDayNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay whereEventOccurrencesId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay whereEventOccurrenceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDay whereUpdatedAt($value)
  */
@@ -227,7 +230,7 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $user_id
- * @property int $event_occurrences_id
+ * @property int $event_occurrence_id
  * @property int $category_id
  * @property \App\Enums\ExhibitorStatus $status
  * @property int $experience_years
@@ -248,7 +251,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereBio($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereEventOccurrencesId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereEventOccurrenceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereExperienceYears($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorApplication wherePortfolioUrl($value)
@@ -263,7 +266,7 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $user_id
- * @property int $event_occurrences_id
+ * @property int $event_occurrence_id
  * @property int $category_id
  * @property int $experience_years
  * @property string $portfolio_url
@@ -285,7 +288,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereBio($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereEventOccurrencesId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereEventOccurrenceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereExperienceYears($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ExhibitorProfile wherePortfolioUrl($value)
@@ -530,6 +533,8 @@ namespace App\Models{
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\EventAttendance> $eventAttendances
+ * @property-read int|null $event_attendances_count
  * @property-read \App\Models\ExhibitorProfile|null $exhibitorProfile
  * @property-read string $name
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LectureAttendance> $lectureAttendance

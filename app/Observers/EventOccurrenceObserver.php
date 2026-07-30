@@ -3,75 +3,55 @@
 namespace App\Observers;
 
 use App\Enums\EventOccurrenceStatus;
-use App\Enums\ExperienceStatus;
 use App\Models\EventOccurrence;
-use App\Models\Experience;
 use App\Services\Event\EventFinishedService;
 use Illuminate\Validation\ValidationException;
 
 class EventOccurrenceObserver
 {
-    /**
-     * Handle the EventOccurrence "created" event.
-     */
     public function created(EventOccurrence $eventOccurrence): void
     {
-        //
+       //
     }
 
-    /**
-     * Handle the EventOccurrence "updated" event.
-     */
     public function updated(EventOccurrence $eventOccurrence): void
     {
-        if (
-            $eventOccurrence->wasChanged('status') &&
-            $eventOccurrence->status === EventOccurrenceStatus::FINISHED
-        ) {
-            app(EventFinishedService::class)
-                ->handle($eventOccurrence);
+        if ($this->finishedEvent($eventOccurrence)) {
+            app(EventFinishedService::class)->handle($eventOccurrence);
         }
     }
 
     public function updating(EventOccurrence $eventOccurrence): void
     {
-        if (
-            $eventOccurrence->isDirty('status') &&
-            $eventOccurrence->status === EventOccurrenceStatus::ACTIVE
-        ) {
-            $exists = EventOccurrence::query()
-                ->where('status', EventOccurrenceStatus::ACTIVE)
-                ->whereKeyNot($eventOccurrence->id)
-                ->exists();
-
-            if ($exists) {
-                throw ValidationException::withMessages([
-                    'status' => 'There is already an active event.',
-                ]);
-            }
+        if ($this->activatingEvent($eventOccurrence) && $this->anotherActiveEventExists($eventOccurrence)) {
+            throw ValidationException::withMessages([
+                'status' => 'There is already an active event.',
+            ]);
         }
     }
-    /**
-     * Handle the EventOccurrence "deleted" event.
-     */
-    public function deleted(EventOccurrence $eventOccurrence): void
+
+    public function deleted(EventOccurrence $eventOccurrence): void {}
+    public function restored(EventOccurrence $eventOccurrence): void {}
+    public function forceDeleted(EventOccurrence $eventOccurrence): void {}
+
+    // 🔹 دوال خاصة لتوضيح المنطق
+    private function finishedEvent(EventOccurrence $eventOccurrence): bool
     {
-        //
+        return $eventOccurrence->wasChanged('status')
+            && $eventOccurrence->status === EventOccurrenceStatus::FINISHED;
     }
 
-    /**
-     * Handle the EventOccurrence "restored" event.
-     */
-    public function restored(EventOccurrence $eventOccurrence): void
+    private function activatingEvent(EventOccurrence $eventOccurrence): bool
     {
-        //
+        return $eventOccurrence->isDirty('status')
+            && $eventOccurrence->status === EventOccurrenceStatus::ACTIVE;
     }
 
-    /**
-     * Handle the EventOccurrence "force deleted" event.
-     */
-    public function forceDeleted(EventOccurrence $eventOccurrence): void
+    private function anotherActiveEventExists(EventOccurrence $eventOccurrence): bool
     {
-        //
+        return EventOccurrence::query()
+            ->where('status', EventOccurrenceStatus::ACTIVE)
+            ->whereKeyNot($eventOccurrence->id)
+            ->exists();
     }
 }

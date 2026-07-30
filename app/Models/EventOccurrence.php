@@ -36,24 +36,22 @@ class EventOccurrence extends Model
 
     public function days()
     {
-        return $this->hasMany(EventDay::class, 'event_occurrences_id');
+        return $this->hasMany(EventDay::class, 'event_occurrence_id');
     }
 
 
     public function exhibitors()
     {
-        return $this->hasMany(ExhibitorProfile::class,'event_occurrences_id');
+        return $this->hasMany(ExhibitorProfile::class, 'event_occurrence_id');
     }
 
     public function sponsors()
     {
-        return $this->belongsToMany(
-            Sponsor::class,
+        return $this->belongsToMany(Sponsor::class,
             'occurrence_sponsors',
             'event_occurrence_id',
             'sponsor_id'
-        )
-        ->using(OccurrenceSponsor::class);
+        )->using(OccurrenceSponsor::class);
     }
 
     public function attendances()
@@ -61,7 +59,7 @@ class EventOccurrence extends Model
         return $this->hasManyThrough(
             EventAttendance::class,
             EventDay::class,
-            'event_occurrences_id',
+            'event_occurrence_id',
             'event_day_id'
         );
     }

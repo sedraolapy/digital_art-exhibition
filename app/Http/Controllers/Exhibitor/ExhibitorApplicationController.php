@@ -10,28 +10,18 @@ use Illuminate\Http\Request;
 
 class ExhibitorApplicationController extends Controller
 {
-    private ExhibitorApplicationService $service;
-
-    public function __construct(ExhibitorApplicationService $service)
-    {
-        $this->service = $service;
-    }
+    public function __construct(private ExhibitorApplicationService $service){}
 
     public function store(StoreExhibitorApplicationRequest $request)
     {
         $data = $request->validated();
         $user = $request->user();
-        $application = $this->service->create($user, $data);
 
-        $application->load([
-            'user',
-            'eventOccurrence',
-            'category',
-        ]);
+        $application = $this->service->create($user, $data);
 
         return response()->json([
             'message' => 'تم تقديم طلبك كعارض بنجاح. يرجى متابعة بريدك الإلكتروني لتلقي ردنا قريباً',
-            'data' => new ApplicationResource($application),
+            'data' => null,
         ]);
     }
 }

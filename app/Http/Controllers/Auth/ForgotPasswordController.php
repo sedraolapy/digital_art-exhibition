@@ -9,12 +9,8 @@ use App\Services\Auth\ForgotPasswordService;
 
 class ForgotPasswordController extends Controller
 {
-    private ForgotPasswordService $service;
 
-    public function __construct(ForgotPasswordService $service)
-    {
-        $this->service = $service;
-    }
+    public function __construct(private ForgotPasswordService $service){}
 
     public function sendResetLink(ForgotPasswordRequest $request)
     {

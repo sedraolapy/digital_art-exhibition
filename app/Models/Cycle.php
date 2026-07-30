@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\SponsorType;
 use Illuminate\Database\Eloquent\Model;
 
 class Cycle extends Model
@@ -20,17 +21,15 @@ class Cycle extends Model
     public function diamondSponsors()
     {
         return $this->belongsToMany(Sponsor::class, 'cycle_sponsors')
-            ->where('type', 'diamond');
+            ->where('sponsors.type', SponsorType::DIAMOND->value);
     }
 
     public function sponsors()
     {
-        return $this->belongsToMany(
-            Sponsor::class,
+        return $this->belongsToMany(Sponsor::class,
             'cycle_sponsors',
             'cycle_id',
             'sponsor_id'
-        )
-        ->using(CycleSponsor::class);
+        )->using(CycleSponsor::class);
     }
 }

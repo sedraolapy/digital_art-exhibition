@@ -94,7 +94,7 @@ class ExhibitorApplicationsTable
                     ->searchable()
                     ->preload(),
 
-                SelectFilter::make('event_occurrences_id')
+                SelectFilter::make('event_occurrence_id')
                     ->relationship('eventOccurrence', 'title')
                     ->label('Event')
                     ->searchable()

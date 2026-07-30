@@ -33,7 +33,7 @@ class VoteService
 
         $hasAttendance = EventAttendance::where('user_id', $userId)
             ->whereHas('eventDay', function ($query) use ($activeOccurrence) {
-                $query->where('event_occurrences_id',$activeOccurrence->id);})->exists();
+                $query->where('event_occurrence_id',$activeOccurrence->id);})->exists();
 
         if (! $hasAttendance) {
             return [

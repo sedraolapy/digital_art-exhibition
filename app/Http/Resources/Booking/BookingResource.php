@@ -18,9 +18,9 @@ class BookingResource extends JsonResource
         return [
             'id'       => $this->id,
             'user_id'  =>$this->user_id,
+            'lecture_id'  =>$this->lecture_id,
             'status'   => $this->status,
             'created_at' => $this->created_at->toDateTimeString(),
-            'lecture'  => new LectureResource($this->lecture),
         ];
     }
 }

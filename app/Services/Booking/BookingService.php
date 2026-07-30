@@ -16,7 +16,7 @@ class BookingService
 
             $lecture = $this->lockLecture($lectureId);
 
-            $eventOccurrenceId = $lecture->day->event_occurrences_id;
+            $eventOccurrenceId = $lecture->day->event_occurrence_id;
 
             $this->checkDuplicateBooking($userId, $lectureId);
 
@@ -49,7 +49,7 @@ class BookingService
     {
         $count = Booking::where('user_id', $userId)
             ->whereHas('lecture.day', function ($query) use ($eventOccurrenceId) {
-                $query->where('event_occurrences_id', $eventOccurrenceId);
+                $query->where('event_occurrence_id', $eventOccurrenceId);
             })
             ->count();
 

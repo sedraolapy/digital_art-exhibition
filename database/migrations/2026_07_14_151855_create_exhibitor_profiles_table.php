@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')
                 ->constrained('users')
                 ->onDelete('cascade');
-            $table->foreignId('event_occurrences_id')->constrained();
+            $table->foreignId('event_occurrence_id')->constrained();
             $table->foreignId('category_id')
                 ->constrained('categories')
                 ->restrictOnDelete();

@@ -20,7 +20,7 @@ class ExhibitorProfileResource extends JsonResource
         return [
             'user'             => new UserResource($this->user),
             'exhibitor_id'     => $this->id,
-            'category'         => $this->category?->name,
+            'category'         => $this->category->name,
             'bio'              => $this->bio,
             'experience_years' => $this->experience_years,
             'cv_file'          =>$this->getMedia('exhibitor_cv')->map(fn($media) => $media->getFullUrl()),

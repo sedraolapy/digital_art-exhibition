@@ -28,17 +28,17 @@ class EventsOccurrencesSeeder extends Seeder
             'status' => EventOccurrenceStatus::ACTIVE->value,
         ]);
         EventDay::firstOrCreate([
-            'event_occurrences_id' => $event1->id,
+            'event_occurrence_id' => $event1->id,
             'day_number' => 1,
             'date' => '2026-08-20',
         ]);
         EventDay::firstOrCreate([
-            'event_occurrences_id' => $event1->id,
+            'event_occurrence_id' => $event1->id,
             'day_number' => 2,
             'date' => '2026-08-21',
         ]);
         EventDay::firstOrCreate([
-            'event_occurrences_id' => $event1->id,
+            'event_occurrence_id' => $event1->id,
             'day_number' => 3,
             'date' => '2026-08-22',
         ]);
@@ -55,7 +55,7 @@ class EventsOccurrencesSeeder extends Seeder
         ]);
 
         EventDay::firstOrCreate([
-            'event_occurrences_id' => $event2->id,
+            'event_occurrence_id' => $event2->id,
             'day_number' => 1,
             'date' => '2026-08-31',
         ]);

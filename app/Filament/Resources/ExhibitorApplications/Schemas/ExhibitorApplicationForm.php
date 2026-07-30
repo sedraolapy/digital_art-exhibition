@@ -31,7 +31,7 @@ class ExhibitorApplicationForm
                     ->preload()
                     ->required(),
 
-                Select::make('event_occurrences_id')
+                Select::make('event_occurrence_id')
                     ->relationship(
                         name: 'eventOccurrence',
                         titleAttribute: 'id',
@@ -61,7 +61,7 @@ class ExhibitorApplicationForm
                 SpatieMediaLibraryFileUpload::make('cv_file')
                     ->collection('application_cv')
                     ->label('CV File')
-                    ->openable()              
+                    ->openable()
                     ->required(),
 
                 TextInput::make('portfolio_url')

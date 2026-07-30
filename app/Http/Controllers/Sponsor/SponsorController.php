@@ -13,12 +13,7 @@ use Illuminate\Http\Request;
 
 class SponsorController extends Controller
 {
-    private SponsorService $sponsorService;
-
-    public function __construct(SponsorService $sponsorService)
-    {
-        $this->sponsorService = $sponsorService;
-    }
+    public function __construct(private SponsorService $sponsorService){}
 
     public function index()
     {
@@ -30,13 +25,4 @@ class SponsorController extends Controller
         ]);
     }
 
-    public function getCategoris()
-    {
-        $categories= Category::where('is_active', true)->get();
-
-        return response()->json([
-            'message' => 'تم جلب التصنيفات بنجاح',
-            'data'    => $categories,
-        ]);
-    }
 }

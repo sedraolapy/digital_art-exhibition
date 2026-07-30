@@ -19,7 +19,6 @@ class VoteResource extends JsonResource
             'user_id'            => $this->user_id,
             'exhibitor_id'       => $this->exhibitor_id,
             'event_occurrence_id'=> $this->event_occurrence_id,
-            'created_at'         => $this->created_at->toDateTimeString(),
         ];
     }
 }

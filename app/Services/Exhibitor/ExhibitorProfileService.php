@@ -1,7 +1,9 @@
 <?php
 namespace App\Services\Exhibitor;
 
+use App\Enums\EventOccurrenceStatus;
 use App\Enums\RoleEnum;
+use App\Models\EventOccurrence;
 use App\Models\ExhibitorApplication;
 use App\Models\ExhibitorProfile;
 use App\Models\User;
@@ -34,7 +36,7 @@ class ExhibitorProfileService
 
             $profile = ExhibitorProfile::create([
                 'user_id'               => $application->user_id,
-                'event_occurrences_id'  => $application->event_occurrences_id,
+                'event_occurrence_id'  => $application->event_occurrence_id,
                 'category_id'           => $application->category_id,
                 'experience_years'      => $application->experience_years,
                 'portfolio_url'         => $application->portfolio_url,
@@ -87,10 +89,11 @@ class ExhibitorProfileService
 
         $votedExhibitors = $this->voteService->getUserVotesForActiveOccurrence($user->id);
         $bookings = $this->bookingService->getUserConfirmedBookings($user->id);
+        $eventId = EventOccurrence::where('status', EventOccurrenceStatus::ACTIVE)->value('id');
 
         $user->voted_exhibitors = $votedExhibitors;
         $user->bookings = $bookings;
-        $user->exhibitor_application_status = ExhibitorApplication::where('user_id', $user->id)->value('status');
+        $user->exhibitor_application_status = ExhibitorApplication::where('user_id', $user->id)->where('event_occurrence_id',$eventId)->value('status');
 
         $profile->user = $user;
         return $profile;
