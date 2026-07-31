@@ -32,6 +32,11 @@ class SponsorSeeder extends Seeder
             'type' => SponsorType::SILVER->value,
         ]);
 
+        $logistic = Sponsor::create([
+            'name' => 'Logistic Sponsor',
+            'type' => SponsorType::LOGISTIC->value,
+        ]);
+
 
         $cycle = Cycle::first();
         $occurrence = EventOccurrence::first();
@@ -41,6 +46,13 @@ class SponsorSeeder extends Seeder
             DB::table('cycle_sponsors')->insert([
                 'cycle_id' => $cycle->id,
                 'sponsor_id' => $diamond->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            DB::table('cycle_sponsors')->insert([
+                'cycle_id' => $cycle->id,
+                'sponsor_id' => $logistic->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
