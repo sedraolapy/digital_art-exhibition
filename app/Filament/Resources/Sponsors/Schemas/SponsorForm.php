@@ -38,6 +38,7 @@ class SponsorForm
                         SponsorType::DIAMOND->value => 'Diamond',
                         SponsorType::GOLD->value => 'Gold',
                         SponsorType::SILVER->value => 'Silver',
+                        SponsorType::LOGISTIC->value => 'Logistic',
                     ])
                     ->required()
                     ->live(),
@@ -53,7 +54,10 @@ class SponsorForm
                     ->searchable()
                     ->required()
                     ->visible(fn ($get) =>
-                        $get('type') === SponsorType::DIAMOND->value
+                        in_array($get('type'),[
+                            $get('type') === SponsorType::DIAMOND->value ,
+                            $get('type') === SponsorType::LOGISTIC->value ,
+                        ])
                     ),
 
                 Select::make('occurrences')

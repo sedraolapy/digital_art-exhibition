@@ -7,4 +7,5 @@ enum SponsorType: string
     case DIAMOND = 'diamond';
     case GOLD = 'gold';
     case SILVER = 'silver';
+    case LOGISTIC = 'logistic';
 }

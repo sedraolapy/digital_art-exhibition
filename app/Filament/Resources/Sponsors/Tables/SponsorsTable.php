@@ -31,6 +31,7 @@ class SponsorsTable
                         SponsorType::DIAMOND => 'info',
                         SponsorType::GOLD => 'warning',
                         SponsorType::SILVER => 'gray',
+                        SponsorType::LOGISTIC => 'secondary',
                     })
                     ->formatStateUsing(fn ($state) => ucfirst($state->value)),
                 TextColumn::make('cycles_count')
@@ -54,6 +55,7 @@ class SponsorsTable
                         'diamond'=>'Diamond',
                         'gold'=>'Gold',
                         'silver'=>'Silver',
+                        'logistic'=>'Logistic',
                     ])
             ])
             ->recordActions([
