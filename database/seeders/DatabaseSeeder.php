@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             ExhibitorProfileSeeder::class,
             MemberSeeder::class,
+            WorkshopSeeder::class,
         ]);
     }
 }

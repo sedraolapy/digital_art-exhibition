@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Booking;
+namespace App\Services\Lecture;
 
 use App\Enums\EventOccurrenceStatus;
 use App\Models\Lecture;

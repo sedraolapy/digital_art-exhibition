@@ -93,6 +93,29 @@ namespace App\Models{
 /**
  * @property int $id
  * @property string $name
+ * @property string $email
+ * @property string $phone
+ * @property string $message
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContactMessage newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContactMessage newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContactMessage query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContactMessage whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContactMessage whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContactMessage whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContactMessage whereMessage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContactMessage whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContactMessage wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContactMessage whereUpdatedAt($value)
+ */
+	class ContactMessage extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $name
  * @property string|null $start_date
  * @property string|null $end_date
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -536,6 +559,8 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\EventAttendance> $eventAttendances
  * @property-read int|null $event_attendances_count
  * @property-read \App\Models\ExhibitorProfile|null $exhibitorProfile
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ExhibitorProfile> $exhibitorProfiles
+ * @property-read int|null $exhibitor_profiles_count
  * @property-read string $name
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LectureAttendance> $lectureAttendance
  * @property-read int|null $lecture_attendance_count

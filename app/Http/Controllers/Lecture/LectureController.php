@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Lecture;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Lecture\LectureResource;
-use App\Services\Booking\LectureService;
+use App\Services\Lecture\LectureService;
 
 class LectureController extends Controller
 {

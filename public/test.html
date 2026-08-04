@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>reCAPTCHA Test</title>
+
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+
+<h2>reCAPTCHA Test</h2>
+
+<form id="contactForm">
+
+    <div
+        class="g-recaptcha"
+        data-sitekey="6LeROW8tAAAAALHnOftDXndS6L9q4i9FY8wih1Av">
+    </div>
+
+    <br>
+
+    <button type="submit">
+        Get Token
+    </button>
+
+</form>
+
+<br>
+
+<textarea
+        id="token"
+        rows="10"
+        cols="120"
+        readonly
+></textarea>
+
+<script>
+
+document.getElementById('contactForm').addEventListener('submit', function (e) {
+
+    e.preventDefault();
+
+    const token = grecaptcha.getResponse();
+
+    if (!token) {
+        alert("Please complete reCAPTCHA");
+        return;
+    }
+
+    console.clear();
+
+    console.log("TOKEN:");
+    console.log(token);
+
+    document.getElementById("token").value = token;
+
+    alert(token);
+
+});
+
+</script>
+
+</body>
+</html>

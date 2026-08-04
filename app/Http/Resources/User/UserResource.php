@@ -29,7 +29,7 @@ class UserResource extends JsonResource
             'last_name'  => $this->last_name,
             'email'      => $this->email,
             'phone'      => $this->phone,
-            
+
             'social_links'     => $this->socialLinks->map(function ($link) {
                 return [
                     'platform' => $link->platform,
@@ -43,6 +43,15 @@ class UserResource extends JsonResource
             'bookings'         => $this->bookings ?? [],
             'exhibitor_application_status' => $this->exhibitor_application_status,
             'is_checked_in' => $this->when(isset($this->is_checked_in),(bool) $this->is_checked_in),
+            'exhibitor_events' => $this->exhibitor_events? $this->exhibitor_events->map(function ($profile) {
+                return [
+                    'event_id' => $profile->eventOccurrence->id,
+                    'event_name' => $profile->eventOccurrence->title,
+                    'category' => $profile->category->name,
+                    'start_date' => $profile->eventOccurrence->start_date,
+                    'end_date' => $profile->eventOccurrence->end_date,
+                ];
+            }): [],
         ];
     }
 }

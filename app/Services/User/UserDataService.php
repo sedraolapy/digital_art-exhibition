@@ -43,6 +43,8 @@ class UserDataService
             ? $this->applicationService->getApplicationStatus($userId, $event->id)
             : null;
 
+        $user->exhibitor_events = $user->load(['exhibitorProfiles.eventOccurrence'])->exhibitorProfiles;
+
         return $user;
     }
 

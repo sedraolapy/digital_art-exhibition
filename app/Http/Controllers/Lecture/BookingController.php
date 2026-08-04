@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Lecture;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Lecture\StoreBookingRequest;
 use App\Http\Resources\Booking\BookingResource;
-use App\Services\Booking\BookingService;
+use App\Services\Lecture\BookingService;
 use Auth;
 use Illuminate\Http\Request;
 

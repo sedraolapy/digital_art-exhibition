@@ -20,6 +20,8 @@ use App\Enums\PermissionEnum;
 use App\Enums\RoleEnum;
 use App\Http\Controllers\Category\CategoryController;
 use App\Http\Controllers\CheckIn\CheckInSessionController;
+use App\Http\Controllers\Contact\ContactController;
+use App\Http\Controllers\Workshop\WorkshopController;
 use App\Http\Middleware\CheckInSessionMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +44,8 @@ use Illuminate\Support\Facades\Route;
     Route::get('/sponsors', [SponsorController::class, 'index']);
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/days', [EventController::class, 'index']);
+    Route::post('/contact', [ContactController::class, 'store']);
+    Route::get('/workshops', [WorkshopController::class, 'index']);
 
 
     // User

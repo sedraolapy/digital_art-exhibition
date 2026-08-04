@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Booking;
+namespace App\Services\Lecture;
 
 use App\Enums\BookingStatus;
 use App\Models\Booking;
