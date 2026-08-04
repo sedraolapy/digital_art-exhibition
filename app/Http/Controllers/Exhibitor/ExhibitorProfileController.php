@@ -8,7 +8,7 @@ use App\Http\Requests\Exhibitor\UpdateExhibitorProfileRequest;
 use App\Http\Resources\Exhibitor\ExhibitorProfileResource;
 use App\Models\EventOccurrence;
 use App\Models\Vote;
-use App\Services\Booking\BookingService;
+use App\Services\Lecture\BookingService;
 use App\Services\Exhibitor\ExhibitorProfileService;
 use App\Services\Exhibitor\VoteService;
 use Illuminate\Http\Request;

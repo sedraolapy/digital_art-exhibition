@@ -26,6 +26,11 @@ class Workshop extends Model implements HasMedia
         'status' => WorkshopStatus::class,
     ];
 
+    public function attendance()
+    {
+        return $this->hasMany(WorkshopAttendance::class);
+    }
+
 
     public function registerMediaConversions(Media $media = null): void
     {

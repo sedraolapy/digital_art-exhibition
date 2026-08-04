@@ -17,6 +17,7 @@ class CheckIn extends Page
 {
     use InteractsWithForms;
 
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-qr-code';
 
     protected string $view = 'filament.pages.check-in';
 
@@ -35,16 +36,22 @@ class CheckIn extends Page
         return $schema
             ->statePath('data')
             ->components([
-
+                Select::make('type')
+                    ->label('Check-in Type')
+                    ->options([
+                        'event' => 'Event',
+                        'workshop' => 'Workshop',
+                    ])
+                    ->required()
+                    ->live(),
                 Select::make('eventOccurrenceId')
-                    ->label('Select Event')
+                    ->label('Event')
                     ->options(
-                        EventOccurrence::query()
-                            ->pluck('title', 'id')
+                        EventOccurrence::query()->pluck('title', 'id')
                     )
                     ->searchable()
-                    ->live(),
-
+                    ->visible(fn ($get) => $get('type') === 'event')
+                    ->required(fn ($get) => $get('type') === 'event'),
             ]);
     }
 
@@ -62,7 +69,9 @@ class CheckIn extends Page
                     $token = Str::random(64);
                     $session = CheckInSession::create([
                         'user_id' => Auth::id(),
-                        'event_occurrence_id' => $data['eventOccurrenceId'],
+                        'event_occurrence_id' => $data['type'] === 'event'
+                        ? $data['eventOccurrenceId']
+                        : null,
                         'token_hash' => hash('sha256', $token),
                         'expires_at' => now()->addHours(1),
                     ]);

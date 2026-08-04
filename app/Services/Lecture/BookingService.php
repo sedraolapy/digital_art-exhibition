@@ -60,7 +60,7 @@ class BookingService
     private function checkDuplicateBooking(int $userId, int $lectureId): void
     {
         if (Booking::where('user_id', $userId)->where('lecture_id', $lectureId)->exists()) {
-            throw new \Exception('لقد قمت بحجز هذه المحاضرة مسبقًا');
+            throw new \Exception('لقد قمت بحجز هذه المحاضرة مسبقاً');
         }
     }
 

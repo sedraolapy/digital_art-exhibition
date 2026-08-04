@@ -21,7 +21,8 @@ return new class extends Migration
 
             $table->foreignId('event_occurrence_id')
                 ->constrained()
-                ->cascadeOnDelete();
+                ->cascadeOnDelete()
+                ->nullable();
 
             $table->string('token_hash')->unique();
             $table->string('device_id')->nullable();

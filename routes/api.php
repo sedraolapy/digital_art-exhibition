@@ -22,6 +22,7 @@ use App\Http\Controllers\Category\CategoryController;
 use App\Http\Controllers\CheckIn\CheckInSessionController;
 use App\Http\Controllers\Contact\ContactController;
 use App\Http\Controllers\Workshop\WorkshopController;
+use App\Http\Controllers\Workshop\WorkshopRegistrationController;
 use App\Http\Middleware\CheckInSessionMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -68,6 +69,10 @@ use Illuminate\Support\Facades\Route;
         Route::delete('/bookings/{id}', [BookingController::class, 'destroy']);
         Route::post('/votes', [VoteController::class, 'store']);
         Route::get('/user', [UserController::class, 'user']);
+        Route::get('/user/attendances', [UserController::class, 'getAttendanecs']);
+        Route::post('/registraions', [WorkshopRegistrationController::class, 'store']);
+        Route::delete('/registraions/{id}', [WorkshopRegistrationController::class, 'destroy']);
+
     });
 
 

@@ -27,14 +27,23 @@ class CheckInRequest extends FormRequest
 
             'lecture_id' => [
                 'nullable',
-                'required_without:event_day_id',
+                'required_without_all:event_day_id,workshop_id',
+                'prohibited_unless:event_day_id,null,workshop_id,null',
                 'exists:lectures,id',
             ],
 
             'event_day_id' => [
                 'nullable',
-                'required_without:lecture_id',
+                'required_without_all:lecture_id,workshop_id',
+                'prohibited_unless:lecture_id,null,workshop_id,null',
                 'exists:event_days,id',
+            ],
+
+            'workshop_id' => [
+                'nullable',
+                'required_without_all:lecture_id,event_day_id',
+                'prohibited_unless:lecture_id,null,event_day_id,null',
+                'exists:workshops,id',
             ],
         ];
     }
@@ -43,22 +52,30 @@ class CheckInRequest extends FormRequest
     {
         return [
             'qr_code.required' => 'رمز QR مطلوب.',
-            'qr_code.string'   => 'يجب أن يكون رمز QR نصًا صالحًا.',
+            'qr_code.string' => 'رمز QR غير صالح.',
 
-            'lecture_id.required_without' => 'يجب اختيار محاضرة أو يوم فعالية.',
-            'lecture_id.exists'           => 'المحاضرة المحددة غير موجودة.',
+            'lecture_id.required_without_all' => 'يجب اختيار محاضرة أو يوم فعالية أو ورشة عمل.',
+            'lecture_id.prohibited_unless' => 'لا يمكن اختيار محاضرة مع يوم فعالية أو ورشة عمل.',
+            'lecture_id.exists' => 'المحاضرة المحددة غير موجودة.',
 
-            'event_day_id.required_without' => 'يجب اختيار محاضرة أو يوم فعالية.',
-            'event_day_id.exists'            => 'اليوم المحدد غير موجود.',
+            'event_day_id.required_without_all' => 'يجب اختيار محاضرة أو يوم فعالية أو ورشة عمل.',
+            'event_day_id.prohibited_unless' => 'لا يمكن اختيار يوم فعالية مع محاضرة أو ورشة عمل.',
+            'event_day_id.exists' => 'يوم الفعالية المحدد غير موجود.',
+
+            'workshop_id.required_without_all' => 'يجب اختيار محاضرة أو يوم فعالية أو ورشة عمل.',
+            'workshop_id.prohibited_unless' => 'لا يمكن اختيار ورشة عمل مع محاضرة أو يوم فعالية.',
+            'workshop_id.exists' => 'ورشة العمل المحددة غير موجودة.',
         ];
     }
 
     public function attributes(): array
     {
         return [
-            'qr_code'      => 'رمز QR',
-            'lecture_id'   => 'المحاضرة',
-            'event_day_id' => 'اليوم',
+            'qr_code' => 'رمز QR',
+            'lecture_id' => 'المحاضرة',
+            'event_day_id' => 'يوم الفعالية',
+            'workshop_id' => 'ورشة العمل',
         ];
     }
+    
 }

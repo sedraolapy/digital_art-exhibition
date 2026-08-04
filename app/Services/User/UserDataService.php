@@ -3,12 +3,12 @@
 namespace App\Services\User;
 
 use App\Models\User;
-use App\Services\Booking\BookingService;
+use App\Services\Lecture\BookingService;
 use App\Services\CheckIn\CheckInService;
 use App\Services\Event\EventService;
 use App\Services\Exhibitor\ExhibitorApplicationService;
 use App\Services\Exhibitor\VoteService;
-
+use App\Services\Workshop\WorkshopRegistrationService;
 
 class UserDataService
 {
@@ -18,6 +18,7 @@ class UserDataService
         private CheckInService $checkInService,
         private EventService $eventService,
         private ExhibitorApplicationService $applicationService,
+        private WorkshopRegistrationService $registrationService,
     ) {}
 
 
@@ -39,6 +40,7 @@ class UserDataService
 
         $user->voted_exhibitors = $this->voteService->getUserVotesForActiveOccurrence($userId);
         $user->bookings = $this->bookingService->getUserConfirmedBookings($userId);
+        $user->registerations = $this->registrationService->getUserConfirmedRegisterations($userId);
         $user->exhibitor_application_status = $event
             ? $this->applicationService->getApplicationStatus($userId, $event->id)
             : null;

@@ -4,6 +4,7 @@ namespace App\Services\CheckIn;
 
 use App\Enums\BookingStatus;
 use App\Enums\EventOccurrenceStatus;
+use App\Enums\WorkshopStatus;
 use App\Models\Booking;
 use App\Models\CheckInSession;
 use App\Models\EventAttendance;
@@ -12,6 +13,9 @@ use App\Models\EventOccurrence;
 use App\Models\Lecture;
 use App\Models\LectureAttendance;
 use App\Models\User;
+use App\Models\Workshop;
+use App\Models\WorkshopAttendance;
+use App\Models\WorkshopRegistration;
 use App\Services\Event\EventService;
 
 class CheckInService
@@ -31,6 +35,10 @@ class CheckInService
 
         if (! empty($data['lecture_id'])) {
             return $this->handleLectureCheckIn($user, $data['lecture_id'], $session);
+        }
+
+        if (! empty($data['workshop_id'])) {
+            return $this->handleWorkshopCheckIn($user, $data['workshop_id'], $session);
         }
 
         if (! empty($data['event_day_id'])) {
@@ -74,6 +82,28 @@ class CheckInService
         return $this->registerLectureAttendance($user, $lecture);
     }
 
+
+    private function handleWorkshopCheckIn(User $user, int $workshopId, CheckInSession $session): array
+    {
+        $workshop = Workshop::whereKey($workshopId)->where('status', WorkshopStatus::ACTIVE->value)->first();
+
+        if (! $workshop) {
+            return [
+                'message' => 'هذه الورشة غير متاحة',
+                'data' => null
+            ];
+        }
+
+        if (! $this->hasConfirmedRegistration($user, $workshop->id)) {
+            return [
+                'message' => 'المستخدم غير مسجل على هذه الورشة',
+                'data' => null
+            ];
+        }
+
+        return $this->registerWorkshopAttendance($user, $workshop);
+    }
+
     private function handleEventDayCheckIn(User $user, int $dayId, CheckInSession $session): array
     {
         $event = EventOccurrence::whereKey($session->event_occurrence_id)
@@ -109,6 +139,14 @@ class CheckInService
             ->exists();
     }
 
+    private function hasConfirmedRegistration(User $user, int $workshopId): bool
+    {
+        return WorkshopRegistration::where('user_id', $user->id)
+            ->where('workshop_id', $workshopId)
+            ->where('status', BookingStatus::CONFIRMED->value)
+            ->exists();
+    }
+
     private function registerLectureAttendance(User $user, Lecture $lecture): array
     {
         $attendance = LectureAttendance::firstOrCreate([
@@ -125,6 +163,26 @@ class CheckInService
 
         return [
             'message' => 'تم تسجيل الحضور للمحاضرة بنجاح',
+            'data' => $user
+        ];
+    }
+
+    private function registerWorkshopAttendance(User $user, Workshop $workshop): array
+    {
+        $attendance = WorkshopAttendance::firstOrCreate([
+            'user_id' => $user->id,
+            'workshop_id' => $workshop->id,
+        ]);
+
+        if (! $attendance->wasRecentlyCreated) {
+            return [
+                'message' => 'تم تسجيل حضور المستخدم مسبقاً لهذه الورشة',
+                'data' => $user
+            ];
+        }
+
+        return [
+            'message' => 'تم تسجيل الحضور للورشة بنجاح',
             'data' => $user
         ];
     }

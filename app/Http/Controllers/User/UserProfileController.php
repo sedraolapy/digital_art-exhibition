@@ -8,7 +8,7 @@ use App\Http\Requests\User\UpdateUserProfileRequest;
 use App\Http\Resources\User\UserResource;
 use App\Models\EventOccurrence;
 use App\Models\Vote;
-use App\Services\Booking\BookingService;
+use App\Services\Lecture\BookingService;
 use App\Services\Exhibitor\VoteService;
 use App\Services\User\UserProfileService;
 use Illuminate\Http\Request;

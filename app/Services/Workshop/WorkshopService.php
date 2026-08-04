@@ -4,11 +4,10 @@ namespace App\Services\Workshop;
 
 use App\Models\Workshop;
 
-class WorkshopService{
-
+class WorkshopService
+{
     public function getWorkshops(){
 
-        $workshop = Workshop::get();
-        return $workshop;
+        return $workshop = Workshop::get();
     }
 }

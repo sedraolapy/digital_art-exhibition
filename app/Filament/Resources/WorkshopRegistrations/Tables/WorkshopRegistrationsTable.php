@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Resources\Bookings\Tables;
+namespace App\Filament\Resources\WorkshopRegistrations\Tables;
 
 use App\Enums\BookingStatus;
 use App\Models\User;
-use App\Services\Lecture\BookingService;
+use App\Services\Workshop\WorkshopRegistrationService;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -17,7 +17,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
-class BookingsTable
+class WorkshopRegistrationsTable
 {
     public static function configure(Table $table): Table
     {
@@ -26,10 +26,10 @@ class BookingsTable
                 TextColumn::make('user.name')
                     ->label('User')
                     ->searchable(),
-                TextColumn::make('lecture.title')
-                    ->label('Lecture')
+                TextColumn::make('workshop.title')
+                    ->Label('workshop')
                     ->searchable(),
-                TextColumn::make('status')
+                    TextColumn::make('status')
                     ->label('Status')
                     ->badge()
                     ->formatStateUsing(function ($state, $record) {
@@ -55,7 +55,7 @@ class BookingsTable
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -69,16 +69,16 @@ class BookingsTable
                 TrashedFilter::make(),
 
                 SelectFilter::make('status')
-                    ->label('Booking Status')
+                    ->label('Registration Status')
                     ->options([
                         BookingStatus::CONFIRMED->value => 'Confirmed',
                         BookingStatus::CANCELLED->value => 'Cancelled',
                     ]),
 
-                SelectFilter::make('lecture_id')
-                    ->label('Lecture')
+                SelectFilter::make('workshop_id')
+                    ->label('Workshop')
                     ->relationship(
-                        'lecture',
+                        'Workshop',
                         'title'
                     )
                     ->searchable()
@@ -97,28 +97,20 @@ class BookingsTable
                     ->searchable(['first_name', 'last_name', 'email'])
                     ->preload(),
 
-                SelectFilter::make('event_occurrence_id')
-                    ->label('Event')
-                    ->relationship(
-                        'lecture.day.occurrence',
-                        'title'
-                    )
-                    ->searchable()
-                    ->preload(),
             ])
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
 
                 Action::make('cancel')
-                    ->label('Cancel Booking')
+                    ->label('Cancel Registration')
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
                     ->requiresConfirmation()
                     ->visible(fn ($record) =>
                         $record->status === BookingStatus::CONFIRMED
                     )
-                    ->action(function ($record) {app(BookingService::class)->cancelBooking($record->id, $record->user_id);}),
+                    ->action(function ($record) {app(WorkshopRegistrationService::class)->cancelRegistration($record->id, $record->user_id);}),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

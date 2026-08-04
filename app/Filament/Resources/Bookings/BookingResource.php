@@ -27,6 +27,8 @@ class BookingResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;
 
+    protected static ?string $navigationLabel = 'Lecture Registrations';
+
     protected static ?string $recordTitleAttribute = 'booking';
 
     public static function form(Schema $schema): Schema

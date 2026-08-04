@@ -41,6 +41,7 @@ class UserResource extends JsonResource
             'qr_code'    => $this->qr_token,
             'voted_exhibitors' => $this->voted_exhibitors ?? [],
             'bookings'         => $this->bookings ?? [],
+            'workshop registerations'         => $this->registerations ?? [],
             'exhibitor_application_status' => $this->exhibitor_application_status,
             'is_checked_in' => $this->when(isset($this->is_checked_in),(bool) $this->is_checked_in),
             'exhibitor_events' => $this->exhibitor_events? $this->exhibitor_events->map(function ($profile) {

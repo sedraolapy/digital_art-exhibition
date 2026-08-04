@@ -653,21 +653,80 @@ namespace App\Models{
  * @property int $id
  * @property string $title
  * @property string|null $description
- * @property string|null $image_url
+ * @property string $speaker_name
  * @property int $max_seats
+ * @property string $date
+ * @property string $start_time
+ * @property string $end_time
+ * @property \App\Enums\WorkshopStatus $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
+ * @property-read int|null $media_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Workshop newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Workshop newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Workshop query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Workshop whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Workshop whereDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Workshop whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Workshop whereEndTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Workshop whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Workshop whereImageUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Workshop whereMaxSeats($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Workshop whereSpeakerName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Workshop whereStartTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Workshop whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Workshop whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Workshop whereUpdatedAt($value)
  */
-	class Workshop extends \Eloquent {}
+	class Workshop extends \Eloquent implements \Spatie\MediaLibrary\HasMedia {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property int $workshop_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Lecture|null $lecture
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopAttendance newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopAttendance newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopAttendance query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopAttendance whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopAttendance whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopAttendance whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopAttendance whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopAttendance whereWorkshopId($value)
+ */
+	class WorkshopAttendance extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property int $workshop_id
+ * @property \App\Enums\BookingStatus $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\User $user
+ * @property-read \App\Models\Workshop $workshop
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopRegistration newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopRegistration newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopRegistration onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopRegistration query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopRegistration whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopRegistration whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopRegistration whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopRegistration whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopRegistration whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopRegistration whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopRegistration whereWorkshopId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopRegistration withTrashed(bool $withTrashed = true)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopRegistration withoutTrashed()
+ */
+	class WorkshopRegistration extends \Eloquent {}
 }
 

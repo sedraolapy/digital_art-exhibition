@@ -78,7 +78,6 @@ class LectureAttendanceReportsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

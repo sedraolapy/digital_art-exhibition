@@ -3,15 +3,18 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Attendance\LectureAttendanceResource;
+use App\Http\Resources\Attendance\WorkshopAttendanceResource;
 use App\Http\Resources\Exhibitor\ExhibitorProfileResource;
 use App\Http\Resources\User\UserResource;
+use App\Services\User\AttendanceService;
 use App\Services\User\UserService;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function __construct(private UserService $userService) {}
+    public function __construct(private UserService $userService, private AttendanceService $attendanceService) {}
 
     public function user(Request $request)
     {
@@ -37,5 +40,19 @@ class UserController extends Controller
                     'data' => null,
                 ]),
         };
+    }
+
+    public function getAttendanecs(Request $request)
+    {
+        $user = Auth::user();
+        $attendance = $this->attendanceService->getAttendance($user);
+
+        return response()->json([
+            'message' => 'تم استرجاع سجل الحضور بنجاح',
+            'data' => [
+                'lectures' => LectureAttendanceResource::collection($attendance['lectures']),
+                'workshops' => WorkshopAttendanceResource::collection($attendance['workshops']),
+            ],
+        ]);
     }
 }
