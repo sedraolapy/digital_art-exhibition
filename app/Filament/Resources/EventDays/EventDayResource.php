@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\EventDays;
 
+use App\Filament\Resources\BaseResource;
 use App\Filament\Resources\EventDays\Pages\CreateEventDay;
 use App\Filament\Resources\EventDays\Pages\EditEventDay;
 use App\Filament\Resources\EventDays\Pages\ListEventDays;
@@ -17,7 +18,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
 
-class EventDayResource extends Resource
+class EventDayResource extends BaseResource
 {
     protected static ?string $model = EventDay::class;
 

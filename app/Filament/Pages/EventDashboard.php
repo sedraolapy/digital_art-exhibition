@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Enums\RoleEnum;
 use App\Filament\Widgets\AttendanceByDayChart;
 use App\Filament\Widgets\EventOverviewStats;
 use App\Filament\Widgets\UserAttendanceBehaviorStats;
@@ -10,6 +11,7 @@ use Filament\Pages\Page;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
 use Filament\Forms\Concerns\InteractsWithForms;
+use Illuminate\Support\Facades\Auth;
 
 class EventDashboard extends Page
 {
@@ -21,6 +23,16 @@ class EventDashboard extends Page
     protected static ?string $title = 'Event Dashboard';
 
     protected string $view = 'filament.pages.event-dashboard';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return static::canAccess();
+    }
+
+    public static function canAccess(): bool
+    {
+        return Auth::user()?->hasRole(RoleEnum::SUPER_ADMIN->value) ?? false;
+    }
 
 
     public ?int $eventOccurrenceId = null;

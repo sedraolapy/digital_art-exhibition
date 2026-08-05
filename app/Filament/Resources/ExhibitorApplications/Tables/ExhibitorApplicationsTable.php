@@ -11,6 +11,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Storage;
 use App\Enums\ExhibitorStatus;
+use App\Enums\RoleEnum;
 use App\Events\ExhibitorApplicationStatusChanged;
 use App\Mail\ExhibitorApplicationStatusMail;
 use App\Services\Exhibitor\ExhibitorProfileService;
@@ -20,6 +21,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Support\Facades\Auth;
 use Mail;
 
 class ExhibitorApplicationsTable
@@ -142,7 +144,9 @@ class ExhibitorApplicationsTable
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
+                EditAction::make()
+                    ->visible(fn () => Auth::user()->hasRole(RoleEnum::SUPER_ADMIN->value)),
+
 
             Action::make('approveInitial')
                 ->label('Approve')

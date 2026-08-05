@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Statistics\Tables;
 
+use App\Enums\RoleEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -9,6 +10,7 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\Summarizers\Sum;
+use Illuminate\Support\Facades\Auth;
 
 class StatisticsTable
 {
@@ -45,7 +47,8 @@ class StatisticsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                    ->visible(fn () => Auth::user()->hasRole(RoleEnum::SUPER_ADMIN->value)),
                 ]),
             ]);
     }

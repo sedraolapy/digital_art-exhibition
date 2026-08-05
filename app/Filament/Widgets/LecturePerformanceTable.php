@@ -2,11 +2,13 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enums\RoleEnum;
 use App\Models\Lecture;
 use App\Models\EventOccurrence;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 
 class LecturePerformanceTable extends TableWidget
@@ -20,6 +22,10 @@ class LecturePerformanceTable extends TableWidget
         $this->eventOccurrenceId = $eventOccurrenceId;
     }
 
+    public static function canView(): bool
+    {
+        return Auth::user()?->hasRole(RoleEnum::SUPER_ADMIN->value) ?? false;
+    }
 
     public function table(Table $table): Table
     {

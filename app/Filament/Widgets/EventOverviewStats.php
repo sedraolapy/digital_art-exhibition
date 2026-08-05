@@ -2,16 +2,22 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enums\RoleEnum;
 use App\Models\User;
 use App\Models\EventOccurrence;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 
 class EventOverviewStats extends StatsOverviewWidget
 {
     public ?int $eventOccurrenceId = null;
 
+    public static function canView(): bool
+    {
+        return Auth::user()?->hasRole(RoleEnum::SUPER_ADMIN->value) ?? false;
+    }
 
     #[On('eventChanged')]
     public function updateEvent($eventOccurrenceId): void

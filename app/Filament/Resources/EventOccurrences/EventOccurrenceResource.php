@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\EventOccurrences;
 
+use App\Filament\Resources\BaseResource;
 use App\Filament\Resources\EventOccurrences\Pages\CreateEventOccurrence;
 use App\Filament\Resources\EventOccurrences\Pages\EditEventOccurrence;
 use App\Filament\Resources\EventOccurrences\Pages\ListEventOccurrences;
@@ -18,7 +19,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
 
-class EventOccurrenceResource extends Resource
+class EventOccurrenceResource extends BaseResource
 {
     protected static ?string $model = EventOccurrence::class;
 

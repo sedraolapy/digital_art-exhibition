@@ -8,6 +8,7 @@ use App\Enums\PermissionEnum;
 use App\Enums\Role;
 use App\Enums\RoleEnum;
 use Database\Factories\UserFactory;
+use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -17,7 +18,7 @@ use Laravel\Sanctum\HasApiTokens;use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class User extends Authenticatable implements HasMedia
+class User extends Authenticatable implements FilamentUser , HasMedia
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasRoles, HasApiTokens, InteractsWithMedia;
@@ -105,15 +106,23 @@ class User extends Authenticatable implements HasMedia
 
     public function canAccessPanel(Panel $panel): bool
     {
+
         if ($this->hasRole(RoleEnum::SUPER_ADMIN->value)) {
             return true;
         }
 
-        return $this->can(
+        if (! $this->hasAnyRole([
+            RoleEnum::CONTENT_MANAGER->value,
+            RoleEnum::EXHIBITOR_APPLICATION_MANAGER->value,
+            RoleEnum::ORGANIZER->value,
+        ])) {
+            return false;
+        }
+
+        return $this->hasPermissionTo(
             PermissionEnum::ACCESS_ADMIN_PANEL->value
         );
     }
-
 
     public function registerMediaConversions(Media $media = null): void
     {

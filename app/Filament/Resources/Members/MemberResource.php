@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Members;
 
+use App\Enums\PermissionEnum;
+use App\Filament\Resources\BaseResource;
 use App\Filament\Resources\Members\Pages\CreateMember;
 use App\Filament\Resources\Members\Pages\EditMember;
 use App\Filament\Resources\Members\Pages\ListMembers;
@@ -15,9 +17,10 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
-class MemberResource extends Resource
+class MemberResource extends BaseResource
 {
     protected static ?string $model = Member::class;
 
@@ -26,6 +29,20 @@ class MemberResource extends Resource
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static string|UnitEnum|null $navigationGroup = 'Content Managment';
+
+    protected static function canAccessByPermission(): bool
+    {
+        return Auth::user()?->can(
+            PermissionEnum::VIEW_MEMBERS->value
+        ) ?? false;
+    }
+
+    public static function canEdit($record): bool
+    {
+        return Auth::user()?->can(
+            PermissionEnum::UPDATE_MEMBERS->value
+        ) ?? false;
+    }
 
     public static function form(Schema $schema): Schema
     {

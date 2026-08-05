@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Bookings;
 
+use App\Filament\Resources\BaseResource;
 use App\Filament\Resources\Bookings\Pages\CreateBooking;
 use App\Filament\Resources\Bookings\Pages\EditBooking;
 use App\Filament\Resources\Bookings\Pages\ListBookings;
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use UnitEnum;
 
-class BookingResource extends Resource
+class BookingResource extends BaseResource
 {
     protected static ?string $model = Booking::class;
 

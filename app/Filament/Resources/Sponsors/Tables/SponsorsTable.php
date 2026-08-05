@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Sponsors\Tables;
 
+use App\Enums\RoleEnum;
 use App\Enums\SponsorType;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -11,6 +12,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class SponsorsTable
 {
@@ -64,7 +66,8 @@ class SponsorsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                    ->visible(fn () => Auth::user()->hasRole(RoleEnum::SUPER_ADMIN->value)),
                 ]),
             ]);
     }

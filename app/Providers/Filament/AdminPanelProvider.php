@@ -7,6 +7,7 @@ use App\Filament\Pages\Dashboard as PagesDashboard;
 use App\Filament\Pages\EventDashboard;
 use App\Filament\Widgets\AttendanceAnalyticsStats;
 use App\Filament\Widgets\AttendanceOverviewStats;
+use App\Filament\Widgets\CheckInWidget;
 use App\Filament\Widgets\CurrentTimeWidget;
 use App\Filament\Widgets\EventAttendanceRanking;
 use App\Filament\Widgets\EventOverviewStats;
@@ -54,12 +55,12 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 \Filament\Pages\Dashboard::class,
-                CheckIn::class,
                 EventDashboard::class,
             ])
             // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
+                CheckInWidget::class,
                 SystemOverviewStats::class,
                 EventStatusStats::class,
                 EventAttendanceRanking::class,

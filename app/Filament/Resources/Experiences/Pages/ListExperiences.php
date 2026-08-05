@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources\Experiences\Pages;
 
+use App\Enums\RoleEnum;
 use App\Filament\Resources\Experiences\ExperienceResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\Auth;
 
 class ListExperiences extends ListRecords
 {
@@ -13,7 +15,8 @@ class ListExperiences extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()
+                ->visible(fn () => Auth::user()->hasRole(RoleEnum::SUPER_ADMIN->value)),
         ];
     }
 }

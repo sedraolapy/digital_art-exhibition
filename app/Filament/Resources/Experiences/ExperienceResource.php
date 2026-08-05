@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Experiences;
 
+use App\Enums\PermissionEnum;
+use App\Filament\Resources\BaseResource;
 use App\Filament\Resources\Experiences\Pages\CreateExperience;
 use App\Filament\Resources\Experiences\Pages\EditExperience;
 use App\Filament\Resources\Experiences\Pages\ListExperiences;
@@ -15,9 +17,10 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
-class ExperienceResource extends Resource
+class ExperienceResource extends BaseResource
 {
     protected static ?string $model = Experience::class;
 
@@ -26,6 +29,21 @@ class ExperienceResource extends Resource
     protected static ?string $recordTitleAttribute = 'experience';
 
     protected static string|UnitEnum|null $navigationGroup = 'Content Managment';
+
+    protected static function canAccessByPermission(): bool
+    {
+        return Auth::user()?->can(
+            PermissionEnum::VIEW_EXPERIENCES->value
+        ) ?? false;
+    }
+
+    public static function canEdit($record): bool
+    {
+        return Auth::user()?->can(
+            PermissionEnum::UPDATE_EXPERIENCES->value
+        ) ?? false;
+    }
+
 
     public static function form(Schema $schema): Schema
     {

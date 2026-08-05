@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources\Workshops;
 
+use App\Enums\PermissionEnum;
+use App\Enums\RoleEnum;
+use App\Filament\Resources\BaseResource;
 use App\Filament\Resources\Workshops\Pages\CreateWorkshop;
 use App\Filament\Resources\Workshops\Pages\EditWorkshop;
 use App\Filament\Resources\Workshops\Pages\ListWorkshops;
@@ -15,9 +18,10 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
-class WorkshopResource extends Resource
+class WorkshopResource extends BaseResource
 {
     protected static ?string $model = Workshop::class;
 
@@ -26,6 +30,21 @@ class WorkshopResource extends Resource
     protected static ?string $recordTitleAttribute = 'title';
 
     protected static string|UnitEnum|null $navigationGroup = 'Workshop Managment';
+
+    protected static function canAccessByPermission(): bool
+    {
+        return Auth::user()?->can(
+            PermissionEnum::VIEW_WORKSHOP->value
+        ) ?? false;
+    }
+
+    public static function canEdit($record): bool
+    {
+        return Auth::user()?->can(
+            PermissionEnum::UPDATE_WORKSHOP->value
+        ) ?? false;
+    }
+
 
     public static function form(Schema $schema): Schema
     {

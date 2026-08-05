@@ -10,6 +10,7 @@ use App\Enums\RoleEnum;
 use App\Models\ExhibitorProfile;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Facades\Auth;
 
 class SystemOverviewStats extends StatsOverviewWidget
 {
@@ -18,6 +19,12 @@ class SystemOverviewStats extends StatsOverviewWidget
     {
         return 'System Overview';
     }
+
+    public static function canView(): bool
+    {
+        return Auth::user()?->hasRole(RoleEnum::SUPER_ADMIN->value) ?? false;
+    }
+
     protected function getStats(): array
     {
         return [

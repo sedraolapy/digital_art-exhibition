@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\WorkshopAttendanceReports;
 
+use App\Filament\Resources\BaseResource;
 use App\Filament\Resources\WorkshopAttendanceReports\Pages\CreateWorkshopAttendanceReport;
 use App\Filament\Resources\WorkshopAttendanceReports\Pages\EditWorkshopAttendanceReport;
 use App\Filament\Resources\WorkshopAttendanceReports\Pages\ListWorkshopAttendanceReports;
@@ -18,7 +19,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
 
-class WorkshopAttendanceReportResource extends Resource
+class WorkshopAttendanceReportResource extends BaseResource
 {
     protected static ?string $model = Workshop::class;
 

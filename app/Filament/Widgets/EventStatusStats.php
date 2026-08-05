@@ -3,7 +3,9 @@
 namespace App\Filament\Widgets;
 
 use App\Enums\EventOccurrenceStatus;
+use App\Enums\RoleEnum;
 use App\Models\EventOccurrence;
+use Auth;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -12,6 +14,11 @@ class EventStatusStats extends StatsOverviewWidget
     protected function getHeading(): ?string
     {
         return 'Events Status';
+    }
+
+    public static function canView(): bool
+    {
+        return Auth::user()?->hasRole(RoleEnum::SUPER_ADMIN->value) ?? false;
     }
     protected function getStats(): array
     {

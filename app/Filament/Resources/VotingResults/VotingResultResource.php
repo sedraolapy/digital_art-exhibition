@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\VotingResults;
 
+use App\Filament\Resources\BaseResource;
 use App\Filament\Resources\VotingResults\Pages\CreateVotingResult;
 use App\Filament\Resources\VotingResults\Pages\EditVotingResult;
 use App\Filament\Resources\VotingResults\Pages\ListVotingResults;
@@ -18,7 +19,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
 
-class VotingResultResource extends Resource
+class VotingResultResource extends BaseResource
 {
     protected static ?string $model = VotingResult::class;
 

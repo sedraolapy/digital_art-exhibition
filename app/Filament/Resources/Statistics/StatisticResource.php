@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Statistics;
 
+use App\Enums\PermissionEnum;
+use App\Filament\Resources\BaseResource;
 use App\Filament\Resources\Statistics\Pages\CreateStatistic;
 use App\Filament\Resources\Statistics\Pages\EditStatistic;
 use App\Filament\Resources\Statistics\Pages\ListStatistics;
@@ -15,9 +17,10 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
-class StatisticResource extends Resource
+class StatisticResource extends BaseResource
 {
     protected static ?string $model = Statistic::class;
 
@@ -26,6 +29,20 @@ class StatisticResource extends Resource
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static string|UnitEnum|null $navigationGroup = 'Content Managment';
+
+    protected static function canAccessByPermission(): bool
+    {
+        return Auth::user()?->can(
+            PermissionEnum::VIEW_STATISTICS->value
+        ) ?? false;
+    }
+
+    public static function canEdit($record): bool
+    {
+        return Auth::user()?->can(
+            PermissionEnum::UPDATE_STATISTICS->value
+        ) ?? false;
+    }
 
     public static function form(Schema $schema): Schema
     {

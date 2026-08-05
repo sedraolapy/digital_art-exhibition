@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\Workshops\Pages;
 
+use App\Enums\RoleEnum;
 use App\Filament\Resources\Workshops\WorkshopResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Facades\Auth;
 
 class EditWorkshop extends EditRecord
 {
@@ -15,7 +17,8 @@ class EditWorkshop extends EditRecord
     {
         return [
             ViewAction::make(),
-            DeleteAction::make(),
+            DeleteAction::make()
+            ->visible(fn () => Auth::user()->hasRole(RoleEnum::SUPER_ADMIN->value)),
         ];
     }
 }

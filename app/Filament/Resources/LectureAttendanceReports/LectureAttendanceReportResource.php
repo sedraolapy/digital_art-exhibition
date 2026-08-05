@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LectureAttendanceReports;
 
+use App\Filament\Resources\BaseResource;
 use App\Filament\Resources\LectureAttendanceReports\Pages\CreateLectureAttendanceReport;
 use App\Filament\Resources\LectureAttendanceReports\Pages\EditLectureAttendanceReport;
 use App\Filament\Resources\LectureAttendanceReports\Pages\ListLectureAttendanceReports;
@@ -18,7 +19,7 @@ use Filament\Tables\Table;
 use App\Filament\Resources\LectureAttendanceReports\RelationManagers\AttendanceRelationManager;
 use UnitEnum;
 
-class LectureAttendanceReportResource extends Resource
+class LectureAttendanceReportResource extends BaseResource
 {
     protected static ?string $model = Lecture::class;
 

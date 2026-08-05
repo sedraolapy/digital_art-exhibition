@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Workshops\Tables;
 
+use App\Enums\RoleEnum;
 use App\Enums\WorkshopStatus;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -14,6 +15,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class WorkshopsTable
 {
@@ -95,7 +97,8 @@ class WorkshopsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn () => Auth::user()->hasRole(RoleEnum::SUPER_ADMIN->value)),
                 ]),
             ]);
     }

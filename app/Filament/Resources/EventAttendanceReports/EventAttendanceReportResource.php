@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\EventAttendanceReports;
 
+use App\Filament\Resources\BaseResource;
 use App\Filament\Resources\EventAttendanceReports\Pages\CreateEventAttendanceReport;
 use App\Filament\Resources\EventAttendanceReports\Pages\EditEventAttendanceReport;
 use App\Filament\Resources\EventAttendanceReports\Pages\ListEventAttendanceReports;
@@ -19,7 +20,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
 
-class EventAttendanceReportResource extends Resource
+class EventAttendanceReportResource extends BaseResource
 {
     protected static ?string $model = EventDay::class;
 

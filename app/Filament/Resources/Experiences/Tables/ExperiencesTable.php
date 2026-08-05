@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Experiences\Tables;
 
 use App\Enums\ExperienceStatus;
+use App\Enums\RoleEnum;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -14,6 +15,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class ExperiencesTable
 {
@@ -105,7 +107,8 @@ class ExperiencesTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn () => Auth::user()->hasRole(RoleEnum::SUPER_ADMIN->value)),
                 ]),
             ]);
     }

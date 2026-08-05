@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\ExhibitorProfiles;
 
+use App\Enums\PermissionEnum;
+use App\Filament\Resources\BaseResource;
 use App\Filament\Resources\ExhibitorProfiles\Pages\CreateExhibitorProfile;
 use App\Filament\Resources\ExhibitorProfiles\Pages\EditExhibitorProfile;
 use App\Filament\Resources\ExhibitorProfiles\Pages\ListExhibitorProfiles;
@@ -15,9 +17,10 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
-class ExhibitorProfileResource extends Resource
+class ExhibitorProfileResource extends BaseResource
 {
     protected static ?string $model = ExhibitorProfile::class;
 
@@ -26,6 +29,34 @@ class ExhibitorProfileResource extends Resource
     protected static ?string $recordTitleAttribute = 'Exhibitor';
 
     protected static string|UnitEnum|null $navigationGroup = 'Users Managment';
+
+    protected static function canAccessByPermission(): bool
+    {
+        return Auth::user()?->can(
+            PermissionEnum::VIEW_EXHIBITOR_PROFILES->value
+        ) ?? false;
+    }
+
+    public static function canEdit($record): bool
+    {
+        return Auth::user()?->can(
+            PermissionEnum::UPDATE_EXHIBITOR_PROFILES->value
+        ) ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()?->can(
+            PermissionEnum::CREATE_EXHIBITOR_PROFILES->value
+        ) ?? false;
+    }
+
+    public static function canDelete($record): bool
+    {
+        return Auth::user()?->can(
+            PermissionEnum::DELETE_EXHIBITOR_PROFILES->value
+        ) ?? false;
+    }
 
     public static function form(Schema $schema): Schema
     {

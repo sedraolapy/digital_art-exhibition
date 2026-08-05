@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Roles;
 
 use App\Enums\RoleEnum;
+use App\Filament\Resources\BaseResource;
 use App\Filament\Resources\Roles\Pages\CreateRole;
 use App\Filament\Resources\Roles\Pages\EditRole;
 use App\Filament\Resources\Roles\Pages\ListRoles;
@@ -18,7 +19,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class RoleResource extends Resource
+class RoleResource extends BaseResource
 {
     protected static ?string $model = \Spatie\Permission\Models\Role::class;
 

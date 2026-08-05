@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Lectures;
 
+use App\Enums\PermissionEnum;
+use App\Filament\Resources\BaseResource;
 use App\Filament\Resources\Lectures\Pages\CreateLecture;
 use App\Filament\Resources\Lectures\Pages\EditLecture;
 use App\Filament\Resources\Lectures\Pages\ListLectures;
@@ -15,9 +17,10 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
-class LectureResource extends Resource
+class LectureResource extends BaseResource
 {
     protected static ?string $model = Lecture::class;
 
@@ -26,6 +29,20 @@ class LectureResource extends Resource
     protected static ?string $recordTitleAttribute = 'title';
 
     protected static string|UnitEnum|null $navigationGroup = 'Lecture Managment';
+
+    protected static function canAccessByPermission(): bool
+    {
+        return Auth::user()?->can(
+            PermissionEnum::VIEW_LECTURES->value
+        ) ?? false;
+    }
+
+    public static function canEdit($record): bool
+    {
+        return Auth::user()?->can(
+            PermissionEnum::UPDATE_LECTURES->value
+        ) ?? false;
+    }
 
     public static function form(Schema $schema): Schema
     {

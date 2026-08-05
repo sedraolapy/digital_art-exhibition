@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ExhibitorProfiles\Schemas;
 
+use App\Enums\RoleEnum;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -24,12 +25,31 @@ class ExhibitorProfileInfolist
                     ->weight('medium')
                     ->icon('heroicon-o-link')
                     ->iconPosition('before'),
+                ImageEntry::make('image')
+                    ->label('Image')
+                    ->circular()
+                    ->size(150)
+                    ->state(function ($record) {
+
+                        $collection = $record->user->hasRole(RoleEnum::EXHIBITOR->value)
+                            ? 'exhibitor_image'
+                            : null;
+
+                        return $record->user->getFirstMediaUrl($collection, 'webp')
+                            ?: null;
+                    })
+                    ->url(fn ($state) => $state)
+                    ->openUrlInNewTab(),
                 TextEntry::make('eventOccurrence.title')
                     ->label('Event occurrence'),
                 TextEntry::make('category.name')
                     ->label('Category'),
                 TextEntry::make('experience_years')
                     ->numeric(),
+                TextEntry::make('user.email')
+                    ->label('Email'),
+                TextEntry::make('user.phone')
+                    ->label('Phone number'),
                 TextEntry::make('bio')
                     ->columnSpanFull(),
                 TextEntry::make('cv_file')

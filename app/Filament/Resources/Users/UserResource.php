@@ -17,9 +17,10 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use App\Enums\RoleEnum;
+use App\Filament\Resources\BaseResource;
 use UnitEnum;
 
-class UserResource extends Resource
+class UserResource extends BaseResource
 {
     protected static ?string $model = User::class;
 

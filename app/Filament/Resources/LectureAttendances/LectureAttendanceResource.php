@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LectureAttendances;
 
+use App\Filament\Resources\BaseResource;
 use App\Filament\Resources\LectureAttendances\Pages\CreateLectureAttendance;
 use App\Filament\Resources\LectureAttendances\Pages\EditLectureAttendance;
 use App\Filament\Resources\LectureAttendances\Pages\ListLectureAttendances;
@@ -17,7 +18,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
 
-class LectureAttendanceResource extends Resource
+class LectureAttendanceResource extends BaseResource
 {
     protected static ?string $model = LectureAttendance::class;
 

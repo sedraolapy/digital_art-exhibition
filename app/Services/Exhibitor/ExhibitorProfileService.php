@@ -2,10 +2,13 @@
 
 namespace App\Services\Exhibitor;
 
+use App\Enums\EventOccurrenceStatus;
 use App\Enums\RoleEnum;
+use App\Models\EventOccurrence;
 use App\Models\ExhibitorApplication;
 use App\Models\ExhibitorProfile;
 use App\Models\User;
+use App\Services\Event\EventService;
 use App\Services\User\UserDataService;
 use Illuminate\Support\Facades\DB;
 
@@ -14,6 +17,7 @@ class ExhibitorProfileService
     public function __construct(
         private SocialLinkService $socialLinkService,
         private UserDataService $userDataService,
+        private EventService $eventService,
     ) {}
 
     private function assignExhibitorRole(int $userId): void
@@ -46,7 +50,16 @@ class ExhibitorProfileService
 
     public function getExhibitorProfileData(User $user): ?ExhibitorProfile
     {
-        $profile = $user->exhibitorProfile()->first();
+        $activeEvent = $this->eventService->getActiveEvent();
+
+        if (! $activeEvent) {
+            return null;
+        }
+
+        $profile = $user->exhibitorProfiles()
+            ->where('event_occurrence_id', $activeEvent->id)
+            ->first();
+
         if (! $profile) {
             return null;
         }

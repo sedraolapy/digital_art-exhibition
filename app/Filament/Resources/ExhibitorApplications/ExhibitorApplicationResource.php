@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\ExhibitorApplications;
 
+use App\Enums\PermissionEnum;
+use App\Filament\Resources\BaseResource;
 use App\Filament\Resources\ExhibitorApplications\Pages\CreateExhibitorApplication;
 use App\Filament\Resources\ExhibitorApplications\Pages\EditExhibitorApplication;
 use App\Filament\Resources\ExhibitorApplications\Pages\ListExhibitorApplications;
@@ -15,9 +17,10 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
-class ExhibitorApplicationResource extends Resource
+class ExhibitorApplicationResource extends BaseResource
 {
     protected static ?string $model = ExhibitorApplication::class;
 
@@ -26,6 +29,28 @@ class ExhibitorApplicationResource extends Resource
     protected static ?string $recordTitleAttribute = 'Exhibitor Application';
 
     protected static string|UnitEnum|null $navigationGroup = 'Users Managment';
+
+    protected static function canAccessByPermission(): bool
+    {
+        return Auth::user()?->can(
+            PermissionEnum::VIEW_EXHIBITOR_APPLICATIONS->value
+        ) ?? false;
+    }
+
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()?->can(
+            PermissionEnum::CREATE_EXHIBITOR_APPLICATIONS->value
+        ) ?? false;
+    }
+
+    public static function canDelete($record): bool
+    {
+        return Auth::user()?->can(
+            PermissionEnum::DELETE_EXHIBITOR_APPLICATIONS->value
+        ) ?? false;
+    }
 
     public static function form(Schema $schema): Schema
     {

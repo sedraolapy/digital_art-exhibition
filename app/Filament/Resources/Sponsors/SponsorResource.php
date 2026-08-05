@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Sponsors;
 
+use App\Enums\PermissionEnum;
 use App\Enums\SponsorType;
+use App\Filament\Resources\BaseResource;
 use App\Filament\Resources\Sponsors\Pages\CreateSponsor;
 use App\Filament\Resources\Sponsors\Pages\EditSponsor;
 use App\Filament\Resources\Sponsors\Pages\ListSponsors;
@@ -16,9 +18,10 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use UnitEnum;
 
-class SponsorResource extends Resource
+class SponsorResource extends BaseResource
 {
     protected static ?string $model = Sponsor::class;
 
@@ -27,6 +30,20 @@ class SponsorResource extends Resource
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static string|UnitEnum|null $navigationGroup = 'Content Managment';
+
+    protected static function canAccessByPermission(): bool
+    {
+        return Auth::user()?->can(
+            PermissionEnum::VIEW_SPONSORS->value
+        ) ?? false;
+    }
+
+    public static function canEdit($record): bool
+    {
+        return Auth::user()?->can(
+            PermissionEnum::UPDATE_SPONSORS->value
+        ) ?? false;
+    }
 
     public static function form(Schema $schema): Schema
     {

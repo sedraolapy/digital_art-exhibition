@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\EventAttendances;
 
+use App\Filament\Resources\BaseResource;
 use App\Filament\Resources\EventAttendances\Pages\CreateEventAttendance;
 use App\Filament\Resources\EventAttendances\Pages\EditEventAttendance;
 use App\Filament\Resources\EventAttendances\Pages\ListEventAttendances;
@@ -17,7 +18,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
 
-class EventAttendanceResource extends Resource
+class EventAttendanceResource extends BaseResource
 {
     protected static ?string $model = EventAttendance::class;
 

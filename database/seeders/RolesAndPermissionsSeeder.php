@@ -57,6 +57,9 @@ class RolesAndPermissionsSeeder extends Seeder
 
             PermissionEnum::VIEW_EXHIBITOR_PROFILES->value,
             PermissionEnum::UPDATE_EXHIBITOR_PROFILES->value,
+
+            PermissionEnum::VIEW_WORKSHOP->value,
+            PermissionEnum::UPDATE_WORKSHOP->value,
         ]);
 
 
@@ -68,8 +71,15 @@ class RolesAndPermissionsSeeder extends Seeder
         $exhibitorManager->syncPermissions([
             PermissionEnum::ACCESS_ADMIN_PANEL->value,
 
+            PermissionEnum::VIEW_EXHIBITOR_PROFILES->value,
+            PermissionEnum::UPDATE_EXHIBITOR_PROFILES->value,
+            PermissionEnum::CREATE_EXHIBITOR_PROFILES->value,
+            PermissionEnum::DELETE_EXHIBITOR_PROFILES->value,
+
             PermissionEnum::VIEW_EXHIBITOR_APPLICATIONS->value,
             PermissionEnum::UPDATE_EXHIBITOR_APPLICATIONS->value,
+            PermissionEnum::CREATE_EXHIBITOR_APPLICATIONS->value,
+            PermissionEnum::DELETE_EXHIBITOR_APPLICATIONS->value,
         ]);
 
 
@@ -81,7 +91,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $organizer->syncPermissions([
             PermissionEnum::ACCESS_ADMIN_PANEL->value,
-            
+
             PermissionEnum::PERFORM_CHECK_IN->value,
         ]);
     }

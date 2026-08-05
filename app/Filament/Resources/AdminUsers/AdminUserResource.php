@@ -10,6 +10,7 @@ use App\Filament\Resources\AdminUsers\Pages\ViewAdminUser;
 use App\Filament\Resources\AdminUsers\Schemas\AdminUserForm;
 use App\Filament\Resources\AdminUsers\Schemas\AdminUserInfolist;
 use App\Filament\Resources\AdminUsers\Tables\AdminUsersTable;
+use App\Filament\Resources\BaseResource;
 use App\Models\AdminUser;
 use App\Models\User;
 use BackedEnum;
@@ -21,7 +22,7 @@ use UnitEnum;
 use Illuminate\Database\Eloquent\Builder;
 
 
-class AdminUserResource extends Resource
+class AdminUserResource extends BaseResource
 {
     protected static ?string $model = User::class;
 

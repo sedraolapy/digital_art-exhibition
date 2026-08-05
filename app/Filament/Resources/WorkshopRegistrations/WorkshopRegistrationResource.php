@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\WorkshopRegistrations;
 
+use App\Filament\Resources\BaseResource;
 use App\Filament\Resources\WorkshopRegistrations\Pages\CreateWorkshopRegistration;
 use App\Filament\Resources\WorkshopRegistrations\Pages\EditWorkshopRegistration;
 use App\Filament\Resources\WorkshopRegistrations\Pages\ListWorkshopRegistrations;
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use UnitEnum;
 
-class WorkshopRegistrationResource extends Resource
+class WorkshopRegistrationResource extends BaseResource
 {
     protected static ?string $model = WorkshopRegistration::class;
 

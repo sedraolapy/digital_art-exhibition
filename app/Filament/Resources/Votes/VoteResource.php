@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Votes;
 
+use App\Filament\Resources\BaseResource;
 use App\Filament\Resources\Votes\Pages\CreateVote;
 use App\Filament\Resources\Votes\Pages\EditVote;
 use App\Filament\Resources\Votes\Pages\ListVotes;
@@ -17,7 +18,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
 
-class VoteResource extends Resource
+class VoteResource extends BaseResource
 {
     protected static ?string $model = Vote::class;
 

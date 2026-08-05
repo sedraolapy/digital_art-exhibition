@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Cycles;
 
+use App\Filament\Resources\BaseResource;
 use App\Filament\Resources\Cycles\Pages\CreateCycle;
 use App\Filament\Resources\Cycles\Pages\EditCycle;
 use App\Filament\Resources\Cycles\Pages\ListCycles;
@@ -17,7 +18,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
 
-class CycleResource extends Resource
+class CycleResource extends BaseResource
 {
     protected static ?string $model = Cycle::class;
 

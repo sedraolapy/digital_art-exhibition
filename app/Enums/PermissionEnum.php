@@ -36,11 +36,20 @@ enum PermissionEnum: string
     // Exhibitor Profiles
     case VIEW_EXHIBITOR_PROFILES = 'view exhibitor profiles';
     case UPDATE_EXHIBITOR_PROFILES = 'update exhibitor profiles';
+    case CREATE_EXHIBITOR_PROFILES = 'craete exhibitor profiles';
+    case DELETE_EXHIBITOR_PROFILES = 'delete exhibitor profiles';
+
 
 
     // Exhibitor Applications
     case VIEW_EXHIBITOR_APPLICATIONS = 'view exhibitor applications';
     case UPDATE_EXHIBITOR_APPLICATIONS = 'update exhibitor applications';
+    case CREATE_EXHIBITOR_APPLICATIONS = 'craete exhibitor applications';
+    case DELETE_EXHIBITOR_APPLICATIONS = 'delete exhibitor applications';
+
+    //wORKSOP
+    case VIEW_WORKSHOP = 'view workshop';
+    case UPDATE_WORKSHOP = 'update workshop';
 
 
     // Check-in

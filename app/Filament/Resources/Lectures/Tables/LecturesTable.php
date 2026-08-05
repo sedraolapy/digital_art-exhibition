@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Lectures\Tables;
 
+use App\Enums\RoleEnum;
 use App\Models\EventDay;
 use App\Models\Lecture;
 use Carbon\Carbon;
@@ -15,6 +16,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class LecturesTable
 {
@@ -104,7 +106,8 @@ class LecturesTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn () => Auth::user()->hasRole(RoleEnum::SUPER_ADMIN->value)),
                 ]),
             ]);
     }

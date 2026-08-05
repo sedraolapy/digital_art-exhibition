@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\EventAttendance;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Facades\Auth;
 
 class AttendanceOverviewStats extends StatsOverviewWidget
 {
@@ -15,7 +16,12 @@ class AttendanceOverviewStats extends StatsOverviewWidget
     {
         return 'Attendance Overview';
     }
-    
+
+    public static function canView(): bool
+    {
+        return Auth::user()?->hasRole(RoleEnum::SUPER_ADMIN->value) ?? false;
+    }
+
     protected function getStats(): array
     {
         $totalUsers = User::role(RoleEnum::USER->value)

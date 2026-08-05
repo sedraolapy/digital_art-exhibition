@@ -48,6 +48,7 @@ class UserResource extends JsonResource
                 return [
                     'event_id' => $profile->eventOccurrence->id,
                     'event_name' => $profile->eventOccurrence->title,
+                    'event_location' => $profile->eventOccurrence->location->name,
                     'category' => $profile->category->name,
                     'start_date' => $profile->eventOccurrence->start_date,
                     'end_date' => $profile->eventOccurrence->end_date,

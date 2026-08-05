@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use App\Enums\RoleEnum;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -32,7 +33,7 @@ class UserInfolist
                     ->size(150)
                     ->state(function ($record) {
 
-                        $collection = $record->hasRole('exhibitor')
+                        $collection = $record->hasRole(RoleEnum::EXHIBITOR->value)
                             ? 'exhibitor_image'
                             : 'user_image';
 
