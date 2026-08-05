@@ -65,7 +65,7 @@ class ExhibitorProfileService
         }
 
         $profile->user = $this->userDataService->attachEventContext($user);
-        $profile->user->current_exhibitor_image = $profile->getFirstMediaUrl('exhibitor_image', 'webp');
+        $profile->user->current_exhibitor_image =$profile->user->getMedia('exhibitor_image')->last()?->getFullUrl('webp');
 
         return $profile;
     }
