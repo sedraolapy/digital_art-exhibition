@@ -9,9 +9,10 @@ class LectureService
 {
     public function getActiveLectures()
     {
-        return Lecture::whereHas('day.occurrence', function ($query) {
-            $query->where('status', EventOccurrenceStatus::ACTIVE->value);
-        })->get();
+        return Lecture::with(['day', 'media'])
+            ->withCount('bookings')
+            ->whereHas('day.occurrence', fn($q) => $q->where('status', EventOccurrenceStatus::ACTIVE->value))
+            ->get();
     }
 
 }

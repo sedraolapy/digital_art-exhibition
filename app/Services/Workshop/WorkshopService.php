@@ -8,6 +8,6 @@ class WorkshopService
 {
     public function getWorkshops(){
 
-        return $workshop = Workshop::get();
+        return $workshop = Workshop::with('media')->get();
     }
 }

@@ -31,7 +31,11 @@ class ExhibitorService
             ->pluck('exhibitor_id')
             ->toArray();
 
-        $exhibitors = ExhibitorProfile::with('user.socialLinks')
+        $exhibitors = ExhibitorProfile::with([
+            'user.socialLinks',
+            'user.media',
+            'category'
+            ])
             ->where('event_occurrence_id', $activeEvent->id)
             ->get()
             ->map(function ($exhibitor) use ($votedExhibitors) {

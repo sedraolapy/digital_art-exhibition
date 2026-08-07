@@ -207,16 +207,20 @@ class CheckInService
         ];
     }
 
-    public function hasCheckedIn(User $user): bool
+    public function hasCheckedIn(User $user, ?EventOccurrence $event): bool
     {
-        $event = $this->eventService->getActiveEvent();
         if (! $event) {
             return false;
         }
 
         return $user->eventAttendances()
-            ->whereHas('eventDay', fn($query) =>
-                $query->where('event_occurrence_id', $event->id)
-            )->exists();
+            ->whereHas(
+                'eventDay',
+                fn ($query) => $query->where(
+                    'event_occurrence_id',
+                    $event->id
+                )
+            )
+            ->exists();
     }
 }

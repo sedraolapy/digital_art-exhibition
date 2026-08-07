@@ -3,6 +3,7 @@
 namespace App\Services\Exhibitor;
 
 use App\Models\EventAttendance;
+use App\Models\ExhibitorProfile;
 use App\Models\Vote;
 use App\Services\Event\EventService;
 use Illuminate\Support\Facades\Auth;
@@ -53,6 +54,17 @@ class VoteService
                 'message' => 'لقد قمت بالتصويت لهذا العارض مسبقًا',
                 'data'    => null,
             ];
+        }
+
+        $exhibitorBelongsToOccurrence = ExhibitorProfile::where('id', $exhibitorId)
+            ->where('event_occurrence_id', $activeOccurrence->id)
+            ->exists();
+
+        if (! $exhibitorBelongsToOccurrence) {
+            return [
+                'message' => 'هذا العارض لا يتبع للحدث الحالي',
+                'data' => null
+        ];
         }
 
         $vote = Vote::create([

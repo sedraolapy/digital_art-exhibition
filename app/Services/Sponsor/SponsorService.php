@@ -17,13 +17,13 @@ class SponsorService
         $occurrenceSponsors = Sponsor::whereHas('occurrences', function ($query) use ($activeOccurrence) {
                 $query->where('event_occurrence_id', $activeOccurrence->id);
             })
-            ->with(['cycles', 'occurrences.location', 'occurrences.cycle'])
+            ->with(['cycles', 'occurrences.location', 'occurrences.cycle','media'])
             ->get();
 
         $cycleSponsors = Sponsor::whereHas('cycles', function ($query) use ($activeOccurrence) {
                 $query->where('cycle_id', $activeOccurrence->cycle_id);
             })
-            ->with(['cycles', 'occurrences.location', 'occurrences.cycle'])
+            ->with(['cycles', 'occurrences.location', 'occurrences.cycle','media'])
             ->get();
 
         return $occurrenceSponsors->merge($cycleSponsors);

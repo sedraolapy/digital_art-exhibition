@@ -48,24 +48,32 @@ class ExhibitorProfileService
         });
     }
 
-    public function getExhibitorProfileData(User $user): ?ExhibitorProfile
+    public function getExhibitorProfileData(User $user,?EventOccurrence $activeEvent): ?ExhibitorProfile
     {
-        $activeEvent = $this->eventService->getActiveEvent();
-
         if (! $activeEvent) {
             return null;
         }
 
         $profile = $user->exhibitorProfiles()
             ->where('event_occurrence_id', $activeEvent->id)
+            ->with([
+                'category',
+                'eventOccurrence.location',
+                'media',
+            ])
             ->first();
 
         if (! $profile) {
             return null;
         }
 
-        $profile->user = $this->userDataService->attachEventContext($user);
-        $profile->user->current_exhibitor_image =$profile->user->getMedia('exhibitor_image')->last()?->getFullUrl('webp');
+        $profile->user = $this->userDataService->attachEventContext($user,$activeEvent);
+
+        $profile->user->current_exhibitor_image =
+            $profile->user
+                ->getMedia('exhibitor_image')
+                ->last()
+                ?->getFullUrl('webp');
 
         return $profile;
     }

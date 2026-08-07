@@ -2,6 +2,7 @@
 
 namespace App\Services\User;
 
+use App\Models\EventOccurrence;
 use App\Models\User;
 use App\Services\Lecture\BookingService;
 use App\Services\CheckIn\CheckInService;
@@ -24,28 +25,52 @@ class UserDataService
 
     public function loadAuthData(User $user): User
     {
-        $this->attachEventContext($user);
+        $activeEvent = $this->eventService->getActiveEvent();
+
+        $this->attachEventContext($user, $activeEvent);
 
         $user->loadMissing('socialLinks');
 
-        $user->is_checked_in = $this->checkInService->hasCheckedIn($user);
+        $user->is_checked_in = $activeEvent
+            ? $this->checkInService->hasCheckedIn($user, $activeEvent)
+            : false;
 
         return $user;
     }
-
-    public function attachEventContext(User $user): User
+    
+    public function attachEventContext(User $user,?EventOccurrence $event = null): User
     {
         $userId = $user->id;
-        $event = $this->eventService->getActiveEvent();
 
-        $user->voted_exhibitors = $this->voteService->getUserVotesForActiveOccurrence($userId);
-        $user->bookings = $this->bookingService->getUserConfirmedBookings($userId);
-        $user->registerations = $this->registrationService->getUserConfirmedRegisterations($userId);
-        $user->exhibitor_application_status = $event
-            ? $this->applicationService->getApplicationStatus($userId, $event->id)
+        $user->current_event = $event
+            ? [
+                'id' => $event->id,
+                'title' => $event->title,
+            ]
             : null;
 
-        $user->exhibitor_events = $user->load(['exhibitorProfiles.eventOccurrence'])->exhibitorProfiles;
+        $user->voted_exhibitors =
+            $this->voteService->getUserVotesForActiveOccurrence($userId);
+
+        $user->bookings =
+            $this->bookingService->getUserConfirmedBookings($userId);
+
+        $user->registerations =
+            $this->registrationService->getUserConfirmedRegisterations($userId);
+
+        $user->exhibitor_application_status = $event
+            ? $this->applicationService->getApplicationStatus(
+                $userId,
+                $event->id
+            )
+            : null;
+
+        $user->loadMissing([
+            'exhibitorProfiles.eventOccurrence.location',
+            'exhibitorProfiles.category',
+        ]);
+
+        $user->exhibitor_events = $user->exhibitorProfiles;
 
         return $user;
     }

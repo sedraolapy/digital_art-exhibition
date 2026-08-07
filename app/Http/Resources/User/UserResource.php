@@ -53,6 +53,8 @@ class UserResource extends JsonResource
                     'end_date' => $profile->eventOccurrence->end_date,
                 ];
             }): [],
+            'current_event' => $this->current_event ?? null,
         ];
+
     }
 }

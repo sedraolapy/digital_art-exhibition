@@ -76,11 +76,18 @@ enum PermissionEnum: string
         self::VIEW_LECTURES => 'View',
         self::UPDATE_LECTURES => 'Update',
 
+        self::VIEW_WORKSHOP => 'View',
+        self::UPDATE_WORKSHOP => 'Update',
+
         self::VIEW_EXHIBITOR_PROFILES => 'View',
         self::UPDATE_EXHIBITOR_PROFILES => 'Update',
+        self::CREATE_EXHIBITOR_PROFILES => 'Create',
+        self::DELETE_EXHIBITOR_PROFILES => 'Delete',
 
         self::VIEW_EXHIBITOR_APPLICATIONS => 'View',
         self::UPDATE_EXHIBITOR_APPLICATIONS => 'Update',
+        self::CREATE_EXHIBITOR_APPLICATIONS => 'Create',
+        self::DELETE_EXHIBITOR_APPLICATIONS => 'Delete',
 
         self::PERFORM_CHECK_IN => 'Perform Check-in',
     };
@@ -107,11 +114,18 @@ public function group(): string
         self::VIEW_LECTURES,
         self::UPDATE_LECTURES => 'Lectures',
 
+        self::VIEW_WORKSHOP,
+        self::UPDATE_WORKSHOP => 'workshops',
+
         self::VIEW_EXHIBITOR_PROFILES,
-        self::UPDATE_EXHIBITOR_PROFILES => 'Exhibitor Profiles',
+        self::UPDATE_EXHIBITOR_PROFILES,
+        self::CREATE_EXHIBITOR_PROFILES,
+        self::DELETE_EXHIBITOR_PROFILES => 'Exhibitor Profiles',
 
         self::VIEW_EXHIBITOR_APPLICATIONS,
-        self::UPDATE_EXHIBITOR_APPLICATIONS => 'Exhibitor Applications',
+        self::UPDATE_EXHIBITOR_APPLICATIONS,
+        self::CREATE_EXHIBITOR_APPLICATIONS,
+        self::DELETE_EXHIBITOR_APPLICATIONS => 'Exhibitor Applications',
 
         self::PERFORM_CHECK_IN => 'Check-in',
     };

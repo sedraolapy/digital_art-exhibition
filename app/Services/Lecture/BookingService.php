@@ -18,6 +18,7 @@ class BookingService
             $lecture = $this->lockLecture($lectureId);
             $eventOccurrenceId = $lecture->day->event_occurrence_id;
 
+            $this->checkLectureBelongsToActiveEvent($eventOccurrenceId);
             $this->checkDuplicateBooking($userId, $lectureId);
             $this->checkMaxBookings($userId, $eventOccurrenceId);
             $this->checkLectureNotEnded($lecture);
@@ -57,9 +58,23 @@ class BookingService
     }
 
     // 🔹 دوال خاصة للتحقق
+
+    private function checkLectureBelongsToActiveEvent(int $eventOccurrenceId): void
+    {
+        $activeEvent = $this->eventService->getActiveEvent();
+
+        if (! $activeEvent || $activeEvent->id !== $eventOccurrenceId) {
+            throw new \Exception('لا يمكنك حجز محاضرة تابعة لحدث غير فعّال');
+        }
+    }
+
     private function checkDuplicateBooking(int $userId, int $lectureId): void
     {
-        if (Booking::where('user_id', $userId)->where('lecture_id', $lectureId)->exists()) {
+        if (
+            Booking::where('user_id', $userId)
+                ->where('lecture_id', $lectureId)
+                ->where('status', BookingStatus::CONFIRMED->value)
+                ->exists()) {
             throw new \Exception('لقد قمت بحجز هذه المحاضرة مسبقاً');
         }
     }

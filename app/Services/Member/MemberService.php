@@ -9,7 +9,10 @@ class MemberService
 {
     public function getAll(): Collection
     {
-        return Member::with('socialLinks')
+        return Member::with([
+            'socialLinks',
+            'media',
+            ])
             ->orderBy('name')
             ->get();
     }

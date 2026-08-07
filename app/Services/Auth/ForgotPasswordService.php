@@ -8,23 +8,22 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 
 class ForgotPasswordService
 {
     public function sendResetLink(string $email): void
     {
         $user = User::where('email', $email)->first();
+
         if (! $user) {
-            throw ValidationException::withMessages([
-                'email' => ['We could not find a user with that email address.'],
-            ]);
+            return;
         }
 
         $token = Password::createToken($user);
 
         event(new ForgotPasswordRequested($user, $token));
     }
+
 
     public function resetPassword(array $data): void
     {
@@ -40,8 +39,9 @@ class ForgotPasswordService
             }
         );
 
+
         if ($status !== Password::PASSWORD_RESET) {
-            throw ValidationException::withMessages([
+            throw \Illuminate\Validation\ValidationException::withMessages([
                 'email' => [__($status)],
             ]);
         }

@@ -4,7 +4,6 @@ namespace App\Filament\Widgets;
 
 use App\Enums\RoleEnum;
 use App\Models\Lecture;
-use App\Models\EventOccurrence;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
@@ -22,10 +21,12 @@ class LecturePerformanceTable extends TableWidget
         $this->eventOccurrenceId = $eventOccurrenceId;
     }
 
+
     public static function canView(): bool
     {
         return Auth::user()?->hasRole(RoleEnum::SUPER_ADMIN->value) ?? false;
     }
+
 
     public function table(Table $table): Table
     {
@@ -38,27 +39,20 @@ class LecturePerformanceTable extends TableWidget
                 }
 
 
-                $event = EventOccurrence::find(
-                    $this->eventOccurrenceId
-                );
-
-
-                if (! $event) {
-                    return Lecture::query()
-                        ->whereRaw('1 = 0');
-                }
-
-
                 return Lecture::query()
-                    ->whereIn(
-                        'event_day_id',
-                        $event->days()->pluck('id')
-                    );
+                    ->whereHas('day', function ($query) {
+                        $query->where(
+                            'event_occurrence_id',
+                            $this->eventOccurrenceId
+                        );
+                    })
+                    ->withCount([
+                        'bookings',
+                        'attendance',
+                    ]);
             })
 
-
             ->columns([
-
 
                 Tables\Columns\TextColumn::make('title')
                     ->label('Lecture')
@@ -71,22 +65,12 @@ class LecturePerformanceTable extends TableWidget
 
                 Tables\Columns\TextColumn::make('bookings_count')
                     ->label('Booked')
-                    ->state(function (Lecture $record) {
-
-                        return $record->bookings()->count();
-
-                    })
                     ->badge()
                     ->color('info'),
 
 
                 Tables\Columns\TextColumn::make('attendance_count')
                     ->label('Attended')
-                    ->state(function (Lecture $record) {
-
-                        return $record->attendance()->count();
-
-                    })
                     ->badge()
                     ->color('success'),
 
@@ -95,22 +79,17 @@ class LecturePerformanceTable extends TableWidget
                     ->label('Attendance Rate')
                     ->state(function (Lecture $record) {
 
-                        $booked = $record->bookings()->count();
+                        if ($record->bookings_count == 0) {
+                            return '0%';
+                        }
 
-                        $attended = $record->attendance()->count();
-
-
-                        return $booked > 0
-                            ? round(
-                                ($attended / $booked) * 100,
-                                1
-                            ) . '%'
-                            : '0%';
-
+                        return round(
+                            ($record->attendance_count / $record->bookings_count) * 100,
+                            1
+                        ) . '%';
                     })
                     ->badge()
                     ->color('warning'),
-
 
             ])
 

@@ -2,6 +2,7 @@
 
 namespace App\Services\User;
 
+use App\Models\EventOccurrence;
 use App\Models\User;
 use App\Services\Exhibitor\SocialLinkService;
 
@@ -12,9 +13,9 @@ class UserProfileService
         private UserDataService $userDataService,
     ) {}
 
-    public function getProfileData(User $user): User
+    public function getProfileData(User $user, ?EventOccurrence $activeEvent): User
     {
-        return $this->userDataService->attachEventContext($user);
+        return $this->userDataService->attachEventContext($user,$activeEvent);
     }
 
     public function update(User $user, array $data): User
