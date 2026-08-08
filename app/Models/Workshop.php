@@ -31,6 +31,10 @@ class Workshop extends Model implements HasMedia
         return $this->hasMany(WorkshopAttendance::class);
     }
 
+    public function registrations()
+    {
+        return $this->hasMany(WorkshopRegistration::class);
+    }
 
     public function registerMediaConversions(Media $media = null): void
     {

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\CycleStatus;
 use App\Enums\SponsorType;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,6 +12,13 @@ class Cycle extends Model
         'name',
         'start_date',
         'end_date',
+        'status'
+    ];
+
+    protected $casts = [
+        'status' => CycleStatus::class,
+        'start_date' => 'date',
+        'end_date' => 'date',
     ];
 
     public function occurrences()

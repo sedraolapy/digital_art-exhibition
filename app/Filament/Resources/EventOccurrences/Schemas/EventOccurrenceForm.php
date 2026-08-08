@@ -69,8 +69,6 @@ class EventOccurrenceForm
                         return $cycle?->end_date;
                     }),
 
-
-
             ]);
     }
 }

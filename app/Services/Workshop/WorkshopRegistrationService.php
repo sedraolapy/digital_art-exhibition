@@ -17,6 +17,7 @@ class WorkshopRegistrationService
 
             $this->checkDuplicateRegistration($userId, $workshopId);
             $this->checkWorkshopNotEnded($workshop);
+            $this->checkTimeConflict($userId, $workshop);
             $this->checkSeatsAvailability($workshop);
 
             return WorkshopRegistration::create([
@@ -51,6 +52,26 @@ class WorkshopRegistrationService
         $currentRegistration = WorkshopRegistration::where('workshop_id', $workshop->id)->count();
         if ($currentRegistration >= $workshop->max_seats) {
             throw new \Exception('المقاعد ممتلئة لهذه الورشة');
+        }
+    }
+
+    private function checkTimeConflict(int $userId, Workshop $workshop): void
+    {
+        $hasConflict = WorkshopRegistration::where('user_id', $userId)
+            ->where('status', BookingStatus::CONFIRMED->value)
+            ->whereHas('workshop', function ($query) use ($workshop) {
+                $query
+                    ->where('id', '!=', $workshop->id)
+                    ->where('date', $workshop->date)
+                    ->where('start_time', '<', $workshop->end_time)
+                    ->where('end_time', '>', $workshop->start_time);
+            })
+            ->exists();
+
+        if ($hasConflict) {
+            throw new \Exception(
+                'لا يمكنك حجز هذه الورشة لأنها تتعارض مع ورشة أخرى قمت بحجزها'
+            );
         }
     }
 

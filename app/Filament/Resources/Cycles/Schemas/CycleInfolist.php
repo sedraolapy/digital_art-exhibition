@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Cycles\Schemas;
 
+use App\Enums\CycleStatus;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
@@ -14,6 +15,14 @@ class CycleInfolist
         return $schema
             ->components([
                 TextEntry::make('name'),
+                TextEntry::make('status')
+                    ->badge()
+                    ->color(fn ($state) => match ($state) {
+                        CycleStatus::UPCOMING => 'warning',
+                        CycleStatus::ACTIVE => 'success',
+                        CycleStatus::FINISHED => 'danger',
+                    })
+                    ->formatStateUsing(fn ($state) => $state->value),
                 TextEntry::make('start_date')
                     ->date()
                     ->placeholder('-'),

@@ -17,6 +17,7 @@ class CyclesSeeder extends Seeder
             'name' => 'Summer Cycle 2026',
             'start_date' => '2026-8-20',
             'end_date'   => '2026-08-31',
+            'status'   => 'active',
         ]);
     }
 }
