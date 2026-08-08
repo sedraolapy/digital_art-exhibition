@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Lecture;
 
+use App\Enums\BookingStatus;
 use App\Models\Booking;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -11,7 +12,7 @@ class LectureResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        $bookingsCount = Booking::where('lecture_id', $this->id)->count();
+        $bookingsCount = Booking::where('lecture_id', $this->id)->where('status', BookingStatus::CONFIRMED->value)->count();
         $remainingSeats = $this->max_seats - $bookingsCount;
 
         return [

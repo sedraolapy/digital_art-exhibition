@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Workshop;
 
+use App\Enums\BookingStatus;
+use App\Models\WorkshopRegistration;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,8 +16,8 @@ class WorkshopResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        // $bookingsCount = Booking::where('lecture_id', $this->id)->count();
-        // $remainingSeats = $this->max_seats - $bookingsCount;
+        $registerationsCount = WorkshopRegistration::where('workshop_id', $this->id)->where('status', BookingStatus::CONFIRMED->value)->count();
+        $remainingSeats = $this->max_seats - $registerationsCount;
 
         return [
             'id'          => $this->id,
@@ -25,7 +27,7 @@ class WorkshopResource extends JsonResource
             'description' => $this->description,
             'speaker'     => $this->speaker_name,
             'max_seats'   => $this->max_seats,
-            // 'remainingSeats'=> $remainingSeats,
+            'remainingSeats'=> $remainingSeats,
             'date'        => $this->date,
             'start_time'  => $this->start_time,
             'end_time'    => $this->end_time,
