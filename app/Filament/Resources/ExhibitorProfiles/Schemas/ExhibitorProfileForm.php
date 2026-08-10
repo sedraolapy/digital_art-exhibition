@@ -16,6 +16,20 @@ class ExhibitorProfileForm
     {
         return $schema
             ->components([
+                Select::make('user_id')
+                    ->relationship(
+                        name: 'user',
+                        titleAttribute: 'first_name',
+                        modifyQueryUsing: fn ($query) => $query
+                            ->whereHas('roles', function ($query) {
+                                $query->where('name', RoleEnum::USER->value);
+                            })
+                            ->orderBy('first_name')
+                    )
+                    ->searchable(['first_name', 'last_name'])
+                    ->preload()
+                    ->required(),
+
                 Select::make('category_id')
                     ->relationship('category', 'name')
                     ->searchable()

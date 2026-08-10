@@ -3,12 +3,14 @@
 namespace App\Filament\Resources\Users\Schemas;
 
 use App\Enums\RoleEnum;
+use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Illuminate\Support\Str;
 
 class UserForm
 {
@@ -30,25 +32,63 @@ class UserForm
                 TextInput::make('email')
                     ->label('Email address')
                     ->email()
+                    ->unique()
                     ->required(),
 
                 TextInput::make('phone')
                     ->tel()
                     ->required(),
 
-                Select::make('role')
-                    ->label('Role')
-                    ->options([
-                        RoleEnum::USER->value => 'User',
-                        RoleEnum::EXHIBITOR->value => 'Exhibitor',
-                    ])
-                    ->required()
-                    ->dehydrated(false)
+                TextInput::make('instagram')
+                    ->label('Instagram')
+                    ->url()
+                    ->requiredWithout('facebook')
                     ->afterStateHydrated(function ($component, $record) {
+                        if (! $record) {
+                            return;
+                        }
+                
                         $component->state(
-                            $record?->getRoleNames()->first()
+                            $record->socialLinks()
+                                ->where('platform', 'instagram')
+                                ->value('url')
                         );
                     }),
+                
+                TextInput::make('facebook')
+                    ->label('Facebook')
+                    ->url()
+                    ->requiredWithout('instagram')
+                    ->afterStateHydrated(function ($component, $record) {
+                        if (! $record) {
+                            return;
+                        }
+                
+                        $component->state(
+                            $record->socialLinks()
+                                ->where('platform', 'facebook')
+                                ->value('url')
+                        );
+                    }),
+
+                TextInput::make('qr_token')
+                    ->label('QR Token')
+                    ->disabled()
+                    ->default(fn () => Str::uuid()->toString())
+                    ->dehydrated()
+                    ->afterStateHydrated(function ($component, $record) {
+                        if ($record) {
+                            $component->state($record->qr_token);
+                        }
+                    })
+                    ->suffixAction(
+                        Action::make('generateQrToken')
+                            ->label('Generate New Token')
+                            ->icon('heroicon-o-arrow-path')
+                            ->action(function ($set) {
+                                $set('qr_token', Str::uuid()->toString());
+                            })
+                    ),
 
                 SpatieMediaLibraryFileUpload::make('image')
                     ->label('Image')

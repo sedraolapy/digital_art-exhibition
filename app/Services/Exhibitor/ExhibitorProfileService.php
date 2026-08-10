@@ -42,7 +42,7 @@ class ExhibitorProfileService
             $this->transferCvFile($application, $profile);
             $this->transferImage($application, $profile);
             $this->assignExhibitorRole($application->user_id);
-            $this->updateSocialLinksFromApplication($application, $profile->user);
+            $this->updateSocialLinksFromApplication($application, $profile);
 
             return $profile;
         });
@@ -59,10 +59,10 @@ class ExhibitorProfileService
             ->with([
                 'category',
                 'eventOccurrence.location',
+                'socialLinks',
                 'media',
             ])
             ->first();
-
         if (! $profile) {
             return null;
         }
@@ -74,7 +74,6 @@ class ExhibitorProfileService
                 ->getMedia('exhibitor_image')
                 ->last()
                 ?->getFullUrl('webp');
-
         return $profile;
     }
 
@@ -126,7 +125,7 @@ class ExhibitorProfileService
         }
     }
 
-    private function updateSocialLinksFromApplication(ExhibitorApplication $application, User $user): void
+    private function updateSocialLinksFromApplication(ExhibitorApplication $application, ExhibitorProfile $profile): void
     {
         $oldLinks = $application->socialLinks;
 
@@ -136,7 +135,7 @@ class ExhibitorProfileService
             ])
             ->toArray();
 
-        $this->socialLinkService->updateLinks($user, $data);
+        $this->socialLinkService->updateLinks($profile, $data);
     }
 
     private function updateCvFile(ExhibitorProfile $profile, array $data): void

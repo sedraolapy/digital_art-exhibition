@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ExhibitorApplications\Schemas;
 
 use App\Enums\ExhibitorStatus;
+use App\Enums\RoleEnum;
 use App\Models\EventOccurrence;
 use App\Models\User;
 use Filament\Forms\Components\FileUpload;
@@ -22,23 +23,27 @@ class ExhibitorApplicationForm
                     ->relationship(
                         name: 'user',
                         titleAttribute: 'first_name',
-                        modifyQueryUsing: fn ($query) => $query->orderBy('first_name')
+                        modifyQueryUsing: fn ($query) => $query
+                            ->whereHas('roles', function ($query) {
+                                $query->where('name', RoleEnum::USER->value);
+                            })
+                            ->orderBy('first_name')
                     )
-                    ->getOptionLabelFromRecordUsing(
-                        fn (User $record): string => "{$record->first_name} {$record->last_name}"
-                    )
-                    ->searchable(['first_name', 'last_name', 'email'])
+                    ->searchable(['first_name', 'last_name'])
                     ->preload()
+                    ->required(),
+
+                Textarea::make('bio')
+                    ->columnSpanFull()
                     ->required(),
 
                 Select::make('event_occurrence_id')
                     ->relationship(
                         name: 'eventOccurrence',
-                        titleAttribute: 'id',
-                        modifyQueryUsing: fn ($query) => $query->with('location')
+                        titleAttribute: 'id'
                     )
                     ->getOptionLabelFromRecordUsing(
-                        fn (EventOccurrence $record): string => $record->location->name
+                        fn (EventOccurrence $record): string => $record->title
                     )
                     ->searchable()
                     ->preload()
@@ -52,6 +57,7 @@ class ExhibitorApplicationForm
 
                 Select::make('status')
                     ->options(ExhibitorStatus::class)
+                    ->default(ExhibitorStatus::PENDING->value)
                     ->required(),
 
                 TextInput::make('experience_years')
@@ -61,6 +67,10 @@ class ExhibitorApplicationForm
                 SpatieMediaLibraryFileUpload::make('cv_file')
                     ->collection('application_cv')
                     ->label('CV File')
+                    ->rules([
+                        'file',
+                        'mimes:pdf,doc,docx',
+                    ])
                     ->openable()
                     ->required(),
 
@@ -68,15 +78,34 @@ class ExhibitorApplicationForm
                     ->url()
                     ->required(),
 
-                Textarea::make('bio')
-                    ->columnSpanFull()
+                TextInput::make('instagram')
+                    ->label('Instagram')
+                    ->url()
                     ->required(),
+                
+                TextInput::make('facebook')
+                    ->label('Facebook')
+                    ->url()
+                    ->required(),
+                
+                TextInput::make('linkedin')
+                    ->label('LinkedIn')
+                    ->url()
+                    ->nullable(),
+                
+                TextInput::make('behance')
+                    ->label('Behance')
+                    ->url()
+                    ->nullable(),
 
                 SpatieMediaLibraryFileUpload::make('image')
                     ->required()
                     ->collection('application_image')
                     ->image()
                     ->maxSize(1024)
+                    ->imageCropAspectRatio('1:1')
+                    ->imageEditor()
+                    ->hint('The image must be square (1:1 ratio)')
                     ->validationMessages([
                         'max' => 'The image size must not exceed 1 MB.',
                     ])

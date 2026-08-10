@@ -20,9 +20,9 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             $table->foreignId('event_occurrence_id')
+                ->nullable()
                 ->constrained()
-                ->cascadeOnDelete()
-                ->nullable();
+                ->cascadeOnDelete();
 
             $table->string('token_hash')->unique();
             $table->string('device_id')->nullable();

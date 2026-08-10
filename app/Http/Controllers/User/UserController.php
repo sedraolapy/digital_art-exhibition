@@ -19,7 +19,6 @@ class UserController extends Controller
     public function user(Request $request)
     {
         $result = $this->userService->getUserProfile($request->user());
-
         return match ($result['type']) {
 
             'exhibitor' =>

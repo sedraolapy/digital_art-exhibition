@@ -40,6 +40,12 @@ class ExhibitorProfile extends Model implements HasMedia
     {
         return $this->belongsTo(Category::class);
     }
+    
+    public function socialLinks()
+    {
+        return $this->morphMany(SocialLink::class, 'linkable');
+    }
+
 
     public function bookings()
     {

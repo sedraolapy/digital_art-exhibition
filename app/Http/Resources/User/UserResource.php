@@ -29,18 +29,21 @@ class UserResource extends JsonResource
             'email'      => $this->email,
             'phone'      => $this->phone,
 
-            'social_links'     => $this->socialLinks->map(function ($link) {
-                return [
-                    'platform' => $link->platform,
-                    'url'      => $link->url,
-                ];
-            })??null,
+            'social_links' => $this->when(
+                $this->hasRole(RoleEnum::USER->value),
+                fn () => $this->socialLinks->map(function ($link) {
+                    return [
+                        'platform' => $link->platform,
+                        'url' => $link->url,
+                    ];
+                })->values()
+            ),
 
             'role' => $this->getRoleNames()->first(),
             'qr_code'    => $this->qr_token,
             'voted_exhibitors' => $this->voted_exhibitors ?? [],
             'bookings'         => $this->bookings ?? [],
-            'workshop registerations'         => $this->registerations ?? [],
+            'workshop_registrations' => $this->registrations ?? [],
             'exhibitor_application_status' => $this->exhibitor_application_status,
             'is_checked_in' => $this->when(isset($this->is_checked_in),(bool) $this->is_checked_in),
             'exhibitor_events' => $this->exhibitor_events? $this->exhibitor_events->map(function ($profile) {

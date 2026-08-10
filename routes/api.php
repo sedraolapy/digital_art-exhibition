@@ -70,8 +70,8 @@ use Illuminate\Support\Facades\Route;
         Route::post('/votes', [VoteController::class, 'store']);
         Route::get('/user', [UserController::class, 'user']);
         Route::get('/user/attendances', [UserController::class, 'getAttendanecs']);
-        Route::post('/registraions', [WorkshopRegistrationController::class, 'store']);
-        Route::delete('/registraions/{id}', [WorkshopRegistrationController::class, 'destroy']);
+        Route::post('/registrations', [WorkshopRegistrationController::class, 'store']);
+        Route::delete('/registrations/{id}', [WorkshopRegistrationController::class, 'destroy']);
 
     });
 
