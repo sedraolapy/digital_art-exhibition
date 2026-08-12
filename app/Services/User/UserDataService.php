@@ -56,7 +56,7 @@ class UserDataService
         $user->bookings =
             $this->bookingService->getUserConfirmedBookings($userId);
 
-        $user->registerations =
+        $user->registrations  =
             $this->registrationService->getUserConfirmedRegisterations($userId);
 
         $user->exhibitor_application_status = $event
@@ -69,10 +69,10 @@ class UserDataService
         $user->loadMissing([
             'exhibitorProfiles.eventOccurrence.location',
             'exhibitorProfiles.category',
+            'userProfile.socialLinks',
         ]);
 
         $user->exhibitor_events = $user->exhibitorProfiles;
-
         return $user;
     }
 

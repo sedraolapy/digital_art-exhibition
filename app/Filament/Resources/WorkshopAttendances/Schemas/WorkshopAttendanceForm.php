@@ -2,6 +2,10 @@
 
 namespace App\Filament\Resources\WorkshopAttendances\Schemas;
 
+use App\Enums\RoleEnum;
+use App\Models\User;
+use App\Models\Workshop;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
@@ -11,12 +15,46 @@ class WorkshopAttendanceForm
     {
         return $schema
             ->components([
-                TextInput::make('user_id')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('workshop_id')
-                    ->required()
-                    ->numeric(),
+                Select::make('user_id')
+                    ->label('User')
+                    ->relationship(
+                        name: 'user',
+                        titleAttribute: 'first_name',
+                        modifyQueryUsing: fn ($query) => $query
+                            ->whereHas('roles', function ($q) {
+                                $q->whereIn('name', [
+                                    RoleEnum::USER->value,
+                                    RoleEnum::EXHIBITOR->value,
+                                ]);
+                            })
+                            ->orderBy('first_name')
+                    )
+                    ->getOptionLabelFromRecordUsing(
+                        fn (User $record): string => sprintf(
+                            '%s %s (%s)',
+                            $record->first_name,
+                            $record->last_name,
+                            $record->hasRole(RoleEnum::EXHIBITOR->value)
+                                ? 'Exhibitor'
+                                : 'User'
+                        )
+                    )
+                    ->searchable(['first_name', 'last_name', 'email'])
+                    ->preload()
+                    ->required(),
+                Select::make('workshop_id')
+                    ->label('Workshop')
+                    ->relationship(
+                        name: 'workshop',
+                        titleAttribute: 'title'
+                    )
+                    ->getOptionLabelFromRecordUsing(
+                        fn (Workshop $record): string =>
+                            "{$record->title} - {$record->speaker_name}"
+                    )
+                    ->searchable()
+                    ->preload()
+                    ->required(),
             ]);
     }
 }

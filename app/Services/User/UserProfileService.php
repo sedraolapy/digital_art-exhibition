@@ -14,9 +14,18 @@ class UserProfileService
         private UserDataService $userDataService,
     ) {}
 
-    public function getProfileData(User $user, ?EventOccurrence $activeEvent): User
+    public function getProfileData(User $user, ?EventOccurrence $activeEvent): ?UserProfile
     {
-        return $this->userDataService->attachEventContext($user,$activeEvent);
+        $user = $this->userDataService->attachEventContext($user,$activeEvent);
+        $profile = $user->userProfile;
+ 
+        if(!$profile){
+            return null;
+        }
+        
+        $profile->setRelation('user',$user);
+
+        return $profile;
     }
 
     public function update(UserProfile $profile, array $data): UserProfile

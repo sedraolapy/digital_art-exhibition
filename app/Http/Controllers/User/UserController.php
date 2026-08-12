@@ -12,6 +12,7 @@ use App\Services\User\AttendanceService;
 use App\Services\User\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use LDAP\Result;
 
 class UserController extends Controller
 {
@@ -19,7 +20,9 @@ class UserController extends Controller
 
     public function user(Request $request)
     {
+  
         $result = $this->userService->getUserProfile($request->user());
+
         return match ($result['type']) {
 
             'exhibitor' =>
@@ -31,7 +34,7 @@ class UserController extends Controller
             'user' =>
                 response()->json([
                     'message' => 'تم عرض ملف المستخدم بنجاح',
-                    'data' => new UserProfileResource($result['data']['userProfile']),
+                    'data' => new UserProfileResource($result['data']),
                 ]),
 
             default =>
