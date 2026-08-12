@@ -25,6 +25,7 @@ class UserSeeder extends Seeder
         ]);
 
         $user1->assignRole(RoleEnum::USER->value);
+        $user1->userProfile()->create();
 
 
         $user2 = User::create([
@@ -37,6 +38,7 @@ class UserSeeder extends Seeder
         ]);
 
         $user2->assignRole(RoleEnum::USER->value);
+        $user2->userProfile()->create();
 
 
         $user3 = User::create([
@@ -50,5 +52,6 @@ class UserSeeder extends Seeder
         ]);
 
         $user3->assignRole(RoleEnum::USER->value);
+        $user3->userProfile()->create();
     }
 }

@@ -64,14 +64,14 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $user_id
- * @property int $event_occurrence_id
+ * @property int|null $event_occurrence_id
  * @property string $token_hash
  * @property string|null $device_id
  * @property \Illuminate\Support\Carbon|null $expires_at
  * @property bool $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\EventOccurrence $event
+ * @property-read \App\Models\EventOccurrence|null $event
  * @property-read \App\Models\User $organizer
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CheckInSession newQuery()
@@ -116,8 +116,9 @@ namespace App\Models{
 /**
  * @property int $id
  * @property string $name
- * @property string|null $start_date
- * @property string|null $end_date
+ * @property \Illuminate\Support\Carbon|null $start_date
+ * @property \Illuminate\Support\Carbon|null $end_date
+ * @property \App\Enums\CycleStatus $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Sponsor> $diamondSponsors
@@ -135,6 +136,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cycle whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cycle whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cycle whereStartDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cycle whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cycle whereUpdatedAt($value)
  */
 	class Cycle extends \Eloquent {}
@@ -302,6 +304,8 @@ namespace App\Models{
  * @property-read \App\Models\EventOccurrence $eventOccurrence
  * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
  * @property-read int|null $media_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SocialLink> $socialLinks
+ * @property-read int|null $social_links_count
  * @property-read \App\Models\User $user
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Vote> $votes
  * @property-read int|null $votes_count
@@ -578,6 +582,8 @@ namespace App\Models{
  * @property-read int|null $tokens_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Vote> $votes
  * @property-read int|null $votes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\WorkshopAttendance> $workshopAttendance
+ * @property-read int|null $workshop_attendance_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
@@ -598,7 +604,29 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutPermission($permissions)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutRole($roles, $guard = null)
  */
-	class User extends \Eloquent implements \Spatie\MediaLibrary\HasMedia {}
+	class User extends \Eloquent implements \Filament\Models\Contracts\FilamentUser, \Spatie\MediaLibrary\HasMedia {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
+ * @property-read int|null $media_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SocialLink> $socialLinks
+ * @property-read int|null $social_links_count
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserProfile whereUserId($value)
+ */
+	class UserProfile extends \Eloquent implements \Spatie\MediaLibrary\HasMedia {}
 }
 
 namespace App\Models{
@@ -661,8 +689,12 @@ namespace App\Models{
  * @property \App\Enums\WorkshopStatus $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\WorkshopAttendance> $attendance
+ * @property-read int|null $attendance_count
  * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
  * @property-read int|null $media_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\WorkshopRegistration> $registrations
+ * @property-read int|null $registrations_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Workshop newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Workshop newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Workshop query()
@@ -688,8 +720,8 @@ namespace App\Models{
  * @property int $workshop_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Lecture|null $lecture
  * @property-read \App\Models\User $user
+ * @property-read \App\Models\Workshop $workshop
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopAttendance newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopAttendance newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WorkshopAttendance query()

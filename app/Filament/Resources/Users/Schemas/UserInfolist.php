@@ -29,16 +29,9 @@ class UserInfolist
                     ),
                 ImageEntry::make('image')
                     ->label('Image')
-                    ->circular()
                     ->size(150)
                     ->state(function ($record) {
-
-                        $collection = $record->hasRole(RoleEnum::EXHIBITOR->value)
-                            ? 'exhibitor_image'
-                            : 'user_image';
-
-                        return $record->getFirstMediaUrl($collection, 'webp')
-                            ?: null;
+                        return $record->userProfile->getFirstMediaUrl('user_image', 'webp')?: null;
                     })
                     ->url(fn ($state) => $state)
                     ->openUrlInNewTab(),
@@ -59,11 +52,17 @@ class UserInfolist
                     ->size(150),
                 RepeatableEntry::make('socialLinks')
                     ->label('Social Links')
+                    ->state(function ($record) {
+                        return $record->userProfile
+                            ?->socialLinks()
+                            ->get()
+                            ->toArray() ?? [];
+                    })
                     ->schema([
                         TextEntry::make('platform')
                             ->label('Platform')
                             ->badge(),
-
+                
                         TextEntry::make('url')
                             ->label('Link')
                             ->url(fn ($state) => $state)

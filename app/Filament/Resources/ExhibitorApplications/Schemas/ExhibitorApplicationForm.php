@@ -2,11 +2,10 @@
 
 namespace App\Filament\Resources\ExhibitorApplications\Schemas;
 
+use App\Enums\EventOccurrenceStatus;
 use App\Enums\ExhibitorStatus;
 use App\Enums\RoleEnum;
 use App\Models\EventOccurrence;
-use App\Models\User;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
@@ -19,6 +18,7 @@ class ExhibitorApplicationForm
     {
         return $schema
             ->components([
+
                 Select::make('user_id')
                     ->relationship(
                         name: 'user',
@@ -40,7 +40,9 @@ class ExhibitorApplicationForm
                 Select::make('event_occurrence_id')
                     ->relationship(
                         name: 'eventOccurrence',
-                        titleAttribute: 'id'
+                        titleAttribute: 'id',
+                        modifyQueryUsing: fn ($query) =>
+                            $query->where('status', EventOccurrenceStatus::ACTIVE->value)
                     )
                     ->getOptionLabelFromRecordUsing(
                         fn (EventOccurrence $record): string => $record->title
@@ -64,6 +66,63 @@ class ExhibitorApplicationForm
                     ->numeric()
                     ->required(),
 
+                TextInput::make('portfolio_url')
+                    ->label('Portfolio')
+                    ->url()
+                    ->required(),
+
+                TextInput::make('instagram')
+                    ->label('Instagram')
+                    ->url()
+                    ->required()
+                    ->dehydrated(false)
+                    ->afterStateHydrated(function ($component, $record) {
+                        $component->state(
+                            $record?->socialLinks
+                                ->firstWhere('platform', 'instagram')
+                                ?->url
+                        );
+                    }),
+                
+                TextInput::make('facebook')
+                    ->label('Facebook')
+                    ->url()
+                    ->required()
+                    ->dehydrated(false)
+                    ->afterStateHydrated(function ($component, $record) {
+                        $component->state(
+                            $record?->socialLinks
+                                ->firstWhere('platform', 'facebook')
+                                ?->url
+                        );
+                    }),
+                
+                TextInput::make('linkedin')
+                    ->label('LinkedIn')
+                    ->url()
+                    ->nullable()
+                    ->dehydrated(false)
+                    ->afterStateHydrated(function ($component, $record) {
+                        $component->state(
+                            $record?->socialLinks
+                                ->firstWhere('platform', 'linkedin')
+                                ?->url
+                        );
+                    }),
+                
+                TextInput::make('behance')
+                    ->label('Behance')
+                    ->url()
+                    ->nullable()
+                    ->dehydrated(false)
+                    ->afterStateHydrated(function ($component, $record) {
+                        $component->state(
+                            $record?->socialLinks
+                                ->firstWhere('platform', 'behance')
+                                ?->url
+                        );
+                    }),
+
                 SpatieMediaLibraryFileUpload::make('cv_file')
                     ->collection('application_cv')
                     ->label('CV File')
@@ -73,30 +132,6 @@ class ExhibitorApplicationForm
                     ])
                     ->openable()
                     ->required(),
-
-                TextInput::make('portfolio_url')
-                    ->url()
-                    ->required(),
-
-                TextInput::make('instagram')
-                    ->label('Instagram')
-                    ->url()
-                    ->required(),
-                
-                TextInput::make('facebook')
-                    ->label('Facebook')
-                    ->url()
-                    ->required(),
-                
-                TextInput::make('linkedin')
-                    ->label('LinkedIn')
-                    ->url()
-                    ->nullable(),
-                
-                TextInput::make('behance')
-                    ->label('Behance')
-                    ->url()
-                    ->nullable(),
 
                 SpatieMediaLibraryFileUpload::make('image')
                     ->required()

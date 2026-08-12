@@ -69,11 +69,6 @@ class ExhibitorProfileService
 
         $profile->user = $this->userDataService->attachEventContext($user,$activeEvent);
 
-        $profile->user->current_exhibitor_image =
-            $profile->user
-                ->getMedia('exhibitor_image')
-                ->last()
-                ?->getFullUrl('webp');
         return $profile;
     }
 
@@ -118,7 +113,7 @@ class ExhibitorProfileService
         if ($application->hasMedia('application_image')) {
             $media = $application->getFirstMedia('application_image');
             if ($media) {
-                $profile->user->addMedia($media->getPath())
+                $profile->addMedia($media->getPath())
                     ->preservingOriginal()
                     ->toMediaCollection('exhibitor_image');
             }
@@ -149,8 +144,8 @@ class ExhibitorProfileService
     private function updateImage(ExhibitorProfile $profile, array $data): void
     {
         if (isset($data['image'])) {
-            $profile->user->clearMediaCollection('exhibitor_image');
-            $profile->user->addMedia($data['image'])->toMediaCollection('exhibitor_image');
+            $profile->clearMediaCollection('exhibitor_image');
+            $profile->addMedia($data['image'])->toMediaCollection('exhibitor_image');
         }
     }
 }

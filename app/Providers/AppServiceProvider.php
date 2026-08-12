@@ -9,6 +9,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Gate;
 use App\Enums\Role;
 use App\Enums\RoleEnum;
+use App\Models\User;
+use App\Observers\UserObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         EventOccurrence::observe(EventOccurrenceObserver::class);
+        User::observe(UserObserver::class);
 
         Carbon::setLocale('ar');
         date_default_timezone_set('Asia/Damascus');

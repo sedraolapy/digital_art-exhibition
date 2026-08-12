@@ -42,12 +42,7 @@ class UsersTable
                     ->circular()
                     ->size(70)
                     ->getStateUsing(function ($record) {
-
-                        $collection = $record->hasRole(RoleEnum::EXHIBITOR->value)
-                            ? 'exhibitor_image'
-                            : 'user_image';
-
-                        return $record->getFirstMediaUrl($collection, 'webp')
+                        return $record->userProfile?->getFirstMediaUrl('user_image', 'webp')
                             ?: null;
                     }),
                 TextColumn::make('roles.name')

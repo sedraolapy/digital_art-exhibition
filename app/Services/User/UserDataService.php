@@ -29,7 +29,7 @@ class UserDataService
 
         $this->attachEventContext($user, $activeEvent);
 
-        $user->loadMissing(['socialLinks','exhibitorProfiles.socialLinks']);
+        $user->loadMissing(['userProfile','exhibitorProfiles']);
 
         $user->is_checked_in = $activeEvent
             ? $this->checkInService->hasCheckedIn($user, $activeEvent)
@@ -40,6 +40,7 @@ class UserDataService
     
     public function attachEventContext(User $user,?EventOccurrence $event = null): User
     {
+        
         $userId = $user->id;
 
         $user->current_event = $event

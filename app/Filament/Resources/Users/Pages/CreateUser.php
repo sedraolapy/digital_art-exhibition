@@ -12,24 +12,32 @@ class CreateUser extends CreateRecord
 
     protected function afterCreate(): void
     {
-        $data = $this->data;
-        $user = $this->record;
+        $this->saveSocialLinks();
+    
+        $this->record->assignRole(RoleEnum::USER->value);
+    }
 
-        $user->assignRole(RoleEnum::USER->value);
+    protected function saveSocialLinks(): void
+    {
+        $profile = $this->record->userProfile()->firstOrCreate([]);
 
-        if (! empty($data['instagram'])) {
-            $user->socialLinks()->create([
-                'platform' => 'instagram',
-                'url' => $data['instagram'],
-            ]);
+        foreach (['instagram', 'facebook'] as $platform) {
+
+            $url = $this->data[$platform] ?? null;
+
+            if (filled($url)) {
+
+                $profile->socialLinks()->updateOrCreate(
+                    ['platform' => $platform],
+                    ['url' => $url]
+                );
+
+            } else {
+
+                $profile->socialLinks()
+                    ->where('platform', $platform)
+                    ->delete();
+            }
         }
-
-        if (! empty($data['facebook'])) {
-            $user->socialLinks()->create([
-                'platform' => 'facebook',
-                'url' => $data['facebook'],
-            ]);
-        }
-
     }
 }

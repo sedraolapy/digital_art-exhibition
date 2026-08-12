@@ -11,36 +11,27 @@ class CreateExhibitorApplication extends CreateRecord
 
     protected array $socialLinks = [];
 
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        $this->socialLinks = [
-            'instagram' => $data['instagram'] ?? null,
-            'facebook'  => $data['facebook'] ?? null,
-            'linkedin'  => $data['linkedin'] ?? null,
-            'behance'   => $data['behance'] ?? null,
-        ];
-
-        unset(
-            $data['instagram'],
-            $data['facebook'],
-            $data['linkedin'],
-            $data['behance'],
-        );
-
-        return $data;
-    }
-
     protected function afterCreate(): void
     {
-        foreach ($this->socialLinks as $platform => $url) {
-            if (empty($url)) {
-                continue;
-            }
+        $this->saveSocialLinks($this->record);
+    }
 
-            $this->record->socialLinks()->create([
-                'platform' => $platform,
-                'url'      => $url,
-            ]);
+    private function saveSocialLinks($application): void
+    {
+        $links = [
+            'instagram' => $this->data['instagram'] ?? null,
+            'facebook' => $this->data['facebook'] ?? null,
+            'linkedin' => $this->data['linkedin'] ?? null,
+            'behance' => $this->data['behance'] ?? null,
+    ];
+
+        foreach ($links as $platform => $url) {
+            if ($url) {
+                $application->socialLinks()->updateOrCreate(
+                    ['platform' => $platform],
+                    ['url' => $url]
+                );
+            }
         }
     }
 }

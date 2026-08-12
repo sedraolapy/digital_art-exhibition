@@ -59,5 +59,13 @@ class ExhibitorProfile extends Model implements HasMedia
         );
     }
 
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion('webp')
+            ->format('webp')
+            ->quality(70)
+            ->nonQueued();
+    }
+
 
 }

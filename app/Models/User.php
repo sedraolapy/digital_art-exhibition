@@ -14,14 +14,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
-use Laravel\Sanctum\HasApiTokens;use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable implements FilamentUser , HasMedia
+class User extends Authenticatable implements FilamentUser 
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasRoles, HasApiTokens, InteractsWithMedia;
+    use HasFactory, Notifiable, HasRoles, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -84,9 +82,9 @@ class User extends Authenticatable implements FilamentUser , HasMedia
         return $this->hasMany(ExhibitorProfile::class);
     }
 
-    public function socialLinks()
+    public function userProfile()
     {
-        return $this->morphMany(SocialLink::class, 'linkable');
+        return $this->hasOne(UserProfile::class);
     }
 
     public function eventAttendances()
@@ -122,14 +120,6 @@ class User extends Authenticatable implements FilamentUser , HasMedia
         return $this->hasPermissionTo(
             PermissionEnum::ACCESS_ADMIN_PANEL->value
         );
-    }
-
-    public function registerMediaConversions(Media $media = null): void
-    {
-        $this->addMediaConversion('webp')
-            ->format('webp')
-            ->quality(70)
-            ->nonQueued();
     }
 
 

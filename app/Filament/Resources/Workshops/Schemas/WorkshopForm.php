@@ -67,7 +67,6 @@ class WorkshopForm
                     ])
                     ->preserveFilenames(),
                 SpatieMediaLibraryFileUpload::make('gallery')
-                    ->required()
                     ->collection('workshop_gallery')
                     ->multiple()
                     ->image()

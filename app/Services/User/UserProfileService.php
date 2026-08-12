@@ -4,6 +4,7 @@ namespace App\Services\User;
 
 use App\Models\EventOccurrence;
 use App\Models\User;
+use App\Models\UserProfile;
 use App\Services\Exhibitor\SocialLinkService;
 
 class UserProfileService
@@ -18,46 +19,48 @@ class UserProfileService
         return $this->userDataService->attachEventContext($user,$activeEvent);
     }
 
-    public function update(User $user, array $data): User
+    public function update(UserProfile $profile, array $data): UserProfile
     {
-        $this->handleProfileImage($user, $data);
-
-        $user->update([
+        $this->handleProfileImage($profile, $data);
+        
+        $profile->user->update([
             'first_name' => $data['first_name'],
             'last_name'  => $data['last_name'],
             'phone'      => $data['phone'],
         ]);
 
-        $this->socialLinkService->updateLinks($user, $data);
+        $this->socialLinkService->updateLinks($profile, $data);
 
-        return $this->userDataService->attachEventContext($user);
+        $profile->user = $this->userDataService->attachEventContext($profile->user);
+
+        return $profile;
     }
 
 
-    private function handleProfileImage(User $user, array $data): void
+    private function handleProfileImage(UserProfile $profile, array $data): void
     {
         if (isset($data['image'])) {
-            $this->uploadProfileImage($user, $data['image']);
+            $this->uploadProfileImage($profile, $data['image']);
         }
 
         if (!empty($data['remove_image'])) {
-            $this->removeProfileImage($user);
+            $this->removeProfileImage($profile);
         }
     }
 
     // رفع صورة جديدة
-    private function uploadProfileImage(User $user, $image): void
+    private function uploadProfileImage(UserProfile $profile, $image): void
     {
-        $user->clearMediaCollection('user_image');
+        $profile->clearMediaCollection('user_image');
 
-        $user->addMedia($image)
+        $profile->addMedia($image)
             ->toMediaCollection('user_image');
     }
 
     //  حذف الصورة الحالية
-    private function removeProfileImage(User $user): void
+    private function removeProfileImage(UserProfile $profile): void
     {
-        $user->clearMediaCollection('user_image');
+        $profile->clearMediaCollection('user_image');
     }
 
 }

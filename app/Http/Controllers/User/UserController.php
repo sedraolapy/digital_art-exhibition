@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Attendance\LectureAttendanceResource;
 use App\Http\Resources\Attendance\WorkshopAttendanceResource;
 use App\Http\Resources\Exhibitor\ExhibitorProfileResource;
+use App\Http\Resources\User\UserProfileResource;
 use App\Http\Resources\User\UserResource;
 use App\Services\User\AttendanceService;
 use App\Services\User\UserService;
@@ -30,7 +31,7 @@ class UserController extends Controller
             'user' =>
                 response()->json([
                     'message' => 'تم عرض ملف المستخدم بنجاح',
-                    'data' => new UserResource($result['data']),
+                    'data' => new UserProfileResource($result['data']['userProfile']),
                 ]),
 
             default =>

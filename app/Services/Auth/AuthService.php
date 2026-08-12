@@ -33,7 +33,8 @@ class AuthService
             $user->assignRole(RoleEnum::USER->value);
             $token = $user->createToken('auth_token')->plainTextToken;
 
-            $this->socialLinkService->attachLinks($user, $data);
+            $profile = $user->userProfile()->first();
+            $this->socialLinkService->attachLinks($profile, $data);
             $this->userQrService->generate($user);
 
             return [

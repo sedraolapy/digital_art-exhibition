@@ -2,14 +2,11 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
-use App\Enums\RoleEnum;
 use Filament\Actions\Action;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Support\Str;
 
 class UserForm
@@ -25,14 +22,14 @@ class UserForm
                     ->required(),
 
                 TextInput::make('last_name')
-                ->rule('regex:/^[\p{Arabic}\s]+$/u')
                     ->label('Last Name')
+                    ->rule('regex:/^[\p{Arabic}\s]+$/u')
                     ->required(),
 
                 TextInput::make('email')
                     ->label('Email address')
                     ->email()
-                    ->unique()
+                    ->unique(ignoreRecord: true)
                     ->required(),
 
                 TextInput::make('phone')
@@ -44,28 +41,22 @@ class UserForm
                     ->url()
                     ->requiredWithout('facebook')
                     ->afterStateHydrated(function ($component, $record) {
-                        if (! $record) {
-                            return;
-                        }
-                
                         $component->state(
-                            $record->socialLinks()
+                            $record?->userProfile
+                                ?->socialLinks()
                                 ->where('platform', 'instagram')
                                 ->value('url')
                         );
                     }),
-                
+
                 TextInput::make('facebook')
                     ->label('Facebook')
                     ->url()
                     ->requiredWithout('instagram')
                     ->afterStateHydrated(function ($component, $record) {
-                        if (! $record) {
-                            return;
-                        }
-                
                         $component->state(
-                            $record->socialLinks()
+                            $record?->userProfile
+                                ?->socialLinks()
                                 ->where('platform', 'facebook')
                                 ->value('url')
                         );
@@ -90,30 +81,28 @@ class UserForm
                             })
                     ),
 
-                SpatieMediaLibraryFileUpload::make('image')
-                    ->label('Image')
-                    ->image()
-                    ->imageCropAspectRatio('1:1')
-                    ->imageEditor()
-                    ->hint('The image must be square (1:1 ratio)')
-                    ->maxSize(1024)
-                    ->validationMessages([
-                        'max' => 'The image size must not exceed 1 MB.',
-                    ])
-                    ->preserveFilenames()
-                    ->collection(fn ($record) =>
-                        $record?->hasRole(RoleEnum::EXHIBITOR->value)
-                            ? 'exhibitor_image'
-                            : 'user_image'
-                    )
-                    ->maxSize(2048),
-
                 TextInput::make('password')
                     ->password()
+                    ->revealable()
                     ->minLength(8)
                     ->dehydrated(fn ($state) => filled($state))
                     ->required(fn (string $operation): bool => $operation === 'create'),
 
+                Section::make('Profile')
+                    ->relationship('userProfile')
+                    ->schema([
+                        SpatieMediaLibraryFileUpload::make('image')
+                            ->collection('user_image')
+                            ->image()
+                            ->imageCropAspectRatio('1:1')
+                            ->imageEditor()
+                            ->hint('The image must be square (1:1 ratio)')
+                            ->maxSize(1024)
+                            ->validationMessages([
+                                'max' => 'The image size must not exceed 1 MB.',
+                            ])
+                            ->preserveFilenames(),
+                    ]),
             ]);
     }
 }

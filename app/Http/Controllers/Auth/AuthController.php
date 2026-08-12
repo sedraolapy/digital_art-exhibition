@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\RoleEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Resources\Exhibitor\ExhibitorProfileResource;
+use App\Http\Resources\User\UserProfileResource;
 use App\Http\Resources\User\UserResource;
 use App\Models\ExhibitorApplication;
 use App\Services\Auth\AuthService;
@@ -20,10 +23,11 @@ class AuthController extends Controller
 
         $user = $result['user'];
         $user->token = $result['token'];
+        $user->userProfile->user->token = $result['token'];
 
         return response()->json([
             'message' => 'تم تسجيل المستخدم بنجاح',
-            'data'    => new UserResource($user),
+            'data'    => new UserProfileResource($user->userProfile),
         ]);
     }
 
@@ -33,10 +37,21 @@ class AuthController extends Controller
 
         $user = $result['user'];
         $user->token = $result['token'];
+        $user->userProfile->user->token = $result['token'];
 
+        $profileResource = match (true) {
+            $user->hasRole(RoleEnum::USER->value) =>
+                new UserProfileResource($user->userProfile),
+    
+            $user->hasRole(RoleEnum::EXHIBITOR->value) =>
+                new ExhibitorProfileResource($user->exhibitorProfile),
+    
+            default => new UserResource($user),
+        };
+    
         return response()->json([
             'message' => 'تم تسجيل الدخول بنجاح',
-            'data'    => new UserResource($user),
+            'data' => $profileResource,
         ]);
     }
 

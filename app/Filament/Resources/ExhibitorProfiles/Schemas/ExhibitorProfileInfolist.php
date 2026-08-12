@@ -30,15 +30,9 @@ class ExhibitorProfileInfolist
                     ->circular()
                     ->size(150)
                     ->state(function ($record) {
-
-                        $collection = $record->user->hasRole(RoleEnum::EXHIBITOR->value)
-                            ? 'exhibitor_image'
-                            : null;
-
-                        return $record->user->getFirstMediaUrl($collection, 'webp')
-                            ?: null;
+                        return $record->getFirstMediaUrl('exhibitor_image', 'webp')?: null;
                     })
-                    ->url(fn ($state) => $state)
+                    ->url(fn ($state) => $state ?: null)
                     ->openUrlInNewTab(),
                 TextEntry::make('eventOccurrence.title')
                     ->label('Event occurrence'),
@@ -69,7 +63,7 @@ class ExhibitorProfileInfolist
                     ->weight('medium')
                     ->icon('heroicon-o-link')
                     ->iconPosition('before'),
-                RepeatableEntry::make('user.socialLinks')
+                RepeatableEntry::make('socialLinks')
                     ->label('Social Links')
                     ->schema([
                         TextEntry::make('platform')
