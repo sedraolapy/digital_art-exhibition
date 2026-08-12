@@ -32,8 +32,8 @@ class ExhibitorService
             ->toArray();
 
         $exhibitors = ExhibitorProfile::with([
-            'user.socialLinks',
-            'user.media',
+            'socialLinks',
+            'media',
             'category'
             ])
             ->where('event_occurrence_id', $activeEvent->id)
