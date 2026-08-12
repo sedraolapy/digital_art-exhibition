@@ -11,11 +11,12 @@ use App\Http\Resources\User\UserProfileResource;
 use App\Http\Resources\User\UserResource;
 use App\Models\ExhibitorApplication;
 use App\Services\Auth\AuthService;
+use App\Services\User\UserService;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    public function __construct(private AuthService $authService){}
+    public function __construct(private AuthService $authService, private UserService $userService){}
 
     public function register(RegisterRequest $request)
     {
@@ -32,28 +33,36 @@ class AuthController extends Controller
     }
 
     public function login(LoginRequest $request)
-    {
-        $result = $this->authService->login($request->validated());
+{
+    $result = $this->authService->login($request->validated());
 
-        $user = $result['user'];
-        $user->token = $result['token'];
-        $user->userProfile->user->token = $result['token'];
+    $user = $result['user'];
 
-        $profileResource = match (true) {
-            $user->hasRole(RoleEnum::USER->value) =>
-                new UserProfileResource($user->userProfile),
-    
-            $user->hasRole(RoleEnum::EXHIBITOR->value) =>
-                new ExhibitorProfileResource($user->exhibitorProfile),
-    
-            default => new UserResource($user),
-        };
-    
-        return response()->json([
-            'message' => 'تم تسجيل الدخول بنجاح',
-            'data' => $profileResource,
-        ]);
-    }
+    $user->token = $result['token'];
+
+    $profileResult = $this->userService->getUserProfile($user);
+
+    $profileResource = match ($profileResult['type']) {
+
+        'exhibitor' =>
+            new ExhibitorProfileResource(
+                $profileResult['data']
+            ),
+
+        'user' =>
+            new UserProfileResource(
+                $profileResult['data']
+            ),
+
+        default =>
+            new UserResource($user),
+    };
+
+    return response()->json([
+        'message' => 'تم تسجيل الدخول بنجاح',
+        'data' => $profileResource,
+    ]);
+}
 
 
     public function logout(Request $request)

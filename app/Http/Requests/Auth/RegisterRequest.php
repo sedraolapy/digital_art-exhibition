@@ -29,8 +29,7 @@ class RegisterRequest extends FormRequest
             'phone'      => [
                 'required',
                 'string',
-                'size:9',
-                'regex:/^9[0-9]{8}$/',
+                'max:20',
             ],
             'password' => [
                 'required',

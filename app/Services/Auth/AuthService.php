@@ -8,6 +8,7 @@ use App\Services\Exhibitor\SocialLinkService;
 use App\Services\User\UserDataService;
 use App\Services\User\UserQrService;
 use App\Services\User\UserService;
+use App\Services\Event\EventService;
 use App\Services\Workshop\WorkshopRegistrationService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -21,6 +22,7 @@ class AuthService
         private UserDataService $userDataService,
         private UserQrService $userQrService,
         private UserService $userService,
+        private EventService $eventService,
     ) {}
 
 
@@ -56,7 +58,6 @@ class AuthService
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
-
         return [
             'user' => $this->userDataService->loadAuthData($user),
             'token' => $token,
