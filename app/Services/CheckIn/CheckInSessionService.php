@@ -41,7 +41,7 @@ class CheckInSessionService
         return [
             'message' => 'Session is valid',
             'data' => [
-                'event_occurrence_id' => $session->event_occurrence_id,
+                'check_in_type' => $session->check_in_type,
                 'expires_at' => $session->expires_at,
             ],
         ];

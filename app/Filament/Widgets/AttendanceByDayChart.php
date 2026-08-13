@@ -12,6 +12,8 @@ class AttendanceByDayChart extends ChartWidget
 {
     public ?int $eventOccurrenceId = null;
 
+    protected static bool $deferLoading = true;
+
     public static function canView(): bool
     {
         return Auth::user()?->hasRole(RoleEnum::SUPER_ADMIN->value) ?? false;
@@ -79,4 +81,18 @@ class AttendanceByDayChart extends ChartWidget
     {
         return 'bar';
     }
+
+    protected function getOptions(): array
+{
+    return [
+        'scales' => [
+            'y' => [
+                'beginAtZero' => true,
+                'ticks' => [
+                    'stepSize' => 25,
+                ],
+            ],
+        ],
+    ];
+}
 }

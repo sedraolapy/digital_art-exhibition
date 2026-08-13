@@ -106,9 +106,7 @@ class CheckInService
 
     private function handleEventDayCheckIn(User $user, int $dayId, CheckInSession $session): array
     {
-        $event = EventOccurrence::whereKey($session->event_occurrence_id)
-            ->where('status', EventOccurrenceStatus::ACTIVE->value)
-            ->first();
+        $event = $this->eventService->getActiveEvent();
 
         if (! $event) {
             return [

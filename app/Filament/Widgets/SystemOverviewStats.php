@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 
 class SystemOverviewStats extends StatsOverviewWidget
 {
+    protected static bool $deferLoading = true;
 
     protected function getHeading(): ?string
     {

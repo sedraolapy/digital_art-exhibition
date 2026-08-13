@@ -4,7 +4,6 @@ namespace App\Filament\Pages;
 
 use App\Enums\RoleEnum;
 use App\Filament\Widgets\AttendanceByDayChart;
-use App\Filament\Widgets\EventOverviewStats;
 use App\Filament\Widgets\UserAttendanceBehaviorStats;
 use App\Models\EventOccurrence;
 use Filament\Pages\Page;
@@ -47,7 +46,6 @@ class EventDashboard extends Page
     public function getWidgets(): array
     {
         return [
-            EventOverviewStats::class,
             AttendanceByDayChart::class,
             UserAttendanceBehaviorStats::class,
         ];

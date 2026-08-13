@@ -33,110 +33,78 @@ class UserAttendanceBehaviorStats extends StatsOverviewWidget
             return [];
         }
 
-
         $event = EventOccurrence::find($this->eventOccurrenceId);
-
 
         if (! $event) {
             return [];
         }
 
-
-        $dayIds = $event->days()
-            ->pluck('id');
-
+        $dayIds = $event->days()->pluck('id');
 
         $totalDays = $dayIds->count();
-
 
         if ($totalDays === 0) {
             return [];
         }
 
-
-        /*
-         * Count attendance days for every user
-         */
-        $attendancePerUser = EventAttendance::whereIn(
-            'event_day_id',
-            $dayIds
-        )
-        ->selectRaw(
-            'user_id, COUNT(DISTINCT event_day_id) as days'
-        )
-        ->groupBy('user_id')
-        ->pluck('days');
-
-
-        $totalUsers = User::count();
-
+        $attendancePerUser = EventAttendance::whereIn('event_day_id',$dayIds)
+            ->selectRaw('user_id, COUNT(DISTINCT event_day_id) as days')
+            ->groupBy('user_id')
+            ->pluck('days');
 
         $attendedUsers = $attendancePerUser->count();
-
-
-        $neverAttended = $totalUsers - $attendedUsers;
-
 
         $oneDay = $attendancePerUser
             ->filter(fn ($days) => $days == 1)
             ->count();
 
-
         $multipleDays = $attendancePerUser
             ->filter(fn ($days) => $days > 1 && $days < $totalDays)
             ->count();
-
 
         $allDays = $attendancePerUser
             ->filter(fn ($days) => $days == $totalDays)
             ->count();
 
+        $stats = [
 
-            $stats = [
+            Stat::make(
+                'Total Attendees',
+                number_format($attendedUsers)
+            )
+            ->description('Unique users who attended this event')
+            ->icon('heroicon-o-users')
+            ->color('success'),
 
-                Stat::make(
-                    'Never Attended',
-                    number_format($neverAttended)
-                )
-                ->description('Registered users without check-in')
-                ->icon('heroicon-o-user-minus')
-                ->color('danger'),
+            Stat::make(
+                'One Day Only',
+                number_format($oneDay)
+            )
+            ->description('Users attended one day')
+            ->icon('heroicon-o-user')
+            ->color('warning'),
 
+        ];
 
-                Stat::make(
-                    'One Day Only',
-                    number_format($oneDay)
-                )
-                ->description('Users attended one day')
-                ->icon('heroicon-o-user')
-                ->color('warning'),
+        if ($totalDays > 1) {
 
-            ];
+            $stats[] = Stat::make(
+                'Multiple Days',
+                number_format($multipleDays)
+            )
+            ->description('Users attended multiple days')
+            ->icon('heroicon-o-users')
+            ->color('info');
 
+            $stats[] = Stat::make(
+                'All Days',
+                number_format($allDays)
+            )
+            ->description("Attended all {$totalDays} days")
+            ->icon('heroicon-o-star')
+            ->color('success');
+        }
 
-            // Events with more than one day
-            if ($totalDays > 1) {
-
-                $stats[] = Stat::make(
-                    'Multiple Days',
-                    number_format($multipleDays)
-                )
-                ->description('Users attended multiple days')
-                ->icon('heroicon-o-users')
-                ->color('info');
-
-
-                $stats[] = Stat::make(
-                    'All Days',
-                    number_format($allDays)
-                )
-                ->description("Attended all {$totalDays} days")
-                ->icon('heroicon-o-star')
-                ->color('success');
-
-            }
-
-
-            return $stats;
+        return $stats;
     }
 }

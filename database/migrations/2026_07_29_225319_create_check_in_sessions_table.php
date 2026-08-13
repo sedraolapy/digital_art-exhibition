@@ -19,10 +19,7 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
-            $table->foreignId('event_occurrence_id')
-                ->nullable()
-                ->constrained()
-                ->cascadeOnDelete();
+            $table->string('check_in_type');
 
             $table->string('token_hash')->unique();
             $table->string('device_id')->nullable();

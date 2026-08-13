@@ -4,7 +4,6 @@ namespace App\Filament\Widgets;
 
 use App\Enums\PermissionEnum;
 use App\Models\CheckInSession;
-use App\Models\EventOccurrence;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -43,16 +42,11 @@ class CheckInWidget extends Widget implements HasForms
                     ->label('Check-in Type')
                     ->options([
                         'event' => 'Event',
+                        'lecture' => 'Lecture',
                         'workshop' => 'Workshop',
                     ])
                     ->required()
                     ->live(),
-
-                Select::make('eventOccurrenceId')
-                    ->label('Event')
-                    ->options(EventOccurrence::pluck('title', 'id'))
-                    ->visible(fn ($get) => $get('type') === 'event')
-                    ->required(fn ($get) => $get('type') === 'event'),
             ]);
     }
 
@@ -64,9 +58,7 @@ class CheckInWidget extends Widget implements HasForms
 
         CheckInSession::create([
             'user_id' => Auth::id(),
-            'event_occurrence_id' => $data['type'] === 'event'
-                ? $data['eventOccurrenceId']
-                : null,
+            'check_in_type' => $data['type'],
             'token_hash' => hash('sha256', $token),
             'expires_at' => now()->addHour(),
         ]);

@@ -10,7 +10,6 @@ use App\Filament\Widgets\AttendanceOverviewStats;
 use App\Filament\Widgets\CheckInWidget;
 use App\Filament\Widgets\CurrentTimeWidget;
 use App\Filament\Widgets\EventAttendanceRanking;
-use App\Filament\Widgets\EventOverviewStats;
 use App\Filament\Widgets\EventStatusStats;
 use App\Filament\Widgets\SystemOverviewStats;
 use Filament\Http\Middleware\Authenticate;
@@ -29,6 +28,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Usamamuneerchaudhary\CommandPalette\FilamentCommandPalettePlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -62,10 +62,7 @@ class AdminPanelProvider extends PanelProvider
                 AccountWidget::class,
                 CheckInWidget::class,
                 SystemOverviewStats::class,
-                EventStatusStats::class,
                 EventAttendanceRanking::class,
-                AttendanceOverviewStats::class,
-
             ])
             ->middleware([
                 EncryptCookies::class,

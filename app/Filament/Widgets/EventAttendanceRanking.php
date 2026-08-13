@@ -23,11 +23,14 @@ class EventAttendanceRanking extends BaseWidget
     protected function getTableQuery(): Builder
     {
         return EventOccurrence::query()
-            ->withCount('attendances')
-            ->orderByDesc('attendances_count')
+            ->withCount([
+                'attendances as attendees_count' => function ($query) {
+                    $query->select(\DB::raw('COUNT(DISTINCT user_id)'));
+                },
+            ])
+            ->orderByDesc('attendees_count')
             ->limit(5);
     }
-
 
     protected function getTableColumns(): array
     {
@@ -35,10 +38,10 @@ class EventAttendanceRanking extends BaseWidget
             Tables\Columns\TextColumn::make('title')
                 ->label('Event'),
 
-            Tables\Columns\TextColumn::make('attendances_count')
-                ->label('Attendance')
+            Tables\Columns\TextColumn::make('attendees_count')
+                ->label('Attendees')
                 ->badge()
-                ->color('success'),
+                ->color('primary'),
         ];
     }
 }

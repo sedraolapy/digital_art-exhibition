@@ -11,31 +11,6 @@
     </x-filament::section>
 
 
-    {{-- Overview --}}
-    <x-filament::section class="mt-6">
-        <x-slot name="heading">
-            Event Overview
-        </x-slot>
-
-        @livewire(
-            \App\Filament\Widgets\EventOverviewStats::class,
-            [
-                'eventOccurrenceId' => $this->eventOccurrenceId
-            ]
-        )
-
-    </x-filament::section>
-
-
-    {{-- Attendance Analytics --}}
-
-        @livewire(
-            \App\Filament\Widgets\AttendanceByDayChart::class,
-            [
-                'eventOccurrenceId' => $this->eventOccurrenceId
-            ]
-        )
-
     {{-- User Behavior --}}
     <x-filament::section class="mt-6">
         <x-slot name="heading">
@@ -51,15 +26,13 @@
 
     </x-filament::section>
 
-        {{-- Lecture Performance --}}
-
-    @livewire(
-        \App\Filament\Widgets\LecturePerformanceTable::class,
-        [
-            'eventOccurrenceId' => $this->eventOccurrenceId
-        ]
-    )
-
+        {{-- Attendance Analytics --}}
+        @livewire(
+            \App\Filament\Widgets\AttendanceByDayChart::class,
+            [
+                'eventOccurrenceId' => $this->eventOccurrenceId
+            ]
+        )
 
 
 </x-filament-panels::page>
