@@ -25,11 +25,11 @@ class UpdateExhibitorProfileRequest extends FormRequest
         return [
             'first_name' => 'required|string|max:255|regex:/^[\p{Arabic}\s]+$/u',
             'last_name'  => 'required|string|max:255|regex:/^[\p{Arabic}\s]+$/u',
-            'phone'      => [
+            'phone' => [
                 'required',
                 'string',
-                'size:9',
-                'regex:/^9[0-9]{8}$/',
+                'regex:/^\+?[0-9\s\-\(\)]+$/',
+                'max:20',
             ],
             'category_id'      => 'required|exists:categories,id',
             'experience_years' => 'required|integer|min:0',
@@ -57,10 +57,11 @@ class UpdateExhibitorProfileRequest extends FormRequest
             'last_name.max'            => 'يجب ألا يزيد اسم العائلة عن 255 حرفًا.',
             'last_name.regex'  => 'يجب أن يحتوي اسم العائلة على أحرف عربية فقط.',
 
-            'phone.required'           => 'رقم الهاتف مطلوب.',
-            'phone.string'             => 'يجب أن يكون رقم الهاتف نصًا.',
-            'phone.size'               => 'يجب أن يتكون رقم الهاتف من 9 أرقام.',
-            'phone.regex'              => 'يجب أن يبدأ رقم الهاتف بالرقم 9 وأن يتكون من 9 أرقام (وفقًا للصيغة السورية).',
+            
+            'phone.required' => 'رقم الهاتف مطلوب.',
+            'phone.string' => 'رقم الهاتف يجب أن يكون نصًا صالحًا.',
+            'phone.regex' => 'رقم الهاتف يجب أن يحتوي على أرقام فقط، ويمكن أن يتضمن + أو المسافات أو الشرطات أو الأقواس.',
+            'phone.max' => 'رقم الهاتف يجب ألا يتجاوز 20 محرفًا.',
 
             'category_id.required'      => 'يرجى اختيار المجال.',
             'category_id.exists'        => 'المجال المحدد غير صالح.',

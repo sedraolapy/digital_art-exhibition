@@ -25,7 +25,12 @@ class ContactMessageRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
+            'phone' => [
+                'required',
+                'string',
+                'regex:/^\+?[0-9\s\-\(\)]+$/',
+                'max:20',
+            ],
             'message' => 'required|string|max:5000',
             'captcha_token' => ['required', 'string'],
         ];
@@ -42,9 +47,10 @@ class ContactMessageRequest extends FormRequest
             'email.email'      => 'يرجى إدخال بريد إلكتروني صالح.',
             'email.max'        => 'يجب ألا يزيد البريد الإلكتروني عن 255 حرفًا.',
 
-            'phone.required'   => 'رقم الهاتف مطلوب.',
-            'phone.string'     => 'يجب أن يكون رقم الهاتف نصًا.',
-            'phone.max'        => 'يجب ألا يزيد رقم الهاتف عن 20 محرفًا.',
+            'phone.required' => 'رقم الهاتف مطلوب.',
+            'phone.string' => 'رقم الهاتف يجب أن يكون نصًا صالحًا.',
+            'phone.regex' => 'رقم الهاتف يجب أن يحتوي على أرقام فقط، ويمكن أن يتضمن + أو المسافات أو الشرطات أو الأقواس.',
+            'phone.max' => 'رقم الهاتف يجب ألا يتجاوز 20 محرفًا.',
 
             'message.required' => 'الرسالة مطلوبة.',
             'message.string'   => 'يجب أن تكون الرسالة نصًا.',

@@ -26,9 +26,10 @@ class RegisterRequest extends FormRequest
             'first_name' => 'required|string|max:255|regex:/^[\p{Arabic}\s]+$/u',
             'last_name'  => 'required|string|max:255|regex:/^[\p{Arabic}\s]+$/u',
             'email'      => 'required|string|email|unique:users',
-            'phone'      => [
+            'phone' => [
                 'required',
                 'string',
+                'regex:/^\+?[0-9\s\-\(\)]+$/',
                 'max:20',
             ],
             'password' => [
@@ -57,9 +58,10 @@ class RegisterRequest extends FormRequest
             'email.required'      => 'البريد الإلكتروني مطلوب.',
             'email.unique'        => 'هذا البريد الإلكتروني مستخدم بالفعل.',
 
-            'phone.required'      => 'رقم الهاتف مطلوب.',
-            'phone.size'          => 'يجب أن يتكون رقم الهاتف من 9 أرقام.',
-            'phone.regex'         => 'يجب أن يبدأ رقم الهاتف بالرقم 9 وأن يتكون من 9 أرقام (وفقًا للصيغة السورية).',
+            'phone.required' => 'رقم الهاتف مطلوب.',
+            'phone.string' => 'رقم الهاتف يجب أن يكون نصًا صالحًا.',
+            'phone.regex' => 'رقم الهاتف يجب أن يحتوي على أرقام فقط، ويمكن أن يتضمن + أو المسافات أو الشرطات أو الأقواس.',
+            'phone.max' => 'رقم الهاتف يجب ألا يتجاوز 20 محرفًا.',
 
             'password.required'   => 'كلمة المرور مطلوبة.',
             'password.confirmed'  => 'تأكيد كلمة المرور غير متطابق.',
