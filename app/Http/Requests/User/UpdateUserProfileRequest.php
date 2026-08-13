@@ -25,11 +25,11 @@ class UpdateUserProfileRequest extends FormRequest
         return [
             'first_name' => 'required|string|max:255|regex:/^[\p{Arabic}\s]+$/u',
             'last_name'  => 'required|string|max:255|regex:/^[\p{Arabic}\s]+$/u',
-            'phone'      => [
+            'phone' => [
                 'required',
                 'string',
-                'size:9',
-                'regex:/^9[0-9]{8}$/',
+                'regex:/^\+?[0-9\s\-\(\)]+$/',
+                'max:20',
             ],
             'instagram' => ['nullable', 'url', 'required_without:facebook'],
             'facebook'  => ['nullable', 'url', 'required_without:instagram'],
@@ -51,11 +51,11 @@ class UpdateUserProfileRequest extends FormRequest
             'last_name.max'            => 'يجب ألا يزيد اسم العائلة عن 255 حرفًا.',
             'last_name.regex'  => 'يجب أن يحتوي اسم العائلة على أحرف عربية فقط.',
 
-            'phone.required'           => 'رقم الهاتف مطلوب.',
-            'phone.string'             => 'يجب أن يكون رقم الهاتف نصًا.',
-            'phone.size'               => 'يجب أن يتكون رقم الهاتف من 9 أرقام.',
-            'phone.regex'              => 'يجب أن يبدأ رقم الهاتف بالرقم 9 وأن يتكون من 9 أرقام (وفقًا للصيغة السورية).',
-
+            'phone.required' => 'رقم الهاتف مطلوب.',
+            'phone.string' => 'رقم الهاتف يجب أن يكون نصًا صالحًا.',
+            'phone.regex' => 'رقم الهاتف يجب أن يحتوي على أرقام فقط، ويمكن أن يتضمن + أو المسافات أو الشرطات أو الأقواس.',
+            'phone.max' => 'رقم الهاتف يجب ألا يتجاوز 20 محرفًا.',
+            
             'instagram.required_without' => 'يجب إدخال رابط إنستغرام إذا لم يتم إدخال رابط فيسبوك.',
             'instagram.url'              => 'رابط إنستغرام يجب أن يكون رابط صحيح.',
 
