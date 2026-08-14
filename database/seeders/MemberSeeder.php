@@ -25,7 +25,7 @@ class MemberSeeder extends Seeder
             'url'      => 'https://linkedin.com/in/sedra',
         ]);
         $member1->socialLinks()->create([
-            'platform' => 'insatgram',
+            'platform' => 'instagram',
             'url'      => 'https://github.com/sedra',
         ]);
 

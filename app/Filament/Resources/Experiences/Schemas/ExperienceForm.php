@@ -20,21 +20,20 @@ class ExperienceForm
                 TextInput::make('title')
                     ->required(),
                 Textarea::make('description')
-                    ->required()
-                    ->rule('regex:/^[\p{Arabic}0-9٠-٩\s.,،!?؟()\-]+$/u')
+                    ->rule('regex:/^[\p{Arabic}\p{N}\s.,،؛:!?؟()\-–—]+$/u')
                     ->hint('Enter the description in Arabic')
                     ->columnSpanFull(),
                 DatePicker::make('start_date')
-                    ->disabled()
-                    ->required(),
+                    ->required()
+                    ->live(),
                 DatePicker::make('end_date')
-                    ->disabled(),
+                    ->after('start_date')
+                    ->required(),
                 Select::make('status')
                     ->options(ExperienceStatus::class)
                     ->default('draft')
                     ->required(),
                 SpatieMediaLibraryFileUpload::make('gallery')
-                    ->required()
                     ->collection('experience_gallery')
                     ->multiple()
                     ->image()
