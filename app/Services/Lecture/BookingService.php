@@ -6,7 +6,9 @@ use App\Enums\BookingStatus;
 use App\Models\Booking;
 use App\Models\Lecture;
 use App\Services\Event\EventService;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BookingService
 {
@@ -14,22 +16,39 @@ class BookingService
 
     public function createBooking(int $userId, int $lectureId): Booking
     {
-        return DB::transaction(function () use ($userId, $lectureId) {
-            $lecture = $this->lockLecture($lectureId);
-            $eventOccurrenceId = $lecture->day->event_occurrence_id;
+        try {
+            return DB::transaction(function () use ($userId, $lectureId) {
+                $lecture = $this->lockLecture($lectureId);
+                $eventOccurrenceId = $lecture->day->event_occurrence_id;
 
-            $this->checkLectureBelongsToActiveEvent($eventOccurrenceId);
-            $this->checkDuplicateBooking($userId, $lectureId);
-            $this->checkMaxBookings($userId, $eventOccurrenceId);
-            $this->checkLectureNotEnded($lecture);
-            $this->checkSeatsAvailability($lecture);
+                $this->checkLectureBelongsToActiveEvent($eventOccurrenceId);
+                $this->checkDuplicateBooking($userId, $lectureId);
+                $this->checkMaxBookings($userId, $eventOccurrenceId);
+                $this->checkLectureNotEnded($lecture);
+                $this->checkSeatsAvailability($lecture);
 
-            return Booking::create([
-                'user_id'    => $userId,
+                $booking = Booking::create([
+                    'user_id'    => $userId,
+                    'lecture_id' => $lectureId,
+                    'status'     => BookingStatus::CONFIRMED->value,
+                ]);
+
+                Log::channel('audit')->info('Booking created', [
+                    'user_id' => $userId,
+                    'lecture_id' => $lectureId,
+                    'booking_id' => $booking->id,
+                ]);
+
+                return $booking;
+            });
+        } catch (\Exception $e) {
+            Log::channel('security')->info('Booking attempt failed', [
+                'user_id' => $userId,
                 'lecture_id' => $lectureId,
-                'status'     => BookingStatus::CONFIRMED->value,
+                'reason' => $e->getMessage(),
             ]);
-        });
+            throw $e;
+        }
     }
 
     public function cancelBooking(int $bookingId, int $userId): void
@@ -40,6 +59,11 @@ class BookingService
 
         $booking->update(['status' => BookingStatus::CANCELLED->value]);
         $booking->delete();
+
+        Log::channel('audit')->info('Booking cancelled', [
+            'booking_id' => $bookingId,
+            'user_id'    => $userId,
+        ]);
     }
 
     public function getUserConfirmedBookings(int $userId): array
@@ -93,7 +117,29 @@ class BookingService
 
     private function lockLecture(int $lectureId): Lecture
     {
-        return Lecture::whereKey($lectureId)->lockForUpdate()->firstOrFail();
+        $startedAt = microtime(true);
+
+        try {
+            $lecture = Lecture::whereKey($lectureId)->lockForUpdate()->firstOrFail();
+        } catch (QueryException $e) {
+            Log::channel('performance')->error('Failed to lock lecture row (deadlock or timeout)', [
+                'lecture_id' => $lectureId,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw new \Exception('النظام مشغول حالياً، حاول مجدداً بعد لحظات');
+        }
+
+        $waitTime = microtime(true) - $startedAt;
+
+        if ($waitTime > 0.5) {
+            Log::channel('performance')->warning('High contention on lecture lock', [
+                'lecture_id' => $lectureId,
+                'wait_seconds' => round($waitTime, 3),
+            ]);
+        }
+
+        return $lecture;
     }
 
     private function checkSeatsAvailability(Lecture $lecture): void

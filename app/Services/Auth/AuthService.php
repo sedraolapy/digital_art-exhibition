@@ -12,6 +12,7 @@ use App\Services\Event\EventService;
 use App\Services\Workshop\WorkshopRegistrationService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 
@@ -39,6 +40,13 @@ class AuthService
             $this->socialLinkService->attachLinks($profile, $data);
             $this->userQrService->generate($user);
 
+            Log::channel('audit')->info('New user registered', [
+                'user_id' => $user->id,
+                'email'   => $user->email,
+                'ip'      => request()->ip(),
+            ]);
+
+
             return [
                 'user' => $this->userDataService->loadAuthData($user),
                 'token' => $token,
@@ -53,9 +61,14 @@ class AuthService
 
         if (! $user || ! Hash::check($data['password'], $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
+                'email' => ['البريد الإلكتروني أو كلمة المرور غير صحيحة.'],
             ]);
         }
+
+        Log::channel('audit')->info('User logged in', [
+            'user_id' => $user->id,
+            'ip'      => request()->ip(),
+        ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
         return [
@@ -66,6 +79,7 @@ class AuthService
 
     public function logout(User $user): void
     {
+        Log::channel('audit')->info('User logged out', ['user_id' => $user->id]);
         $user->tokens()->delete();
     }
 

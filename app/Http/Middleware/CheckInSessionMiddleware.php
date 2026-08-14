@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use App\Services\CheckIn\CheckInSessionService;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckInSessionMiddleware
@@ -32,6 +33,12 @@ class CheckInSessionMiddleware
         $session = $this->sessionService->validate($token, $deviceId);
 
         if (! $session) {
+
+            Log::channel('security')->warning('Invalid check-in session attempt', [
+                'ip' => $request->ip(),
+                'device_id' => $deviceId,
+            ]);
+
             return response()->json([
                 'message' => 'Invalid, expired, or unverified check-in session. Call GET /check-in/session first.'
             ], 401);

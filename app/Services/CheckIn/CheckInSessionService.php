@@ -4,6 +4,7 @@ namespace App\Services\CheckIn;
 
 use App\Models\CheckInSession;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CheckInSessionService
 {
@@ -67,6 +68,12 @@ class CheckInSessionService
         }
 
         if (! $deviceId || $session->device_id !== $deviceId) {
+
+            Log::channel('security')->warning('Check-in session used from mismatched device', [
+                'session_id' => $session->id,
+                'expected_device' => $session->device_id,
+                'received_device' => $deviceId,
+            ]);
             return null;
         }
 

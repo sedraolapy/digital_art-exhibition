@@ -7,6 +7,7 @@ use App\Models\ExhibitorProfile;
 use App\Models\Vote;
 use App\Services\Event\EventService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class VoteService
 {
@@ -61,6 +62,12 @@ class VoteService
             ->exists();
 
         if (! $exhibitorBelongsToOccurrence) {
+
+            Log::channel('security')->warning('Vote attempt for exhibitor outside active occurrence', [
+                'user_id' => $userId,
+                'exhibitor_id' => $exhibitorId,
+                'occurrence_id' => $activeOccurrence->id,
+            ]);
             return [
                 'message' => 'هذا العارض لا يتبع للحدث الحالي',
                 'data' => null
@@ -71,6 +78,12 @@ class VoteService
             'user_id'             => $userId,
             'exhibitor_id'        => $exhibitorId,
             'event_occurrence_id' => $activeOccurrence->id,
+        ]);
+
+        Log::channel('audit')->info('Vote cast', [
+            'user_id' => $userId,
+            'exhibitor_id' => $exhibitorId,
+            'occurrence_id' => $activeOccurrence->id,
         ]);
 
         return [

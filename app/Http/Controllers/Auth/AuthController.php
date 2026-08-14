@@ -25,10 +25,11 @@ class AuthController extends Controller
         $user = $result['user'];
         $user->token = $result['token'];
         $user->userProfile->user->token = $result['token'];
+        $profileResult = $this->userService->getUserProfile($user);
 
         return response()->json([
             'message' => 'تم تسجيل المستخدم بنجاح',
-            'data'    => new UserProfileResource($user->userProfile),
+            'data'    => new UserProfileResource($profileResult['data']),
         ]);
     }
 
