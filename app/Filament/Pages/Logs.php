@@ -29,25 +29,81 @@ class Logs extends Page
 
     public string $channel = 'security';
 
-    public ?string $date = null;
+    public string $date;
 
     public string $search = '';
+
+    public ?string $level = null;
 
     public function mount(): void
     {
         $this->date = now()->format('Y-m-d');
     }
 
-    public function getLogContent(): string
+    public function getLogs(): array
     {
         $path = storage_path(
             "logs/{$this->channel}-{$this->date}.log"
         );
 
         if (! File::exists($path)) {
-            return 'No logs found for this date.';
+            return [];
         }
 
-        return File::get($path);
+        $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+        $logs = [];
+
+        foreach ($lines as $line) {
+
+            if (! preg_match(
+                '/^\[(.*?)\]\s+\S+\.(\w+):\s+(.*)$/',
+                $line,
+                $matches
+            )) {
+                continue;
+            }
+
+            $datetime = $matches[1];
+            $level = strtoupper($matches[2]);
+            $content = $matches[3];
+
+            $context = [];
+
+            if (preg_match('/^(.*?)\s+(\{.*\})$/', $content, $parts)) {
+                $message = $parts[1];
+
+                $decoded = json_decode($parts[2], true);
+
+                if (is_array($decoded)) {
+                    $context = $decoded;
+                }
+            } else {
+                $message = $content;
+            }
+
+            if ($this->level && $level !== strtoupper($this->level)) {
+                continue;
+            }
+
+            if (
+                $this->search &&
+                ! str_contains(
+                    strtolower($line),
+                    strtolower($this->search)
+                )
+            ) {
+                continue;
+            }
+
+            $logs[] = [
+                'datetime' => $datetime,
+                'level' => $level,
+                'message' => $message,
+                'context' => $context,
+            ];
+        }
+
+        return array_reverse($logs);
     }
 }

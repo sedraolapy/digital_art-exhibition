@@ -58,12 +58,23 @@ class CheckInService
 
     private function handleLectureCheckIn(User $user, int $lectureId, CheckInSession $session): array
     {
+
+        $event = $this->eventService->getActiveEvent();
+
+        if (! $event) {
+            return [
+                'message' => 'الحدث غير نشط',
+                'data' => null
+            ];
+        }
+
         $lecture = Lecture::with('day')
             ->whereKey($lectureId)
             ->whereHas('day', fn($query) =>
-                $query->where('event_occurrence_id', $session->event_occurrence_id)
+                $query->where('event_occurrence_id', $event->id)
             )
             ->first();
+
 
         if (! $lecture) {
             return [
