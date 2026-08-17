@@ -34,6 +34,7 @@ class UserResource extends BaseResource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
+            ->with(['roles', 'userProfile.media', 'exhibitorProfile.media'])
             ->whereHas('roles', function (Builder $query) {
                 $query->whereIn('name', [
                     RoleEnum::USER->value,

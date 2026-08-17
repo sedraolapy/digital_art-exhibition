@@ -9,6 +9,7 @@ use App\Services\Event\EventService;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 class BookingService
 {
@@ -16,6 +17,18 @@ class BookingService
 
     public function createBooking(int $userId, int $lectureId): Booking
     {
+        $lockKey = "booking-lock:{$userId}:{$lectureId}";
+        $lock = Cache::store('redis')->lock($lockKey, 10);
+
+        if (! $lock->get()) {
+            Log::channel('performance')->warning('Failed to acquire booking lock', [
+                'user_id' => $userId,
+                'lecture_id' => $lectureId,
+            ]);
+
+            throw new \Exception('النظام مشغول حالياً، حاول مجدداً بعد لحظات');
+        }
+
         try {
             return DB::transaction(function () use ($userId, $lectureId) {
                 $lecture = $this->lockLecture($lectureId);
@@ -48,6 +61,8 @@ class BookingService
                 'reason' => $e->getMessage(),
             ]);
             throw $e;
+        } finally {
+            $lock->release();
         }
     }
 

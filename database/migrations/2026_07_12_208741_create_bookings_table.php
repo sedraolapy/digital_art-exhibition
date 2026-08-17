@@ -16,12 +16,16 @@ return new class extends Migration
             $table->foreignId('user_id')
                 ->constrained('users')
                 ->onDelete('cascade');
+
             $table->foreignId('lecture_id')
                 ->constrained('lectures')
                 ->onDelete('cascade');
+                
             $table->string('status')->default('confirmed');
             $table->timestamps();
             $table->softDeletes();
+
+            $table->unique(['user_id', 'lecture_id', 'deleted_at']);
         });
     }
 

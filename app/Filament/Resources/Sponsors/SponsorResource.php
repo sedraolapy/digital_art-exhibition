@@ -20,6 +20,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 use UnitEnum;
+use Illuminate\Database\Eloquent\Builder;
 
 class SponsorResource extends BaseResource
 {
@@ -30,6 +31,11 @@ class SponsorResource extends BaseResource
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static string|UnitEnum|null $navigationGroup = 'Content Managment';
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with('media');
+    }
 
     protected static function canAccessByPermission(): bool
     {

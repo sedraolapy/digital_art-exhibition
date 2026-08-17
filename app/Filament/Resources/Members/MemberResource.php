@@ -19,6 +19,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 use UnitEnum;
+use Illuminate\Database\Eloquent\Builder;
 
 class MemberResource extends BaseResource
 {
@@ -42,6 +43,11 @@ class MemberResource extends BaseResource
         return Auth::user()?->can(
             PermissionEnum::UPDATE_MEMBERS->value
         ) ?? false;
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with('media');
     }
 
     public static function form(Schema $schema): Schema

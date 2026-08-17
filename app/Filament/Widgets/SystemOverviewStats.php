@@ -11,6 +11,7 @@ use App\Models\ExhibitorProfile;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class SystemOverviewStats extends StatsOverviewWidget
 {
@@ -28,6 +29,16 @@ class SystemOverviewStats extends StatsOverviewWidget
 
     protected function getStats(): array
     {
+
+        $stats = Cache::remember('filament:system_overview_stats', 300, function () {
+            return [
+                'users'      => User::role(RoleEnum::USER->value)->count(),
+                'exhibitors' => ExhibitorProfile::count(),
+                'cycles'     => Cycle::count(),
+                'events'     => EventOccurrence::count(),
+            ];
+        });
+
         return [
 
             Stat::make(

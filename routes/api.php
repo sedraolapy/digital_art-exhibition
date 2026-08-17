@@ -65,13 +65,13 @@ use Illuminate\Support\Facades\Route;
 
     // User & Exhibitor
     Route::middleware(['auth:sanctum','role:' . RoleEnum::USER->value . '|' . RoleEnum::EXHIBITOR->value,])->group(function () {
-        Route::post('/bookings', [BookingController::class, 'store']);
-        Route::delete('/bookings/{id}', [BookingController::class, 'destroy']);
-        Route::post('/votes', [VoteController::class, 'store']);
+        Route::post('/bookings', [BookingController::class, 'store'])->middleware('throttle:sensitive');
+        Route::delete('/bookings/{id}', [BookingController::class, 'destroy'])->middleware('throttle:sensitive');
+        Route::post('/votes', [VoteController::class, 'store'])->middleware('throttle:sensitive');
         Route::get('/user', [UserController::class, 'user']);
         Route::get('/user/attendances', [UserController::class, 'getAttendanecs']);
-        Route::post('/registrations', [WorkshopRegistrationController::class, 'store']);
-        Route::delete('/registrations/{id}', [WorkshopRegistrationController::class, 'destroy']);
+        Route::post('/registrations', [WorkshopRegistrationController::class, 'store'])->middleware('throttle:sensitive');
+        Route::delete('/registrations/{id}', [WorkshopRegistrationController::class, 'destroy'])->middleware('throttle:sensitive');
 
     });
 

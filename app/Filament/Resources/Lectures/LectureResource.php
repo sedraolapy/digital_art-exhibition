@@ -19,6 +19,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 use UnitEnum;
+use Illuminate\Database\Eloquent\Builder;
 
 class LectureResource extends BaseResource
 {
@@ -43,6 +44,11 @@ class LectureResource extends BaseResource
             PermissionEnum::UPDATE_LECTURES->value
         ) ?? false;
     }
+
+    public static function getEloquentQuery(): Builder
+{
+    return parent::getEloquentQuery()->with('media');
+}
 
     public static function form(Schema $schema): Schema
     {

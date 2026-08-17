@@ -41,4 +41,13 @@ class Sponsor extends Model implements HasMedia
         )
         ->using(OccurrenceSponsor::class);
     }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (Sponsor $sponsor) {
+            $sponsor->cycles()->detach();
+            $sponsor->occurrences()->detach();
+        });
+    }
+    
 }

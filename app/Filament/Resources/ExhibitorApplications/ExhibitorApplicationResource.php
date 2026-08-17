@@ -19,6 +19,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 use UnitEnum;
+use Illuminate\Database\Eloquent\Builder;
 
 class ExhibitorApplicationResource extends BaseResource
 {
@@ -50,6 +51,11 @@ class ExhibitorApplicationResource extends BaseResource
         return Auth::user()?->can(
             PermissionEnum::DELETE_EXHIBITOR_APPLICATIONS->value
         ) ?? false;
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with(['user', 'category', 'media']);
     }
 
     public static function form(Schema $schema): Schema

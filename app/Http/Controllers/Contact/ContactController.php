@@ -23,7 +23,7 @@ class ContactController extends Controller
             return response()->json([
                 'message' => 'فشل التحقق من reCAPTCHA.',
                 'data'  => null,
-            ]);
+            ],422);
         }
 
         $contactMessage = $this->contactService->store($data);

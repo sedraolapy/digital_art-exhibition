@@ -11,6 +11,8 @@ use App\Enums\Role;
 use App\Enums\RoleEnum;
 use App\Models\User;
 use App\Observers\UserObserver;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,6 +39,15 @@ class AppServiceProvider extends ServiceProvider
             return $user->hasRole(RoleEnum::SUPER_ADMIN->value)
                 ? true
                 : null;
+        });
+
+        RateLimiter::for('api', function ($request) {
+            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
+
+        RateLimiter::for('sensitive', function ($request) {
+            $limit = app()->environment('local') ? 1000 : 10;
+            return Limit::perMinute($limit)->by($request->user()?->id ?: $request->ip());
         });
     }
 }

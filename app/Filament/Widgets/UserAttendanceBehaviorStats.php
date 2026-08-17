@@ -15,6 +15,8 @@ class UserAttendanceBehaviorStats extends StatsOverviewWidget
 {
     public ?int $eventOccurrenceId = null;
 
+    protected static bool $deferLoading = true;
+
     public static function canView(): bool
     {
         return Auth::user()?->hasRole(RoleEnum::SUPER_ADMIN->value) ?? false;

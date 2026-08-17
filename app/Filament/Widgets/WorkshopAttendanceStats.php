@@ -14,6 +14,8 @@ class WorkshopAttendanceStats extends StatsOverviewWidget
 {
     protected int|string|array $columnSpan = 'full';
 
+    protected static bool $deferLoading = true;
+
     public ?int $workshopId = null;
 
     public static function canView(): bool
