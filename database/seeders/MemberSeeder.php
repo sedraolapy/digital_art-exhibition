@@ -162,7 +162,7 @@ class MemberSeeder extends Seeder
             'url'      => 'https://www.instagram.com/rewa.graphic/',
         ]);
 
-        $member6->addMedia(public_path('storage/members/rewaf.png'))
+        $member6->addMedia(public_path('storage/members/rewaaa.jpeg'))
             ->preservingOriginal()
             ->toMediaCollection('members');
 
