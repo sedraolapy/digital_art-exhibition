@@ -43,7 +43,7 @@ class MemberSeeder extends Seeder
             'name'          => 'محمد الشعراوي',
             'role'          => 'AI Engineer',
             'bio'           => 'مهندس واجهات خلفية وذكاء اصطناعي، يبني أنظمة آمنة وقابلة للتوسع',
-            'portfolio_url' => null,
+            'portfolio_url' => 'https://mohammad-alsharawi-portfolio.vercel.app/',
         ]);
 
         $member2->socialLinks()->create([
