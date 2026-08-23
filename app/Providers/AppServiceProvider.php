@@ -7,7 +7,6 @@ use App\Observers\EventOccurrenceObserver;
 use Illuminate\Support\ServiceProvider;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Gate;
-use App\Enums\Role;
 use App\Enums\RoleEnum;
 use App\Models\User;
 use App\Observers\UserObserver;
@@ -41,13 +40,23 @@ class AppServiceProvider extends ServiceProvider
                 : null;
         });
 
+
         RateLimiter::for('api', function ($request) {
-            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+            return Limit::perMinute(
+                config('rate_limits.api.per_minute')
+            )->by(
+                $request->user()?->id ?: $request->ip()
+            );
         });
 
         RateLimiter::for('sensitive', function ($request) {
-            $limit = app()->environment('local') ? 1000 : 10;
-            return Limit::perMinute($limit)->by($request->user()?->id ?: $request->ip());
+            $limit = app()->environment('local')
+                ? config('rate_limits.sensitive.local_per_minute')
+                : config('rate_limits.sensitive.production_per_minute');
+
+            return Limit::perMinute($limit)->by(
+                $request->user()?->id ?: $request->ip()
+            );
         });
     }
 }

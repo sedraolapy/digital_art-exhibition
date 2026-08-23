@@ -12,7 +12,6 @@ use App\Services\User\AttendanceService;
 use App\Services\User\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use LDAP\Result;
 
 class UserController extends Controller
 {

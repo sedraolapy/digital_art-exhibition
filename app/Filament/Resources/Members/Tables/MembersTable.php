@@ -35,14 +35,6 @@ class MembersTable
                         ),
                 TextColumn::make('role')
                     ->searchable(),
-                TextColumn::make('portfolio_url')
-                    ->label('Portfolio')
-                    ->searchable()
-                    ->url(fn ($record) => $record->portfolio_url)
-                    ->openUrlInNewTab()
-                    ->formatStateUsing(fn () => 'View Portfolio')
-                    ->color('primary')
-                    ->icon('heroicon-o-link'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

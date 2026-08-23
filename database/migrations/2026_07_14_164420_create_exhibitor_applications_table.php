@@ -20,11 +20,13 @@ return new class extends Migration
             $table->foreignId('category_id')
                 ->constrained('categories')
                 ->restrictOnDelete();
-            $table->string('status')->default('pending');
+            $table->string('status')->default('pending')->index();
             $table->integer('experience_years');
             $table->string('portfolio_url');
             $table->text('bio');
             $table->timestamps();
+
+            $table->unique(['user_id', 'event_occurrence_id'],'exhibitor_applications_user_event_unique');
         });
     }
 

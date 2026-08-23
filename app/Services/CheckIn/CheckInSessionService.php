@@ -63,8 +63,21 @@ class CheckInSessionService
             return null;
         }
 
-        if (! $session->device_id) {
-            return null;
+        $updated = CheckInSession::whereKey($session->id)
+            ->whereNull('device_id')
+            ->update([
+                'device_id' => $deviceId,
+            ]);
+
+        if ($updated === 0) {
+            $session->refresh();
+
+            if ($session->device_id !== $deviceId) {
+                return [
+                    'message' => 'This session is already used on another device',
+                    'data' => null,
+                ];
+            }
         }
 
         if (! $deviceId || $session->device_id !== $deviceId) {

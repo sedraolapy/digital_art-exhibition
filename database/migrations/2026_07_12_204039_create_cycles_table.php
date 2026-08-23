@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            $table->string('status')->default('upcoming');
+            $table->string('status')->default('upcoming')->index();
             $table->timestamps();
         });
     }

@@ -25,7 +25,6 @@ class MemberForm
                 Textarea::make('bio')
                     ->required()
                     ->maxLength(80)
-                    ->rule('regex:/^[\p{Arabic}0-9٠-٩\s.,،!?؟()\-]+$/u')
                     ->columnSpanFull(),
                 TextInput::make('portfolio_url')
                     ->url(),

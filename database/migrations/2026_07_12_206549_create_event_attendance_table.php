@@ -21,6 +21,8 @@ return new class extends Migration
                 ->constrained('event_days')
                 ->onDelete('cascade');
             $table->timestamps();
+
+            $table->unique(['user_id', 'event_day_id'], 'event_attendance_user_day_unique');
         });
     }
 

@@ -22,8 +22,10 @@ return new class extends Migration
             $table->foreignId('event_occurrence_id')
                 ->constrained('event_occurrences')
                 ->onDelete('cascade');
-            $table->unique(['user_id', 'exhibitor_id', 'event_occurrence_id']);
             $table->timestamps();
+            
+            $table->unique(['user_id', 'exhibitor_id', 'event_occurrence_id']);
+            $table->index(['exhibitor_id', 'event_occurrence_id'],'votes_exhibitor_event_index');
         });
     }
 

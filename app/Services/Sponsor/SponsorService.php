@@ -9,9 +9,7 @@ use App\Services\Event\EventService;
 
 class SponsorService
 {
-    public function __construct(
-        private EventService $eventService
-    ) {}
+    public function __construct(private EventService $eventService) {}
 
     public function getSponsorsForActiveOccurrence()
     {
@@ -20,31 +18,26 @@ class SponsorService
             CycleStatus::ACTIVE->value
         )->first();
 
-        if (!$activeCycle) {
+        if (! $activeCycle) {
             throw new \Exception(
                 'لا توجد دورة فعّالة حالياً لعرض الرعاة.'
             );
         }
 
-        $occurrenceSponsors = collect();
-
         $activeOccurrence = $this->eventService->getActiveEvent();
 
-        if ($activeOccurrence) {
-            $occurrenceSponsors = Sponsor::whereHas('occurrences', function ($query) use ($activeOccurrence) {
-                $query->where('event_occurrence_id', $activeOccurrence->id);
-            })
-            ->with([
-                'cycles',
-                'occurrences.location',
-                'occurrences.cycle',
-                'media',
-            ])
-            ->get();
-        }
+        return Sponsor::where(function ($query) use ($activeCycle, $activeOccurrence) {
 
-        $cycleSponsors = Sponsor::whereHas('cycles', function ($query) use ($activeCycle) {
-            $query->where('cycle_id', $activeCycle->id);
+            $query->whereHas('cycles', function ($query) use ($activeCycle) {
+                $query->where('cycle_id', $activeCycle->id);
+            });
+
+            if ($activeOccurrence) {
+                $query->orWhereHas('occurrences', function ($query) use ($activeOccurrence) {
+                    $query->where('event_occurrence_id', $activeOccurrence->id);
+                });
+            }
+
         })
         ->with([
             'cycles',
@@ -53,10 +46,5 @@ class SponsorService
             'media',
         ])
         ->get();
-
-        return $occurrenceSponsors
-            ->merge($cycleSponsors)
-            ->unique('id')
-            ->values();
     }
 }

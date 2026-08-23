@@ -17,6 +17,7 @@ use App\Models\Workshop;
 use App\Models\WorkshopAttendance;
 use App\Models\WorkshopRegistration;
 use App\Services\Event\EventService;
+use Illuminate\Database\UniqueConstraintViolationException;
 
 class CheckInService
 {
@@ -158,12 +159,12 @@ class CheckInService
 
     private function registerLectureAttendance(User $user, Lecture $lecture): array
     {
-        $attendance = LectureAttendance::firstOrCreate([
-            'user_id' => $user->id,
-            'lecture_id' => $lecture->id,
-        ]);
-
-        if (! $attendance->wasRecentlyCreated) {
+        try {
+            LectureAttendance::create([
+                'user_id' => $user->id,
+                'lecture_id' => $lecture->id,
+            ]);
+        } catch (UniqueConstraintViolationException) {
             return [
                 'message' => 'تم تسجيل حضور المستخدم مسبقاً لهذه المحاضرة',
                 'data' => $user
@@ -178,12 +179,12 @@ class CheckInService
 
     private function registerWorkshopAttendance(User $user, Workshop $workshop): array
     {
-        $attendance = WorkshopAttendance::firstOrCreate([
-            'user_id' => $user->id,
-            'workshop_id' => $workshop->id,
-        ]);
-
-        if (! $attendance->wasRecentlyCreated) {
+        try {
+            WorkshopAttendance::create([
+                'user_id' => $user->id,
+                'workshop_id' => $workshop->id,
+            ]);
+        } catch (UniqueConstraintViolationException) {
             return [
                 'message' => 'تم تسجيل حضور المستخدم مسبقاً لهذه الورشة',
                 'data' => $user
@@ -198,12 +199,12 @@ class CheckInService
 
     private function registerEventAttendance(User $user, EventDay $day): array
     {
-        $attendance = EventAttendance::firstOrCreate([
-            'user_id' => $user->id,
-            'event_day_id' => $day->id,
-        ]);
-
-        if (! $attendance->wasRecentlyCreated) {
+        try {
+            EventAttendance::create([
+                'user_id' => $user->id,
+                'event_day_id' => $day->id,
+            ]);
+        } catch (UniqueConstraintViolationException) {
             return [
                 'message' => 'تم تسجيل حضور المستخدم مسبقاً لهذا اليوم',
                 'data' => $user

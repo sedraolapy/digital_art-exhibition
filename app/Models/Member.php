@@ -29,7 +29,6 @@ class Member extends Model implements HasMedia
     {
         $this->addMediaConversion('webp')
             ->format('webp')
-            ->quality(90)
-            ->nonQueued();
+            ->quality(90);
     }
 }

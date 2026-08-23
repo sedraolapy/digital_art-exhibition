@@ -17,8 +17,9 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->date('start_date');
             $table->date('end_date')->nullable();
-            $table->string('status')->default('draft');
+            $table->string('status')->default('draft')->index();
             $table->timestamps();
+
         });
     }
 

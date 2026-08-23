@@ -76,5 +76,5 @@ use Illuminate\Support\Facades\Route;
     });
 
 
-    Route::get('/check-in/session',[CheckInSessionController::class, 'show']);
+    Route::get('/check-in/session',[CheckInSessionController::class, 'show'])->middleware('throttle:sensitive');;
     Route::post('/check-in', [CheckInController::class, 'store'])->middleware('checkin.session');

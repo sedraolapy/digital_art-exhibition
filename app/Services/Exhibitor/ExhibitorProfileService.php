@@ -27,7 +27,7 @@ class ExhibitorProfileService
 
     public function createFromApplication(ExhibitorApplication $application): ExhibitorProfile
     {
-        $application->load('socialLinks');
+        $application->loadMissing('socialLinks');
 
         return DB::transaction(function () use ($application) {
             $profile = ExhibitorProfile::create([

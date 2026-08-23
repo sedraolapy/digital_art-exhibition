@@ -58,7 +58,7 @@ class WorkshopRegistrationForm
                     ->required(),
                 Select::make('status')
                     ->options(BookingStatus::class)
-                    ->default('confirmed')
+                    ->default(BookingStatus::CONFIRMED->value)
                     ->disabled()
                     ->required(),
             ]);

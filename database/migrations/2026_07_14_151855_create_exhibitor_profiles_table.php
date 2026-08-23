@@ -24,6 +24,8 @@ return new class extends Migration
             $table->string('portfolio_url');
             $table->text('bio');
             $table->timestamps();
+
+            $table->unique(['user_id', 'event_occurrence_id'],'exhibitor_profiles_user_event_unique');
         });
     }
 

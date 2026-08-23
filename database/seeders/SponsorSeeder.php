@@ -2,13 +2,15 @@
 
 namespace Database\Seeders;
 
+use App\Enums\CycleStatus;
 use App\Enums\SponsorType;
 use App\Models\Cycle;
 use App\Models\EventOccurrence;
 use App\Models\Sponsor;
-use DB;
+
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class SponsorSeeder extends Seeder
 {
@@ -17,58 +19,39 @@ class SponsorSeeder extends Seeder
      */
     public function run(): void
     {
-        $diamond = Sponsor::create([
-            'name' => 'Diamond Sponsor',
-            'type' => SponsorType::DIAMOND->value,
-        ]);
 
-        $gold = Sponsor::create([
-            'name' => 'Gold Sponsor',
-            'type' => SponsorType::GOLD->value,
-        ]);
-
-        $silver = Sponsor::create([
-            'name' => 'Silver Sponsor',
-            'type' => SponsorType::SILVER->value,
-        ]);
-
-        $logistic = Sponsor::create([
-            'name' => 'Logistic Sponsor',
+        $sponsor1 = Sponsor::create([
+            'name' => 'Sukon',
             'type' => SponsorType::LOGISTIC->value,
         ]);
 
+        $sponsor1->addMedia(public_path('storage/sponsors/سكون لوغو.svg'))
+            ->preservingOriginal()
+            ->toMediaCollection('sponsors');
 
-        $cycle = Cycle::first();
-        $occurrence = EventOccurrence::first();
+        $sponsor2 = Sponsor::create([
+            'name' => 'Gilgamesh',
+            'type' => SponsorType::LOGISTIC->value,
+        ]);
 
+        $sponsor2->addMedia(public_path('storage/sponsors/جلجامش لوغو.svg'))
+            ->preservingOriginal()
+            ->toMediaCollection('sponsors');
+
+
+        $cycle = Cycle::where('status', CycleStatus::ACTIVE->value)->first();
 
         if ($cycle) {
             DB::table('cycle_sponsors')->insert([
                 'cycle_id' => $cycle->id,
-                'sponsor_id' => $diamond->id,
+                'sponsor_id' => $sponsor1->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
 
             DB::table('cycle_sponsors')->insert([
                 'cycle_id' => $cycle->id,
-                'sponsor_id' => $logistic->id,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
-
-        if ($occurrence) {
-            DB::table('occurrence_sponsors')->insert([
-                'event_occurrence_id' => $occurrence->id,
-                'sponsor_id' => $gold->id,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-
-            DB::table('occurrence_sponsors')->insert([
-                'event_occurrence_id' => $occurrence->id,
-                'sponsor_id' => $silver->id,
+                'sponsor_id' => $sponsor2->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

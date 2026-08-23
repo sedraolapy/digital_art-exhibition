@@ -3,6 +3,7 @@
 namespace App\Services\Exhibitor;
 
 use App\Enums\ExhibitorStatus;
+use App\Events\ExhibitorApplicationStatusChanged;
 use App\Models\ExhibitorApplication;
 use App\Models\User;
 use App\Services\Event\EventService;
@@ -13,6 +14,7 @@ class ExhibitorApplicationService
     public function __construct(
         private SocialLinkService $socialLinkService,
         private EventService $eventService,
+        private ExhibitorProfileService $exhibitorProfileService,
     ) {}
 
     public function create(User $user, array $data): ExhibitorApplication
@@ -72,4 +74,89 @@ class ExhibitorApplicationService
         $application->clearMediaCollection('application_image');
         $application->addMedia($image)->toMediaCollection('application_image');
     }
+
+
+    public function approveInitial(ExhibitorApplication $application): void 
+    {
+        DB::transaction(function () use ($application) {
+
+            $application = ExhibitorApplication::whereKey($application->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if ($application->status !== ExhibitorStatus::PENDING) {
+                throw new \Exception(
+                    'لا يمكن قبول الطلب بحالته الحالية.'
+                );
+            }
+
+            $application->update([
+                'status' => ExhibitorStatus::APPROVED_INITIAL->value,
+            ]);
+
+            event(new ExhibitorApplicationStatusChanged(
+                $application,
+                'تم قبول طلبك بشكل مبدئي، وسيتم التواصل معك لاحقًا لمتابعة الإجراءات.'
+            ));
+        });
+    }
+
+    public function reject(ExhibitorApplication $application): void 
+    {
+        DB::transaction(function () use ($application) {
+
+            $application = ExhibitorApplication::whereKey($application->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if (! in_array($application->status, [
+                ExhibitorStatus::PENDING,
+                ExhibitorStatus::APPROVED_INITIAL,
+            ], true)) {
+                throw new \Exception(
+                    'لا يمكن رفض الطلب بحالته الحالية.'
+                );
+            }
+
+            $application->update([
+                'status' => ExhibitorStatus::REJECTED->value,
+            ]);
+
+            event(new ExhibitorApplicationStatusChanged(
+                $application,
+                'نعتذر، لقد تم رفض طلبك. نتمنى لك التوفيق في الفرص القادمة.'
+            ));
+        });
+    }
+
+
+    public function approveFinal(ExhibitorApplication $application): void 
+    {
+        DB::transaction(function () use ($application) {
+
+            $application = ExhibitorApplication::whereKey($application->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if ($application->status !== ExhibitorStatus::APPROVED_INITIAL) {
+                throw new \Exception(
+                    'لا يمكن اعتماد الطلب نهائياً بحالته الحالية.'
+                );
+            }
+
+            $this->exhibitorProfileService->createFromApplication($application);
+
+            $application->update([
+                'status' => ExhibitorStatus::APPROVED_FINAL->value,
+            ]);
+
+            event(new ExhibitorApplicationStatusChanged(
+                $application,
+                'تهانينا! تم قبول طلبك بشكل نهائي، وتم إنشاء ملفك كعارض في النظام. يمكنك الآن مراجعة ملفك كعارض من خلال الموقع.'
+            ));
+        });
+    }
+
+
+
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\BookingStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -21,7 +22,7 @@ return new class extends Migration
                 ->constrained('lectures')
                 ->onDelete('cascade');
                 
-            $table->string('status')->default('confirmed');
+            $table->string('status')->default(BookingStatus::CONFIRMED->value)->index();
             $table->timestamps();
             $table->softDeletes();
 

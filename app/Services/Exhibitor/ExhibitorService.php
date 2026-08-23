@@ -30,8 +30,8 @@ class ExhibitorService
             ->where('event_occurrence_id', $activeEvent->id)
             ->pluck('exhibitor_id')
             ->toArray();
-
         $exhibitors = ExhibitorProfile::with([
+            'user',
             'socialLinks',
             'media',
             'category'

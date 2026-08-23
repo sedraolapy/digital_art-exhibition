@@ -29,7 +29,6 @@ class SystemOverviewStats extends StatsOverviewWidget
 
     protected function getStats(): array
     {
-
         $stats = Cache::remember('filament:system_overview_stats', 300, function () {
             return [
                 'users'      => User::role(RoleEnum::USER->value)->count(),
@@ -43,43 +42,40 @@ class SystemOverviewStats extends StatsOverviewWidget
 
             Stat::make(
                 'Total Users',
-                User::role(RoleEnum::USER->value)->count()
+                $stats['users']
             )
-            ->description('Registered users')
-            ->descriptionIcon('heroicon-m-users')
-            ->icon('heroicon-m-users')
-            ->color('primary'),
+                ->description('Registered users')
+                ->descriptionIcon('heroicon-m-users')
+                ->icon('heroicon-m-users')
+                ->color('primary'),
 
             Stat::make(
                 'Total Exhibitors',
-                ExhibitorProfile::count()
+                $stats['exhibitors']
             )
-            ->description('All exhibitors')
-            ->descriptionIcon('heroicon-m-building-storefront')
-            ->icon('heroicon-m-building-storefront')
-            ->color('danger'),
-
+                ->description('All exhibitors')
+                ->descriptionIcon('heroicon-m-building-storefront')
+                ->icon('heroicon-m-building-storefront')
+                ->color('danger'),
 
             Stat::make(
                 'Total Cycles',
-                Cycle::count()
+                $stats['cycles']
             )
-            ->description('Event cycles')
-            ->descriptionIcon('heroicon-m-calendar')
-            ->icon('heroicon-m-calendar')
-            ->color('success'),
-
+                ->description('Event cycles')
+                ->descriptionIcon('heroicon-m-calendar')
+                ->icon('heroicon-m-calendar')
+                ->color('success'),
 
             Stat::make(
                 'Total Events',
-                EventOccurrence::count()
+                $stats['events']
             )
-            ->description('Event occurrences')
-            ->descriptionIcon('heroicon-m-building-office')
-            ->icon('heroicon-m-building-office')
-            ->color('warning'),
-
-
+                ->description('Event occurrences')
+                ->descriptionIcon('heroicon-m-building-office')
+                ->icon('heroicon-m-building-office')
+                ->color('warning'),
         ];
     }
+    
 }

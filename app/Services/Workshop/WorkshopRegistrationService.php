@@ -49,12 +49,15 @@ class WorkshopRegistrationService
 
     private function checkSeatsAvailability(Workshop $workshop): void
     {
-        $currentRegistration = WorkshopRegistration::where('workshop_id', $workshop->id)->count();
+        $currentRegistration = WorkshopRegistration::where('workshop_id', $workshop->id)
+            ->where('status', BookingStatus::CONFIRMED->value)
+            ->count();
+    
         if ($currentRegistration >= $workshop->max_seats) {
             throw new \Exception('المقاعد ممتلئة لهذه الورشة');
         }
     }
-
+    
     private function checkTimeConflict(int $userId, Workshop $workshop): void
     {
         $hasConflict = WorkshopRegistration::where('user_id', $userId)

@@ -28,8 +28,7 @@ class Experience extends Model implements HasMedia
     {
         $this->addMediaConversion('webp')
             ->format('webp')
-            ->quality(70)
-            ->nonQueued();
+            ->quality(70);
     }
 
 

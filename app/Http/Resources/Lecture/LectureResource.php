@@ -12,7 +12,7 @@ class LectureResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        $bookingsCount = Booking::where('lecture_id', $this->id)->where('status', BookingStatus::CONFIRMED->value)->count();
+        $bookingsCount = $this->bookings_count;
         $remainingSeats = $this->max_seats - $bookingsCount;
 
         return [

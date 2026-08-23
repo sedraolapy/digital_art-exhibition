@@ -21,6 +21,8 @@ return new class extends Migration
                 ->constrained('lectures')
                 ->onDelete('cascade');
             $table->timestamps();
+
+            $table->unique(['user_id', 'lecture_id'], 'lecture_attendance_user_lecture_unique');
         });
     }
 

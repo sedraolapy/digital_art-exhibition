@@ -13,12 +13,16 @@ use Illuminate\Support\Facades\Cache;
 
 class BookingService
 {
+
+    private const BOOKING_LOCK_TTL = 10;
+    private const MAX_BOOKINGS_PER_EVENT = 3;
+    
     public function __construct(private EventService $eventService) {}
 
     public function createBooking(int $userId, int $lectureId): Booking
     {
         $lockKey = "booking-lock:{$userId}:{$lectureId}";
-        $lock = Cache::store('redis')->lock($lockKey, 10);
+        $lock = Cache::lock($lockKey, self::BOOKING_LOCK_TTL);
 
         if (! $lock->get()) {
             Log::channel('performance')->warning('Failed to acquire booking lock', [
@@ -125,8 +129,8 @@ class BookingService
                 $query->where('event_occurrence_id', $eventOccurrenceId)
             )->count();
 
-        if ($count >= 3) {
-            throw new \Exception('لا يمكنك حجز أكثر من 3 محاضرات في نفس الحدث');
+        if ($count >= self::MAX_BOOKINGS_PER_EVENT) {
+            throw new \Exception('لا يمكنك حجز أكثر من ' . self::MAX_BOOKINGS_PER_EVENT . ' محاضرات في نفس الحدث');
         }
     }
 
@@ -159,7 +163,10 @@ class BookingService
 
     private function checkSeatsAvailability(Lecture $lecture): void
     {
-        $currentBookings = Booking::where('lecture_id', $lecture->id)->count();
+        $currentBookings = Booking::where('lecture_id', $lecture->id)
+            ->where('status', BookingStatus::CONFIRMED->value)
+            ->count();
+    
         if ($currentBookings >= $lecture->max_seats) {
             throw new \Exception('المقاعد ممتلئة لهذه المحاضرة');
         }

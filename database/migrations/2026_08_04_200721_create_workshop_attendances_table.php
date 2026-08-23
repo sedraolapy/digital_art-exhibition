@@ -21,6 +21,8 @@ return new class extends Migration
                 ->constrained('workshops')
                 ->onDelete('cascade');
             $table->timestamps();
+
+            $table->unique(['user_id', 'workshop_id'], 'workshop_attendances_user_workshop_unique');
         });
     }
 
