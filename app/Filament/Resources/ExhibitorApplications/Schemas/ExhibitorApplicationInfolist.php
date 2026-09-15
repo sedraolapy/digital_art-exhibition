@@ -45,7 +45,9 @@ class ExhibitorApplicationInfolist
                     ->label('CV File')
                     ->getStateUsing(fn ($record) =>
                         $record->getMedia('application_cv')
-                            ->map(fn($media) => '<a href="'.$media->getUrl().'" target="_blank" download>📄 Download CV</a>')
+                            ->map(fn ($media) =>
+                                '<a href="' . route('private-media.download', $media) . '" target="_blank">📄 Download CV</a>'
+                            )
                             ->implode('<br>')
                     )
                     ->html(),

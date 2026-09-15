@@ -11,6 +11,7 @@ use App\Services\Event\EventService;
 use App\Services\User\UserDataService;
 use Illuminate\Support\Facades\DB;
 use App\Services\Media\MediaStorageService;
+use Illuminate\Support\Str;
 
 class ExhibitorProfileService
 {
@@ -29,7 +30,7 @@ class ExhibitorProfileService
     {
         $application->loadMissing('socialLinks');
 
-        return DB::transaction(function () use ($application) {
+        $profile = DB::transaction(function () use ($application) {
             $profile = ExhibitorProfile::create([
                 'user_id'             => $application->user_id,
                 'event_occurrence_id' => $application->event_occurrence_id,
@@ -39,13 +40,22 @@ class ExhibitorProfileService
                 'bio'                 => $application->bio,
             ]);
 
-            $this->transferCvFile($application, $profile);
-            $this->transferImage($application, $profile);
             $this->assignExhibitorRole($application->user_id);
-            $this->updateSocialLinksFromApplication($application, $profile);
+
+            $this->updateSocialLinksFromApplication(
+                $application,
+                $profile
+            );
 
             return $profile;
         });
+
+        DB::afterCommit(function () use ($application, $profile) {
+            $this->transferCvFile($application, $profile);
+            $this->transferImage($application, $profile);
+        });
+
+        return $profile;
     }
 
     public function getExhibitorProfileData(User $user,?EventOccurrence $activeEvent): ?ExhibitorProfile
@@ -131,7 +141,11 @@ class ExhibitorProfileService
     {
         if (isset($data['cv_file'])) {
             $profile->clearMediaCollection('exhibitor_cv');
-            $profile->addMedia($data['cv_file'])->toMediaCollection('exhibitor_cv');
+            $cvFile = $data['cv_file'];
+
+            $profile->addMedia($cvFile)
+                ->usingFileName(Str::ulid() . '.' . $cvFile->getClientOriginalExtension())
+                ->toMediaCollection('exhibitor_cv');
         }
     }
 

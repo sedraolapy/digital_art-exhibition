@@ -50,6 +50,7 @@ class ExhibitorApplication extends Model implements HasMedia
             ->singleFile();
     
         $this->addMediaCollection('application_cv')
+            ->useDisk('private')
             ->singleFile();
     }
 }

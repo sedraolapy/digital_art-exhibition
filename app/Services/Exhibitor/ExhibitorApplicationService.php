@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Services\Event\EventService;
 use Illuminate\Support\Facades\DB;
 use App\Services\Media\MediaStorageService;
+use Illuminate\Support\Str;
 
 class ExhibitorApplicationService
 {
@@ -21,17 +22,21 @@ class ExhibitorApplicationService
 
     public function create(User $user, array $data): ExhibitorApplication
     {
-        return DB::transaction(function () use ($user, $data) {
+        $application = DB::transaction(function () use ($user, $data) {
             $currentEvent = $this->eventService->getActiveEvent();
-
+    
             if (! $currentEvent) {
-                throw new \Exception('لا يوجد حدث فعّال حالياً لتقديم طلب عرض.');
+                throw new \Exception(
+                    'لا يوجد حدث فعّال حالياً لتقديم طلب عرض.'
+                );
             }
-
+    
             if ($this->applicationExists($user->id, $currentEvent->id)) {
-                throw new \Exception('لقد قمت بتقديم طلب لهذه الفعالية مسبقًا.');
+                throw new \Exception(
+                    'لقد قمت بتقديم طلب لهذه الفعالية مسبقًا.'
+                );
             }
-
+    
             $application = ExhibitorApplication::create([
                 'user_id'             => $user->id,
                 'event_occurrence_id' => $currentEvent->id,
@@ -41,15 +46,27 @@ class ExhibitorApplicationService
                 'bio'                 => $data['bio'],
                 'status'              => ExhibitorStatus::PENDING->value,
             ]);
-
-            $this->storeImage($application, $data['image']);
-            $this->storeCvFile($application, $data['cv_file']);
-            $this->socialLinkService->attachLinks($application, $data);
-
+    
+            $this->socialLinkService->attachLinks(
+                $application,
+                $data
+            );
+    
             return $application;
         });
-    }
+    
+        try {
+            $this->storeImage($application,$data['image']);
+    
+            $this->storeCvFile($application,$data['cv_file']);
 
+        } catch (\Throwable $e) {
+            $application->delete();
+            throw $e;
+        }
+    
+        return $application;
+    }
     public function getApplicationStatus(int $userId, int $eventOccurrenceId)
     {
         $applicationStatus =  ExhibitorApplication::where('user_id', $userId)
@@ -68,7 +85,9 @@ class ExhibitorApplicationService
     private function storeCvFile(ExhibitorApplication $application, $cvFile): void
     {
         $application->clearMediaCollection('application_cv');
-        $application->addMedia($cvFile)->toMediaCollection('application_cv');
+        $application->addMedia($cvFile)
+            ->usingFileName(Str::ulid() . '.' . $cvFile->getClientOriginalExtension())
+            ->toMediaCollection('application_cv');
     }
 
     private function storeImage(ExhibitorApplication $application, $image): void

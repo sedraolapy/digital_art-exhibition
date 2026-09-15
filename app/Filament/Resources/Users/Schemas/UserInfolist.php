@@ -20,7 +20,6 @@ class UserInfolist
                 TextEntry::make('email')
                     ->label('Email address'),
                 TextEntry::make('phone'),
-                TextEntry::make('phone'),
                 TextEntry::make('role')
                     ->label('Role')
                     ->badge()
@@ -31,7 +30,7 @@ class UserInfolist
                     ->label('Image')
                     ->size(150)
                     ->state(function ($record) {
-                        return $record->userProfile->getFirstMediaUrl('user_image')?: null;
+                        return $record->userProfile?->getFirstMediaUrl('user_image') ?: null;
                     })
                     ->url(fn ($state) => $state)
                     ->openUrlInNewTab(),

@@ -9,6 +9,8 @@ use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Forms\Components\WebpMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use App\Services\Event\EventService;
+use Filament\Forms\Components\Hidden;
 use Filament\Schemas\Schema;
 
 class ExhibitorProfileForm
@@ -17,19 +19,34 @@ class ExhibitorProfileForm
     {
         return $schema
             ->components([
+                Hidden::make('event_occurrence_id')
+                    ->default(fn () => app(EventService::class)->getActiveEvent()?->id)
+                    ->required(),
                 Select::make('user_id')
                     ->relationship(
                         name: 'user',
                         titleAttribute: 'first_name',
-                        modifyQueryUsing: fn ($query) => $query
-                            ->whereHas('roles', function ($query) {
-                                $query->where('name', RoleEnum::USER->value);
-                            })
-                            ->orderBy('first_name')
+                        modifyQueryUsing: function ($query, $record) {
+                            return $query
+                                ->where(function ($query) use ($record) {
+                                    $query->whereHas('roles', function ($query) {
+                                        $query->where('name', RoleEnum::USER->value);
+                                    });
+
+                                    if ($record?->user_id) {
+                                        $query->orWhere(
+                                            $query->getModel()->getQualifiedKeyName(),
+                                            $record->user_id
+                                        );
+                                    }
+                                })
+                                ->orderBy('first_name');
+                        }
                     )
                     ->searchable(['first_name', 'last_name'])
                     ->preload()
-                    ->required(),
+                    ->required()
+                    ->disabled(fn (string $operation): bool => $operation === 'edit'),
 
                 Select::make('category_id')
                     ->relationship('category', 'name')
@@ -106,6 +123,7 @@ class ExhibitorProfileForm
 
                 SpatieMediaLibraryFileUpload::make('cv_file')
                     ->label('CV')
+                    ->disk('private')
                     ->required()
                     ->collection('exhibitor_cv')
                     ->openable(),

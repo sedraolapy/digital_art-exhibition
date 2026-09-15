@@ -65,6 +65,7 @@ class ExhibitorProfile extends Model implements HasMedia
             ->singleFile();
     
         $this->addMediaCollection('exhibitor_cv')
+            ->useDisk('private')
             ->singleFile();
     }
 

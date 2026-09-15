@@ -15,16 +15,7 @@ class ExhibitorProfileInfolist
         return $schema
             ->components([
                 TextEntry::make('user.name')
-                    ->label('User')
-                    ->url(fn ($record) => route(
-                        'filament.admin.resources.users.view',
-                        $record->user
-                    ))
-                    ->openUrlInNewTab(false)
-                    ->color('primary')
-                    ->weight('medium')
-                    ->icon('heroicon-o-link')
-                    ->iconPosition('before'),
+                    ->label('User name'),
                 ImageEntry::make('image')
                     ->label('Image')
                     ->circular()
@@ -50,7 +41,9 @@ class ExhibitorProfileInfolist
                     ->label('CV File')
                     ->getStateUsing(fn ($record) =>
                         $record->getMedia('exhibitor_cv')
-                            ->map(fn($media) => '<a href="'.$media->getUrl().'" target="_blank" download>📄 Download CV</a>')
+                            ->map(fn ($media) =>
+                                '<a href="' . route('private-media.download', $media) . '" target="_blank">📄 Download CV</a>'
+                            )
                             ->implode('<br>')
                     )
                     ->html(),

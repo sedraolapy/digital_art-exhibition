@@ -126,6 +126,7 @@ class ExhibitorApplicationForm
 
                 SpatieMediaLibraryFileUpload::make('cv_file')
                     ->collection('application_cv')
+                    ->disk('private')
                     ->label('CV File')
                     ->rules([
                         'file',
