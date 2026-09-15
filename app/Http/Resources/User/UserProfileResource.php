@@ -16,7 +16,7 @@ class UserProfileResource extends JsonResource
     {
         return [
             'user'   => new UserResource($this->user),
-            'image' => $this->getMedia('user_image')->map(fn ($media) => $media->getFullUrl('webp')),
+            'image' => $this->getMedia('user_image')->map(fn ($media) => $media->getFullUrl()),
             'social_links' =>  $this->socialLinks->map(function ($link) {
                     return [
                         'platform' => $link->platform,

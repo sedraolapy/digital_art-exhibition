@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Users\Schemas;
 
 use Filament\Actions\Action;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use App\Filament\Forms\Components\WebpMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -91,7 +91,7 @@ class UserForm
                 Section::make('Profile')
                     ->relationship('userProfile')
                     ->schema([
-                        SpatieMediaLibraryFileUpload::make('image')
+                        WebpMediaLibraryFileUpload::make('image')
                             ->collection('user_image')
                             ->image()
                             ->imageCropAspectRatio('1:1')
@@ -100,8 +100,7 @@ class UserForm
                             ->maxSize(1024)
                             ->validationMessages([
                                 'max' => 'The image size must not exceed 1 MB.',
-                            ])
-                            ->preserveFilenames(),
+                            ]),
                     ]),
             ]);
     }

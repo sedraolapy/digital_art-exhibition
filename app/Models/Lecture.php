@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Lecture extends Model implements HasMedia
 {
@@ -52,10 +51,10 @@ class Lecture extends Model implements HasMedia
     }
 
 
-    public function registerMediaConversions(Media $media = null): void
+
+    public function registerMediaCollections(): void
     {
-        $this->addMediaConversion('webp')
-            ->format('webp')
-            ->quality(70);
+        $this->addMediaCollection('lectures')
+            ->singleFile();
     }
 }

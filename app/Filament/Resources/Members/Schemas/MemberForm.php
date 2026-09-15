@@ -8,7 +8,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use App\Filament\Forms\Components\WebpMediaLibraryFileUpload;
 
 class MemberForm
 {
@@ -24,11 +24,10 @@ class MemberForm
                     ->required(),
                 Textarea::make('bio')
                     ->required()
-                    ->maxLength(80)
                     ->columnSpanFull(),
                 TextInput::make('portfolio_url')
                     ->url(),
-                SpatieMediaLibraryFileUpload::make('image')
+                WebpMediaLibraryFileUpload::make('image')
                     ->required()
                     ->collection('members')
                     ->image()
@@ -38,8 +37,7 @@ class MemberForm
                     ->maxSize(1024)
                     ->validationMessages([
                         'max' => 'The image size must not exceed 1 MB.',
-                    ])
-                    ->preserveFilenames(),
+                    ]),
                 Repeater::make('socialLinks')
                     ->relationship('socialLinks')
                     ->schema([

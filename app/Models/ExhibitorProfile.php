@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-use App\Enums\ExhibitorStatus;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
+
 class ExhibitorProfile extends Model implements HasMedia
 {
     use InteractsWithMedia;
@@ -40,7 +39,7 @@ class ExhibitorProfile extends Model implements HasMedia
     {
         return $this->belongsTo(Category::class);
     }
-    
+
     public function socialLinks()
     {
         return $this->morphMany(SocialLink::class, 'linkable');
@@ -59,12 +58,14 @@ class ExhibitorProfile extends Model implements HasMedia
         );
     }
 
-    public function registerMediaConversions(Media $media = null): void
-    {
-        $this->addMediaConversion('webp')
-            ->format('webp')
-            ->quality(70);
-    }
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('exhibitor_image')
+            ->singleFile();
+    
+        $this->addMediaCollection('exhibitor_cv')
+            ->singleFile();
+    }
 
 }

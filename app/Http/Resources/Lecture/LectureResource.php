@@ -18,7 +18,7 @@ class LectureResource extends JsonResource
         return [
             'id'          => $this->id,
             'title'       => $this->title,
-            'image'       => $this->getMedia('lectures')->map(fn($media) => $media->getFullUrl('webp')),
+            'image'       => $this->getMedia('lectures')->map(fn($media) => $media->getFullUrl()),
             'description' => $this->description,
             'speaker'     => $this->speaker_name,
             'max_seats'   => $this->max_seats,

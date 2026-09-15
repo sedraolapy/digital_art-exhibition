@@ -31,7 +31,7 @@ class MembersTable
                     ->width(60)
                     ->getStateUsing(fn ($record) =>
                         $record->getMedia('members')
-                            ->map(fn ($media) => $media->getUrl('webp'))
+                            ->map(fn ($media) => $media->getUrl())
                         ),
                 TextColumn::make('role')
                     ->searchable(),

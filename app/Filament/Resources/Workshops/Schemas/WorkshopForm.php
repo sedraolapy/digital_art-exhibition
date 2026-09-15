@@ -5,7 +5,7 @@ namespace App\Filament\Resources\Workshops\Schemas;
 use App\Enums\WorkshopStatus;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use App\Filament\Forms\Components\WebpMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TimePicker;
@@ -54,7 +54,7 @@ class WorkshopForm
                 Select::make('status')
                     ->options(WorkshopStatus::class)
                     ->required(),
-                SpatieMediaLibraryFileUpload::make('image')
+                WebpMediaLibraryFileUpload::make('image')
                     ->required()
                     ->collection('workshops')
                     ->image()
@@ -64,9 +64,8 @@ class WorkshopForm
                     ->maxSize(1024)
                     ->validationMessages([
                         'max' => 'The image size must not exceed 1 MB.',
-                    ])
-                    ->preserveFilenames(),
-                SpatieMediaLibraryFileUpload::make('gallery')
+                    ]),
+                WebpMediaLibraryFileUpload::make('gallery')
                     ->collection('workshop_gallery')
                     ->multiple()
                     ->image()
@@ -77,8 +76,7 @@ class WorkshopForm
                     ->hint('The image must be landscape (16:9 ratio), Maximum 4 images.')
                     ->validationMessages([
                         'max' => 'The image size must not exceed 1 MB.',
-                    ])
-                    ->preserveFilenames(),
+                    ]),
             ]);
     }
 }

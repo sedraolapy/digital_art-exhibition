@@ -25,10 +25,10 @@ class Member extends Model implements HasMedia
         return $this->morphMany(SocialLink::class, 'linkable');
     }
 
-    public function registerMediaConversions(Media $media = null): void
+
+    public function registerMediaCollections(): void
     {
-        $this->addMediaConversion('webp')
-            ->format('webp')
-            ->quality(90);
+        $this->addMediaCollection('members')
+            ->singleFile();
     }
 }

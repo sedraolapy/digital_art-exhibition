@@ -22,18 +22,6 @@ class ExperienceSeeder extends Seeder
             'status'      => ExperienceStatus::PUBLISHED->value,
         ]);
 
-        $experience1->addMedia(public_path('storage/experience/experience1.jpg'))
-            ->preservingOriginal()
-            ->toMediaCollection('experience_gallery');
-
-        $experience1->addMedia(public_path('storage/experience/experience2.jpg'))
-            ->preservingOriginal()
-            ->toMediaCollection('experience_gallery');
-
-        $experience1->addMedia(public_path('storage/experience/experience3.jpg'))
-            ->preservingOriginal()
-            ->toMediaCollection('experience_gallery');
-
 
 
 
@@ -45,16 +33,5 @@ class ExperienceSeeder extends Seeder
                 'status'      => ExperienceStatus::PUBLISHED->value,
             ]);
 
-            $experience2->addMedia(public_path('storage/experience/experience4.jpg'))
-                ->preservingOriginal()
-                ->toMediaCollection('experience_gallery');
-
-            $experience2->addMedia(public_path('storage/experience/experience5.jpg'))
-                ->preservingOriginal()
-                ->toMediaCollection('experience_gallery');
-
-            $experience2->addMedia(public_path('storage/experience/experience6.png'))
-                ->preservingOriginal()
-                ->toMediaCollection('experience_gallery');
     }
 }

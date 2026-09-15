@@ -6,7 +6,6 @@ use App\Enums\SponsorType;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 class Sponsor extends Model implements HasMedia
 {
     use InteractsWithMedia;
@@ -48,6 +47,12 @@ class Sponsor extends Model implements HasMedia
             $sponsor->cycles()->detach();
             $sponsor->occurrences()->detach();
         });
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('sponsors')
+            ->singleFile();
     }
     
 }

@@ -24,12 +24,12 @@ class DatabaseSeeder extends Seeder
             EventsOccurrencesSeeder::class,
             ExperienceSeeder::class,
             StatisticsSeeder::class,
-            LecturesSeeder::class,
-            SponsorSeeder::class,
-            UserSeeder::class,
-            ExhibitorProfileSeeder::class,
+            // LecturesSeeder::class,
+            // SponsorSeeder::class,
+            // UserSeeder::class,
+            // ExhibitorProfileSeeder::class,
             MemberSeeder::class,
-            WorkshopSeeder::class,
+            // WorkshopSeeder::class,
         ]);
     }
 }

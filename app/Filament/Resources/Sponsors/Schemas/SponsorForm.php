@@ -29,8 +29,7 @@ class SponsorForm
                     ->validationMessages([
                         'max' => 'The image size must not exceed 1 MB.',
                         'accepted' => 'Only SVG files are allowed.',
-                    ])
-                    ->preserveFilenames(),
+                    ]),
 
                 Select::make('type')
                     ->label('Sponsor Type')

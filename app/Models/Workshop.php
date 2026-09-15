@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Enums\WorkshopStatus;
 use Illuminate\Database\Eloquent\Model;use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Workshop extends Model implements HasMedia
 {
@@ -36,10 +35,11 @@ class Workshop extends Model implements HasMedia
         return $this->hasMany(WorkshopRegistration::class);
     }
 
-    public function registerMediaConversions(Media $media = null): void
+    public function registerMediaCollections(): void
     {
-        $this->addMediaConversion('webp')
-            ->format('webp')
-            ->quality(70);
+        $this->addMediaCollection('workshops')
+            ->singleFile();
+    
+        $this->addMediaCollection('workshop_gallery');
     }
 }

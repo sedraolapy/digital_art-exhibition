@@ -31,7 +31,7 @@ class UserInfolist
                     ->label('Image')
                     ->size(150)
                     ->state(function ($record) {
-                        return $record->userProfile->getFirstMediaUrl('user_image', 'webp')?: null;
+                        return $record->userProfile->getFirstMediaUrl('user_image')?: null;
                     })
                     ->url(fn ($state) => $state)
                     ->openUrlInNewTab(),

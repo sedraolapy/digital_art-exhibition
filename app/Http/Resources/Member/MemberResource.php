@@ -20,7 +20,7 @@ class MemberResource extends JsonResource
             'role'      => $this->role,
             'bio'       => $this->bio,
             'portfolio_url'   => $this->portfolio_url,
-            'image'     => $this->getMedia('members')->map(fn($media) => $media->getFullUrl('webp')),
+            'image'     => $this->getMedia('members')->map(fn($media) => $media->getFullUrl()),
             'social_links' => $this->socialLinks->map(function ($link) {
                 return [
                     'platform' => $link->platform,

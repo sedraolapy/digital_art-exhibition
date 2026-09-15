@@ -39,7 +39,7 @@ class ExhibitorApplicationsTable
                         fn ($record) => $record
                             ->getMedia('application_image')
                             ->map(
-                                fn ($media) => $media->getUrl('webp')
+                                fn ($media) => $media->getUrl()
                             )
                     ),
 

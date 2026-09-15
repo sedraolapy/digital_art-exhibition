@@ -7,7 +7,7 @@ use App\Models\EventDay;
 use App\Models\Lecture;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use App\Filament\Forms\Components\WebpMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TimePicker;
@@ -74,7 +74,7 @@ class LectureForm
                         },
                     ]),
 
-                SpatieMediaLibraryFileUpload::make('image')
+                WebpMediaLibraryFileUpload::make('image')
                     ->required()
                     ->collection('lectures')
                     ->image()
@@ -84,8 +84,7 @@ class LectureForm
                     ->maxSize(1024)
                     ->validationMessages([
                         'max' => 'The image size must not exceed 1 MB.',
-                    ])
-                    ->preserveFilenames(),
+                    ]),
             ]);
     }
 }

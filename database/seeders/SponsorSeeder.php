@@ -26,7 +26,6 @@ class SponsorSeeder extends Seeder
         ]);
 
         $sponsor1->addMedia(public_path('storage/sponsors/سكون لوغو.svg'))
-            ->preservingOriginal()
             ->toMediaCollection('sponsors');
 
         $sponsor2 = Sponsor::create([
@@ -35,7 +34,6 @@ class SponsorSeeder extends Seeder
         ]);
 
         $sponsor2->addMedia(public_path('storage/sponsors/جلجامش لوغو.svg'))
-            ->preservingOriginal()
             ->toMediaCollection('sponsors');
 
 

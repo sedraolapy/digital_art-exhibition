@@ -62,7 +62,7 @@ class ExhibitorApplicationInfolist
                     ->label('Image')
                     ->getStateUsing(fn ($record) =>
                         $record->getMedia('application_image')
-                            ->map(fn($media) => $media->getUrl('webp'))
+                            ->map(fn($media) => $media->getUrl())
                     )
                     ->height(200)
                     ->width(200),

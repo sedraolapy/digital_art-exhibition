@@ -17,7 +17,7 @@ class WorkshopInfolist
                 TextEntry::make('title'),
                 ImageEntry::make('image')
                     ->label('Image')
-                    ->getStateUsing(fn ($record) =>$record->getMedia('workshops')->map(fn($media) => $media->getUrl('webp')))
+                    ->getStateUsing(fn ($record) =>$record->getMedia('workshops')->map(fn($media) => $media->getUrl()))
                     ->url(fn ($state) => $state)
                     ->openUrlInNewTab(),
                 TextEntry::make('description')
@@ -45,7 +45,7 @@ class WorkshopInfolist
                     ->getStateUsing(fn ($record) =>
                         $record->getMedia('workshop_gallery')
                             ->map(fn ($media) => [
-                                'image' => $media->getUrl('webp'),
+                                'image' => $media->getUrl(),
                             ])
                             ->toArray()
                     )

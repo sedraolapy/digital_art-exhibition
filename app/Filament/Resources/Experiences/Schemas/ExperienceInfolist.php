@@ -41,7 +41,7 @@ class ExperienceInfolist
                     ->getStateUsing(fn ($record) =>
                         $record->getMedia('experience_gallery')
                             ->map(fn ($media) => [
-                                'image' => $media->getUrl('webp'),
+                                'image' => $media->getUrl(),
                             ])
                             ->toArray()
                     )

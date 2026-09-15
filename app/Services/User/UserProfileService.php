@@ -6,12 +6,14 @@ use App\Models\EventOccurrence;
 use App\Models\User;
 use App\Models\UserProfile;
 use App\Services\Exhibitor\SocialLinkService;
+use App\Services\Media\MediaStorageService;
 
 class UserProfileService
 {
     public function __construct(
         private SocialLinkService $socialLinkService,
         private UserDataService $userDataService,
+        private MediaStorageService $mediaStorageService,
     ) {}
 
     public function getProfileData(User $user, ?EventOccurrence $activeEvent): ?UserProfile
@@ -61,9 +63,12 @@ class UserProfileService
     private function uploadProfileImage(UserProfile $profile, $image): void
     {
         $profile->clearMediaCollection('user_image');
-
-        $profile->addMedia($image)
-            ->toMediaCollection('user_image');
+    
+        $this->mediaStorageService->storeImage(
+            $profile,
+            $image,
+            'user_image'
+        );
     }
 
     //  حذف الصورة الحالية

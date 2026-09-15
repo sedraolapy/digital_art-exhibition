@@ -6,7 +6,6 @@ use App\Enums\ExhibitorStatus;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 class ExhibitorApplication extends Model implements HasMedia
 {
     use InteractsWithMedia;
@@ -45,10 +44,12 @@ class ExhibitorApplication extends Model implements HasMedia
         return $this->belongsTo(Category::class);
     }
 
-    public function registerMediaConversions(Media $media = null): void
+    public function registerMediaCollections(): void
     {
-        $this->addMediaConversion('webp')
-            ->format('webp')
-            ->quality(70);
+        $this->addMediaCollection('application_image')
+            ->singleFile();
+    
+        $this->addMediaCollection('application_cv')
+            ->singleFile();
     }
 }

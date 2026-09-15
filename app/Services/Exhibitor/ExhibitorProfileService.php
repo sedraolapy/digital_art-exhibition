@@ -2,7 +2,6 @@
 
 namespace App\Services\Exhibitor;
 
-use App\Enums\EventOccurrenceStatus;
 use App\Enums\RoleEnum;
 use App\Models\EventOccurrence;
 use App\Models\ExhibitorApplication;
@@ -11,13 +10,14 @@ use App\Models\User;
 use App\Services\Event\EventService;
 use App\Services\User\UserDataService;
 use Illuminate\Support\Facades\DB;
+use App\Services\Media\MediaStorageService;
 
 class ExhibitorProfileService
 {
     public function __construct(
         private SocialLinkService $socialLinkService,
         private UserDataService $userDataService,
-        private EventService $eventService,
+        private MediaStorageService $mediaStorageService,
     ) {}
 
     private function assignExhibitorRole(int $userId): void
@@ -98,25 +98,19 @@ class ExhibitorProfileService
 
     private function transferCvFile(ExhibitorApplication $application, ExhibitorProfile $profile): void
     {
-        if ($application->hasMedia('application_cv')) {
-            $media = $application->getFirstMedia('application_cv');
-            if ($media) {
-                $profile->addMedia($media->getPath())
-                    ->preservingOriginal()
-                    ->toMediaCollection('exhibitor_cv');
-            }
+        $media = $application->getFirstMedia('application_cv');
+
+        if ($media) {
+            $media->move($profile, 'exhibitor_cv');
         }
     }
 
     private function transferImage(ExhibitorApplication $application, ExhibitorProfile $profile): void
     {
-        if ($application->hasMedia('application_image')) {
-            $media = $application->getFirstMedia('application_image');
-            if ($media) {
-                $profile->addMedia($media->getPath())
-                    ->preservingOriginal()
-                    ->toMediaCollection('exhibitor_image');
-            }
+        $media = $application->getFirstMedia('application_image');
+
+        if ($media) {
+            $media->move($profile, 'exhibitor_image');
         }
     }
 
@@ -145,7 +139,12 @@ class ExhibitorProfileService
     {
         if (isset($data['image'])) {
             $profile->clearMediaCollection('exhibitor_image');
-            $profile->addMedia($data['image'])->toMediaCollection('exhibitor_image');
+    
+            $this->mediaStorageService->storeImage(
+                $profile,
+                $data['image'],
+                'exhibitor_image'
+            );
         }
     }
 }

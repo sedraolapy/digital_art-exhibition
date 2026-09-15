@@ -6,7 +6,6 @@ use App\Enums\ExperienceStatus;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Experience extends Model implements HasMedia
 {
@@ -24,11 +23,9 @@ class Experience extends Model implements HasMedia
         'status'  => ExperienceStatus::class,
     ];
 
-    public function registerMediaConversions(Media $media = null): void
+    public function registerMediaCollections(): void
     {
-        $this->addMediaConversion('webp')
-            ->format('webp')
-            ->quality(70);
+        $this->addMediaCollection('experience_gallery');
     }
 
 

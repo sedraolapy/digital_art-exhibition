@@ -21,7 +21,7 @@ class ExperienceResource extends JsonResource
             'start_date'  => $this->start_date,
             'end_date'    => $this->end_date,
             'status'      => $this->status,
-            'gallery'     => $this->getMedia('experience_gallery')->map(fn($media) => $media->getFullUrl('webp')),
+            'gallery'     => $this->getMedia('experience_gallery')->map(fn($media) => $media->getFullUrl()),
         ];
     }
 }

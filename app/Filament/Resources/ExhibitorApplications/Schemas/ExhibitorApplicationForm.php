@@ -8,6 +8,7 @@ use App\Enums\RoleEnum;
 use App\Models\EventOccurrence;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use App\Filament\Forms\Components\WebpMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
@@ -83,7 +84,7 @@ class ExhibitorApplicationForm
                                 ?->url
                         );
                     }),
-                
+
                 TextInput::make('facebook')
                     ->label('Facebook')
                     ->url()
@@ -96,7 +97,7 @@ class ExhibitorApplicationForm
                                 ?->url
                         );
                     }),
-                
+
                 TextInput::make('linkedin')
                     ->label('LinkedIn')
                     ->url()
@@ -109,7 +110,7 @@ class ExhibitorApplicationForm
                                 ?->url
                         );
                     }),
-                
+
                 TextInput::make('behance')
                     ->label('Behance')
                     ->url()
@@ -133,7 +134,7 @@ class ExhibitorApplicationForm
                     ->openable()
                     ->required(),
 
-                SpatieMediaLibraryFileUpload::make('image')
+                WebpMediaLibraryFileUpload::make('image')
                     ->required()
                     ->collection('application_image')
                     ->image()
@@ -143,8 +144,7 @@ class ExhibitorApplicationForm
                     ->hint('The image must be square (1:1 ratio)')
                     ->validationMessages([
                         'max' => 'The image size must not exceed 1 MB.',
-                    ])
-                    ->preserveFilenames(),
+                    ]),
             ]);
     }
 }

@@ -9,8 +9,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-
+use App\Filament\Forms\Components\WebpMediaLibraryFileUpload;
 class ExperienceForm
 {
     public static function configure(Schema $schema): Schema
@@ -33,7 +32,7 @@ class ExperienceForm
                     ->options(ExperienceStatus::class)
                     ->default('draft')
                     ->required(),
-                SpatieMediaLibraryFileUpload::make('gallery')
+                WebpMediaLibraryFileUpload::make('gallery')
                     ->collection('experience_gallery')
                     ->multiple()
                     ->image()
@@ -44,8 +43,7 @@ class ExperienceForm
                     ->hint('The image must be landscape (16:9 ratio), Maximum 4 images.')
                     ->validationMessages([
                         'max' => 'The image size must not exceed 1 MB.',
-                    ])
-                    ->preserveFilenames(),
+                    ]),
             ]);
     }
 }

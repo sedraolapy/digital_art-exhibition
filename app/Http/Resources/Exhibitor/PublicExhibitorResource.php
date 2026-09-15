@@ -24,7 +24,7 @@ class PublicExhibitorResource extends JsonResource
             'portfolio_url'    => $this->portfolio_url,
 
             'image' => $this->getMedia('exhibitor_image')
-                ->map(fn ($media) => $media->getFullUrl('webp')),
+                ->map(fn ($media) => $media->getFullUrl()),
 
             'social_links' => $this->socialLinks?->map(function ($link) {
                 return [

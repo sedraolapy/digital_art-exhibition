@@ -20,7 +20,7 @@ class LectureInfolist
                     ->columnSpanFull(),
                 ImageEntry::make('image')
                     ->label('Image')
-                    ->getStateUsing(fn ($record) =>$record->getMedia('lectures')->map(fn($media) => $media->getUrl('webp')))
+                    ->getStateUsing(fn ($record) =>$record->getMedia('lectures')->map(fn($media) => $media->getUrl()))
                     ->url(fn ($state) => $state)
                     ->openUrlInNewTab(),
                 TextEntry::make('max_seats')

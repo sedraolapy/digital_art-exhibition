@@ -30,7 +30,7 @@ class ExhibitorProfileInfolist
                     ->circular()
                     ->size(150)
                     ->state(function ($record) {
-                        return $record->getFirstMediaUrl('exhibitor_image', 'webp')?: null;
+                        return $record->getFirstMediaUrl('exhibitor_image')?: null;
                     })
                     ->url(fn ($state) => $state ?: null)
                     ->openUrlInNewTab(),

@@ -6,6 +6,7 @@ use App\Enums\RoleEnum;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use App\Filament\Forms\Components\WebpMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
@@ -45,7 +46,7 @@ class ExhibitorProfileForm
                     ->label('Portfolio')
                     ->url()
                     ->required(),
-                    
+
 
                 TextInput::make('instagram')
                     ->label('Instagram')
@@ -59,7 +60,7 @@ class ExhibitorProfileForm
                                 ?->url
                         );
                     }),
-                
+
                 TextInput::make('facebook')
                     ->label('Facebook')
                     ->url()
@@ -72,7 +73,7 @@ class ExhibitorProfileForm
                                 ?->url
                         );
                     }),
-                
+
                 TextInput::make('linkedin')
                     ->label('LinkedIn')
                     ->url()
@@ -85,7 +86,7 @@ class ExhibitorProfileForm
                                 ?->url
                         );
                     }),
-                
+
                 TextInput::make('behance')
                     ->label('Behance')
                     ->url()
@@ -109,7 +110,7 @@ class ExhibitorProfileForm
                     ->collection('exhibitor_cv')
                     ->openable(),
 
-                SpatieMediaLibraryFileUpload::make('image')
+                WebpMediaLibraryFileUpload::make('image')
                     ->label('Image')
                     ->required()
                     ->collection('exhibitor_image')
@@ -120,22 +121,7 @@ class ExhibitorProfileForm
                     ->hint('The image must be square (1:1 ratio)')
                     ->validationMessages([
                         'max' => 'The image size must not exceed 1 MB.',
-                    ])
-                    ->preserveFilenames()
-                    ->afterStateHydrated(function ($component, $record) {
-                        if (! $record?->user) {
-                            return;
-                        }
-                
-                        $media = $record->user
-                            ->getFirstMedia('exhibitor_image');
-                
-                        if ($media) {
-                            $component->state([
-                                $media->uuid => $media->getUrl(),
-                            ]);
-                        }
-                    }),
+                    ]),
             ]);
     }
 }

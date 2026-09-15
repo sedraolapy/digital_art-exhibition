@@ -34,9 +34,7 @@ class MemberSeeder extends Seeder
             'url'      => 'https://www.instagram.com/shbeebeman?igsi=MThkMGpycTdjOG85bA==',
         ]);
 
-        $member1->addMedia(public_path('storage/members/eman.jpeg'))
-            ->preservingOriginal()
-            ->toMediaCollection('members');
+
 
 
         $member2 = Member::create([
@@ -60,9 +58,6 @@ class MemberSeeder extends Seeder
             'url'      => 'https://www.instagram.com/mohammad__alsharawi?igsi=c2d5cm04YjE4dTZq',
         ]);
 
-        $member2->addMedia(public_path('storage/members/IMG_3122.jpg'))
-            ->preservingOriginal()
-            ->toMediaCollection('members');
 
         $member3 = Member::create([
             'name'          => 'عبدالله محمد الحكيم الهندي',
@@ -85,10 +80,6 @@ class MemberSeeder extends Seeder
             'url'      => 'https://www.instagram.com/abdullahalhakim14/',
         ]);
 
-        $member3->addMedia(public_path('storage/members/Abdullah.jpeg'))
-            ->preservingOriginal()
-            ->toMediaCollection('members');
-
         $member4 = Member::create([
             'name'          => 'عفيف الغزيري',
             'role'          => 'Frontend Developer',
@@ -109,10 +100,6 @@ class MemberSeeder extends Seeder
             'platform' => 'instagram',
             'url'      => 'https://www.instagram.com/afif.gh99',
         ]);
-
-        $member4->addMedia(public_path('storage/members/Afif.jpeg'))
-            ->preservingOriginal()
-            ->toMediaCollection('members');
 
 
         $member5 = Member::create([
@@ -136,9 +123,6 @@ class MemberSeeder extends Seeder
             'url'      => 'https://instagram.com/moumena_shbeeb?igshid=1sgby1pgdcypk',
         ]);
 
-        $member5->addMedia(public_path('storage/members/IMG_9047.jpeg'))
-            ->preservingOriginal()
-            ->toMediaCollection('members');
 
         $member6 = Member::create([
             'name'          => 'رِوى الحسين',
@@ -162,9 +146,6 @@ class MemberSeeder extends Seeder
             'url'      => 'https://www.instagram.com/rewa.graphic/',
         ]);
 
-        $member6->addMedia(public_path('storage/members/rewaaa.jpeg'))
-            ->preservingOriginal()
-            ->toMediaCollection('members');
 
 
         $member7 = Member::create([
@@ -184,9 +165,6 @@ class MemberSeeder extends Seeder
             'url'      => 'https://www.instagram.com/yousef.layal?igsh=MWo2YW8zaHdiNDdwZg==',
         ]);
 
-        $member7->addMedia(public_path('storage/members/lial.jpeg'))
-            ->preservingOriginal()
-            ->toMediaCollection('members');
 
 
         $member8 = Member::create([
@@ -205,10 +183,6 @@ class MemberSeeder extends Seeder
             'platform' => 'instagram',
             'url'      => 'https://www.instagram.com/_mohamad_ibrahem',
         ]);
-
-        $member8->addMedia(public_path('storage/members/mohib.png'))
-            ->preservingOriginal()
-            ->toMediaCollection('members');
 
         $member9 = Member::create([
             'name'          => 'سيدرا العلبي',
@@ -232,9 +206,6 @@ class MemberSeeder extends Seeder
             'url'      => 'https://www.instagram.com/eng__sedra?igsi=bTdzMmw1bzJjMHhk',
         ]);
 
-        $member9->addMedia(public_path('storage/members/sedra.png'))
-            ->preservingOriginal()
-            ->toMediaCollection('members');
     }
 
 }

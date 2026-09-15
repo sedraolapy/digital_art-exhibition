@@ -20,8 +20,8 @@ class WorkshopResource extends JsonResource
         return [
             'id'          => $this->id,
             'title'       => $this->title,
-            'image'       => $this->getMedia('workshops')->map(fn($media) => $media->getFullUrl('webp')),
-            'gallery'     => $this->getMedia('workshop_gallery')->map(fn($media) => $media->getFullUrl('webp')),
+            'image'       => $this->getMedia('workshops')->map(fn($media) => $media->getFullUrl()),
+            'gallery'     => $this->getMedia('workshop_gallery')->map(fn($media) => $media->getFullUrl()),
             'description' => $this->description,
             'speaker'     => $this->speaker_name,
             'max_seats'   => $this->max_seats,

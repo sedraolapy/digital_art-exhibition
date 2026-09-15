@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Services\Lecture\BookingService;
 use App\Services\CheckIn\CheckInService;
 use App\Services\Event\EventService;
-use App\Services\Exhibitor\ExhibitorApplicationService;
+use App\Models\ExhibitorApplication;
 use App\Services\Exhibitor\VoteService;
 use App\Services\Workshop\WorkshopRegistrationService;
 
@@ -18,7 +18,6 @@ class UserDataService
         private BookingService $bookingService,
         private CheckInService $checkInService,
         private EventService $eventService,
-        private ExhibitorApplicationService $applicationService,
         private WorkshopRegistrationService $registrationService,
     ) {}
 
@@ -37,10 +36,10 @@ class UserDataService
 
         return $user;
     }
-    
+
     public function attachEventContext(User $user,?EventOccurrence $event = null): User
     {
-        
+
         $userId = $user->id;
 
         $user->current_event = $event
@@ -59,11 +58,10 @@ class UserDataService
         $user->registrations  =
             $this->registrationService->getUserConfirmedRegisterations($userId);
 
-        $user->exhibitor_application_status = $event
-            ? $this->applicationService->getApplicationStatus(
-                $userId,
-                $event->id
-            )
+            $user->exhibitor_application_status = $event
+            ? ExhibitorApplication::where('user_id', $userId)
+                ->where('event_occurrence_id', $event->id)
+                ->value('status')
             : null;
 
         $user->loadMissing([

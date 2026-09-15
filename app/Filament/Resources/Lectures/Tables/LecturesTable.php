@@ -32,7 +32,7 @@ class LecturesTable
                     ->width(60)
                     ->getStateUsing(fn ($record) =>
                         $record->getMedia('lectures')
-                            ->map(fn ($media) => $media->getUrl('webp'))
+                            ->map(fn ($media) => $media->getUrl())
                         ),
                 TextColumn::make('speaker_name')
                     ->searchable(),

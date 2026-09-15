@@ -8,6 +8,7 @@ use App\Models\ExhibitorApplication;
 use App\Models\User;
 use App\Services\Event\EventService;
 use Illuminate\Support\Facades\DB;
+use App\Services\Media\MediaStorageService;
 
 class ExhibitorApplicationService
 {
@@ -15,6 +16,7 @@ class ExhibitorApplicationService
         private SocialLinkService $socialLinkService,
         private EventService $eventService,
         private ExhibitorProfileService $exhibitorProfileService,
+        private MediaStorageService $mediaStorageService,
     ) {}
 
     public function create(User $user, array $data): ExhibitorApplication
@@ -72,7 +74,12 @@ class ExhibitorApplicationService
     private function storeImage(ExhibitorApplication $application, $image): void
     {
         $application->clearMediaCollection('application_image');
-        $application->addMedia($image)->toMediaCollection('application_image');
+    
+        $this->mediaStorageService->storeImage(
+            $application,
+            $image,
+            'application_image'
+        );
     }
 
 

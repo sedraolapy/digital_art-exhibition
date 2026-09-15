@@ -31,7 +31,7 @@ class MemberInfolist
                     ->getStateUsing(fn ($record) =>
                         $record->getMedia('members')
                             ->map(fn ($media) => [
-                                'image' => $media->getUrl('webp'),
+                                'image' => $media->getUrl(),
                             ])
                             ->toArray()
                     )
